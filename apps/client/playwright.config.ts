@@ -18,8 +18,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'bun start',
+    command: 'npx nx serve client',
     url: 'http://localhost:4200',
     reuseExistingServer: !process.env['CI'],
+    cwd: '../..',
   },
 });

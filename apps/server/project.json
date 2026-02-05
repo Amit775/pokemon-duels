@@ -1,0 +1,57 @@
+{
+  "name": "server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/server",
+  "tags": ["type:app", "scope:server"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/apps/server/bin"],
+      "options": {
+        "command": "dotnet build",
+        "cwd": "apps/server"
+      },
+      "configurations": {
+        "production": {
+          "command": "dotnet build -c Release"
+        },
+        "development": {
+          "command": "dotnet build -c Debug"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet run",
+        "cwd": "apps/server"
+      },
+      "configurations": {
+        "production": {
+          "command": "dotnet run -c Release"
+        },
+        "development": {
+          "command": "dotnet run -c Debug"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "dotnet test",
+        "cwd": "apps/server"
+      }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/apps/server"],
+      "options": {
+        "command": "dotnet publish -c Release -o ../../dist/apps/server",
+        "cwd": "apps/server"
+      }
+    }
+  }
+}

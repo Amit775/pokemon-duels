@@ -7,46 +7,96 @@ A multiplayer real-time web board game where 2-6 players can join a room and bat
 | Layer | Technology | Version |
 |-------|------------|---------|
 | Frontend | Angular | 21.x (zoneless, signals) |
-| Backend | .NET | 9.x (Minimal APIs) |
+| Backend | .NET | 10.x (Minimal APIs) |
 | Real-time | SignalR | (planned) |
 | Database | TBD | See design docs |
+| Monorepo | Nx | 22.x |
 
 ## Project Structure
 
 ```
 pokemon-duel/
-├── client/          # Angular frontend
-├── server/          # .NET backend
-└── docs/            # Documentation site (Analog.js)
-    └── src/content/ # Markdown docs for developers, users, AI agents
+├── apps/
+│   ├── client/      # Angular frontend
+│   ├── docs/        # Documentation site (Analog.js)
+│   └── server/      # .NET backend
+├── libs/            # Shared libraries (future)
+├── nx.json          # Nx configuration
+└── package.json     # Root dependencies
 ```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 22+ (or Bun)
-- .NET 9 SDK
+- Node.js 22+
+- .NET 10 SDK
 - Git
 
-### Running the Client
+### Install Dependencies
 
 ```bash
-cd client
-bun install
-bun start
+npm install
+```
+
+### Running Applications
+
+Using Nx commands:
+
+```bash
+# Start the client (Angular)
+npm run client
+# or: npx nx serve client
+
+# Start the docs site
+npm run docs
+# or: npx nx serve docs
+
+# Start the server (.NET)
+npm run server
+# or: npx nx serve server
 ```
 
 The client will be available at `http://localhost:4200`
+The docs site will be available at `http://localhost:5173`
 
-### Running the Server
+### Building
 
 ```bash
-cd server
-dotnet run
+# Build all projects
+npm run build
+
+# Build specific project
+npx nx build client
+npx nx build docs
+npx nx build server
 ```
 
-The API will be available at `http://localhost:5000` (or configured port)
+### Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run specific project tests
+npx nx test client
+npx nx test docs
+
+# Run e2e tests
+npm run e2e
+npx nx e2e client
+```
+
+### Nx Commands
+
+```bash
+# View project graph
+npm run graph
+
+# Run affected commands (only changed projects)
+npm run affected -- -t build
+npm run affected -- -t test
+```
 
 ## Development
 
@@ -56,6 +106,13 @@ The API will be available at `http://localhost:5000` (or configured port)
 - **Signals** for reactive state management
 - **Vitest** for unit testing
 - **SCSS** for styling
+- **Playwright** for e2e testing
+
+### Docs (Analog.js)
+
+- **Analog.js** for Angular-based static site generation
+- **Vite** for fast builds and HMR
+- **Markdown** content for documentation
 
 ### Server (.NET)
 
@@ -64,7 +121,7 @@ The API will be available at `http://localhost:5000` (or configured port)
 
 ## Documentation
 
-See [ai-instructions/](./ai-instructions/) for:
+See `apps/docs/src/content/` for:
 - Architecture overview
 - Real-time multiplayer design
 - Database strategy
