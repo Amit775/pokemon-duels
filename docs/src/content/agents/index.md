@@ -1,10 +1,18 @@
+---
+title: AI Instructions for Pokemon Duel
+slug: index
+description: Instructions and context for AI agents helping with this project
+category: agents
+order: 0
+---
+
 # AI Instructions for Pokemon Duel
 
-This folder contains instructions and context for AI agents helping with this project.
+This section contains instructions and context for AI agents helping with this project.
 
-## Folder Structure
+## Available Documentation
 
-- `design-details/` - Architecture decisions, design discussions, and technical specifications
+- **Design Details** - Architecture decisions, design discussions, and technical specifications
 
 ## Project Overview
 
@@ -16,8 +24,8 @@ This folder contains instructions and context for AI agents helping with this pr
 |-------|------------|
 | Frontend | Angular 21 (zoneless, signals, modern best practices) |
 | Backend | .NET (Minimal APIs) |
-| Real-time | TBD (SignalR recommended for .NET ecosystem) |
-| Database | TBD |
+| Real-time | SignalR (recommended for .NET ecosystem) |
+| Database | Redis + PostgreSQL (production) / SQLite (development) |
 
 ### Key Features to Implement
 

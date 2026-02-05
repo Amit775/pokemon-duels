@@ -1,3 +1,11 @@
+---
+title: Architecture Overview
+slug: 001-architecture-overview
+description: High-level architecture for Pokemon Duel
+category: agents
+order: 1
+---
+
 # Architecture Overview
 
 ## Status: DRAFT - Pending Discussion

@@ -1,3 +1,11 @@
+---
+title: Database Strategy
+slug: 003-database-strategy
+description: Database architecture and data models
+category: agents
+order: 3
+---
+
 # Database Strategy
 
 ## Status: DRAFT - Pending Discussion

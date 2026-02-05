@@ -1,3 +1,11 @@
+---
+title: Real-time Multiplayer Architecture
+slug: 002-realtime-multiplayer
+description: SignalR-based real-time communication architecture
+category: agents
+order: 2
+---
+
 # Real-time Multiplayer Architecture
 
 ## Status: DRAFT - Pending Discussion
@@ -139,7 +147,7 @@ export class GameHubService {
 
 ### Client (Angular)
 ```bash
-bun add @microsoft/signalr
+npm add @microsoft/signalr
 ```
 
 ---

@@ -17,8 +17,8 @@ A multiplayer real-time web board game where 2-6 players can join a room and bat
 pokemon-duel/
 ├── client/          # Angular frontend
 ├── server/          # .NET backend
-└── ai-instructions/ # Documentation for AI agents
-    └── design-details/  # Architecture decisions
+└── docs/            # Documentation site (Analog.js)
+    └── src/content/ # Markdown docs for developers, users, AI agents
 ```
 
 ## Getting Started
