@@ -1,0 +1,196 @@
+# Board Creator Implementation Plan
+
+## Overview
+Build an interactive board creator using @ngrx/signals for state management with TDD approach.
+Break into small tasks with single responsibility components and services.
+
+## Phase 1: Foundation (Data & State)
+
+### Task 1.1: Define Domain Models
+**Files:** libs/board/src/lib/models/board.models.ts
+
+**Types:**
+- SpotMetadata (discriminated union: normal | start | end | warp)
+- Spot: { id, name, x, y, metadata }
+- Passage: { id, fromSpotId, toSpotId, movementCost } (bidirectional)
+- Board: { id, name, spots, passages } (dimension-agnostic)
+
+---
+
+### Task 1.2: Create Board Store with @ngrx/signals
+**Files:**
+- libs/board/src/lib/store/board.store.ts
+- libs/board/src/lib/store/board.store.spec.ts
+
+**TDD Steps:**
+1. Write tests for initial state (empty board)
+2. Write tests for selectSpot(spotId)
+3. Write tests for addSpot(spot)
+4. Write tests for updateSpot(id, changes)
+5. Write tests for deleteSpot(spotId)
+6. Write tests for addPassage(passage)
+7. Write tests for deletePassage(passageId)
+8. Write tests for computed spotCount()
+9. Write tests for computed passagesBySpot(spotId)
+10. Write tests for computed isSpotConnected(spotId)
+11. Write tests for computed allSpotsConnected()
+12. Implement the store
+
+**Implementation:**
+- withEntities({ entity: Spot, collection: 'spot' })
+- withEntities({ entity: Passage, collection: 'passage' })
+- UI state: selectedSourceSpotId, editingMode, gridSnapEnabled, isLoading
+- Methods: selectSpot, addSpot, updateSpot, deleteSpot, addPassage, deletePassage, setEditingMode, reset
+- Computed: spotCount, passagesBySpot, isSpotConnected, allSpotsConnected, isolatedSpots
+
+---
+
+### Task 1.3: Create Board Service
+**Files:**
+- libs/board/src/lib/services/board.service.ts
+- libs/board/src/lib/services/board.service.spec.ts
+
+**TDD Steps:**
+1. Write tests for saveBoard(board) → localStorage
+2. Write tests for loadBoard() → from localStorage
+3. Write tests for exportBoardToJSON(board) → string
+4. Write tests for importBoardFromJSON(json) → Board
+5. Write tests for error handling
+6. Implement
+
+---
+
+## Phase 2: Presentational Components
+
+### Task 2.1: Spot Component
+**Files:** apps/client/src/app/components/spot/spot.component.ts
+
+**Inputs (signals):** spot = input.required<Spot>()
+**Outputs (signals):** spotClicked = output<Spot>()
+**Template:** @for, @if control flow
+
+---
+
+### Task 2.2: Passage Component
+**Files:** apps/client/src/app/components/passage/passage.component.ts
+
+**Inputs (signals):** passage, fromSpot, toSpot
+**Outputs (signals):** passageClicked = output<Passage>()
+
+---
+
+## Phase 3: Editor Components
+
+### Task 3.1: Spot Editor Component
+**Files:** apps/client/src/app/components/spot-editor/spot-editor.component.ts
+
+**Inputs:** spot = input<Spot | null>()
+**Outputs:** spotUpdated, spotDeleted
+
+---
+
+### Task 3.2: Passage Editor Component
+**Files:** apps/client/src/app/components/passage-editor/passage-editor.component.ts
+
+**Inputs:** passage = input<Passage | null>()
+**Outputs:** passageUpdated, passageDeleted
+
+---
+
+## Phase 4: Canvas & Interaction
+
+### Task 4.1: Board Canvas Component
+**Files:** apps/client/src/app/components/board-canvas/board-canvas.component.ts
+
+**Responsibilities:**
+- Render grid background (togglable)
+- Render spots via @for
+- Render passages via SVG
+- Handle click/drag for spot placement
+- Handle two-click passage connection
+
+**Utilities:** libs/board/src/lib/utils/grid.utils.ts (snapToGrid)
+
+---
+
+### Task 4.2: Board Controls Component
+**Files:** apps/client/src/app/components/board-controls/board-controls.component.ts
+
+**Responsibilities:**
+- Toggle Grid Snap button
+- Validation status indicator
+- Save/Load buttons
+- Export/Import JSON buttons
+- Clear Board button
+
+---
+
+## Phase 5: Integration
+
+### Task 5.1: Board Creator Container
+**Files:** apps/client/src/app/containers/board-creator/board-creator.component.ts
+
+**Layout:** Canvas (60%) | Editors (40%)
+**Provides:** BoardStore at component level
+
+---
+
+### Task 5.2: Add Route
+**Files:** apps/client/src/app/app.routes.ts
+
+Route: /board-creator → BoardCreatorComponent
+
+---
+
+## File Structure
+
+```
+libs/board/src/lib/
+  models/
+    board.models.ts
+  store/
+    board.store.ts
+    board.store.spec.ts
+  services/
+    board.service.ts
+    board.service.spec.ts
+  utils/
+    grid.utils.ts
+    graph.utils.ts
+
+apps/client/src/app/
+  components/
+    spot/
+    passage/
+    spot-editor/
+    passage-editor/
+    board-canvas/
+    board-controls/
+  containers/
+    board-creator/
+  app.routes.ts
+```
+
+---
+
+## Key Patterns
+
+### Angular Modern Patterns
+- input() / input.required() for inputs
+- output() for outputs
+- @if / @for / @switch control flow
+- ChangeDetectionStrategy.OnPush
+- Standalone components
+
+### @ngrx/signals Patterns
+- withState() for UI state
+- withEntities() for collections
+- withComputed() for derived signals
+- withMethods() for mutations
+- patchState() for updates
+
+### TDD Workflow
+1. Write failing test
+2. Implement minimum code to pass
+3. Refactor
+4. Repeat
