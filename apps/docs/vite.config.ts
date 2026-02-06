@@ -2,17 +2,24 @@
 
 import { defineConfig } from 'vite';
 import analog from '@analogjs/platform';
+import { resolve } from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  root: __dirname,
+  publicDir: resolve(__dirname, 'public'),
   build: {
     target: ['es2020'],
+    outDir: resolve(__dirname, '../../dist/apps/docs/client'),
   },
   resolve: {
     mainFields: ['module'],
   },
   plugins: [
     analog({
+      vite: {
+        tsconfig: resolve(__dirname, 'tsconfig.app.json'),
+      },
       content: {
         highlighter: 'prismjs',
         prismOptions: {

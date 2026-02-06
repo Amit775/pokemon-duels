@@ -15,6 +15,9 @@ obj/
 .nx/cache
 .nx/workspace-data
 
+# Angular
+.angular/
+
 # IDE
 .idea/
 *.suo
