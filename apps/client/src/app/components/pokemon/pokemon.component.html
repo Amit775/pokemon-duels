@@ -1,0 +1,20 @@
+<div
+  class="pokemon"
+  [class.pokemon--selected]="selected()"
+  [class.pokemon--draggable]="draggable()"
+  [class.pokemon--normal]="type() === 'normal'"
+  [class.pokemon--water]="type() === 'water'"
+  [class.pokemon--fire]="type() === 'fire'"
+  [class.pokemon--grass]="type() === 'grass'"
+  [style.left.px]="x()"
+  [style.top.px]="y()"
+  (click)="onClick()"
+>
+  <img 
+    class="pokemon-image" 
+    [src]="imageUrl()" 
+    [alt]="name()"
+    loading="lazy"
+  />
+  <span class="pokemon-movement">{{ movement() }}</span>
+</div>

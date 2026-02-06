@@ -1,0 +1,100 @@
+$pokemon-size: 48px;
+
+.pokemon {
+  position: absolute;
+  width: $pokemon-size;
+  height: $pokemon-size;
+  border-radius: 50%;
+  border: 3px solid #333;
+  background-color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+  overflow: hidden;
+
+  &:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+  }
+
+  // Type variants - border color matches element
+  &--normal {
+    border-color: #666;
+    background-color: #f5f5f5;
+  }
+
+  &--water {
+    border-color: #2196f3;
+    background-color: #e3f2fd;
+  }
+
+  &--fire {
+    border-color: #f44336;
+    background-color: #ffebee;
+  }
+
+  &--grass {
+    border-color: #4caf50;
+    background-color: #e8f5e9;
+  }
+
+  // Selection state
+  &--selected {
+    box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.6);
+    transform: translate(-50%, -50%) scale(1.1);
+
+    &:hover {
+      box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.8);
+    }
+  }
+
+  // Draggable state
+  &--draggable {
+    cursor: grab;
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.pokemon-image {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.pokemon-movement {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: #333;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  
+  .pokemon--water & {
+    background-color: #1976d2;
+  }
+  
+  .pokemon--fire & {
+    background-color: #d32f2f;
+  }
+  
+  .pokemon--grass & {
+    background-color: #388e3c;
+  }
+}

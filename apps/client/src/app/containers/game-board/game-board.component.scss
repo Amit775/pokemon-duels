@@ -1,0 +1,162 @@
+.game-layout {
+  display: flex;
+  gap: 20px;
+  height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #e8e8e8;
+}
+
+.bench-area {
+  flex-shrink: 0;
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+
+  &--left {
+    order: 1;
+  }
+
+  &--right {
+    order: 3;
+  }
+}
+
+.board-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  order: 2;
+  min-width: 0;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+  }
+}
+
+.turn-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.turn-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.turn-player {
+  font-weight: 700;
+  font-size: 16px;
+  padding: 4px 12px;
+  border-radius: 4px;
+
+  &--1 {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+
+  &--2 {
+    background-color: #ffebee;
+    color: #d32f2f;
+  }
+}
+
+.game-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &--secondary {
+    background-color: #e0e0e0;
+    color: #333;
+
+    &:hover {
+      background-color: #d0d0d0;
+    }
+  }
+
+  &--danger {
+    background-color: #f44336;
+    color: #fff;
+
+    &:hover {
+      background-color: #d32f2f;
+    }
+  }
+}
+
+.board-canvas {
+  flex: 1;
+  position: relative;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.spot-wrapper {
+  position: relative;
+  
+  &--valid-target {
+    app-spot {
+      cursor: pointer;
+    }
+  }
+}
+
+.valid-target-indicator {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px dashed #4caf50;
+  background-color: rgba(76, 175, 80, 0.15);
+  pointer-events: none;
+  animation: pulse-target 1s infinite;
+  z-index: 5;
+}
+
+@keyframes pulse-target {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.selection-info {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background-color: #e3f2fd;
+  border-radius: 6px;
+  text-align: center;
+  color: #1565c0;
+  font-size: 14px;
+}

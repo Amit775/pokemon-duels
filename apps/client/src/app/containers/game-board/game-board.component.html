@@ -1,0 +1,96 @@
+<div class="game-layout">
+  <!-- Player 1 Bench (Left side) -->
+  <aside class="bench-area bench-area--left">
+    <app-bench
+      [pokemon]="player1Bench()"
+      [playerId]="1"
+      [selectedPokemonId]="selectedPokemonId()"
+      [isCurrentPlayer]="currentPlayerId() === 1"
+      (pokemonSelected)="onBenchPokemonSelect($event)"
+    />
+  </aside>
+
+  <!-- Main Board Area -->
+  <main class="board-area">
+    <header class="game-header">
+      <h2>Pokemon Duel</h2>
+      <div class="turn-indicator">
+        <span class="turn-label">Current Turn:</span>
+        <span 
+          class="turn-player"
+          [class.turn-player--1]="currentPlayerId() === 1"
+          [class.turn-player--2]="currentPlayerId() === 2"
+        >
+          Player {{ currentPlayerId() }}
+        </span>
+      </div>
+      <div class="game-actions">
+        <button class="btn btn--secondary" (click)="skipTurn()">Skip Turn</button>
+        <button class="btn btn--danger" (click)="resetGame()">Reset Game</button>
+      </div>
+    </header>
+
+    <div class="board-canvas">
+      <!-- Passages -->
+      @for (passage of passages(); track passage.id) {
+        @if (getSpotCoords(passage.fromSpotId); as fromCoords) {
+          @if (getSpotCoords(passage.toSpotId); as toCoords) {
+            <app-passage
+              [passage]="passage"
+              [fromSpot]="{ id: passage.fromSpotId, x: fromCoords.x, y: fromCoords.y, name: '', metadata: { type: 'normal' } }"
+              [toSpot]="{ id: passage.toSpotId, x: toCoords.x, y: toCoords.y, name: '', metadata: { type: 'normal' } }"
+            />
+          }
+        }
+      }
+
+      <!-- Spots -->
+      @for (spot of spots(); track spot.id) {
+        <div 
+          class="spot-wrapper"
+          [class.spot-wrapper--valid-target]="isValidTarget(spot.id)"
+          (click)="onSpotClick(spot)"
+        >
+          <app-spot
+            [spot]="spot"
+            [selected]="false"
+          />
+          @if (isValidTarget(spot.id)) {
+            <div class="valid-target-indicator"></div>
+          }
+        </div>
+      }
+
+      <!-- Pokemon on board -->
+      @for (pokemon of pokemonOnBoard(); track pokemon.id) {
+        @if (getSpotCoords(pokemon.spotId!); as coords) {
+          <app-pokemon
+            [pokemon]="pokemon"
+            [x]="coords.x"
+            [y]="coords.y"
+            [selected]="selectedPokemonId() === pokemon.id"
+            [draggable]="pokemon.playerId === currentPlayerId()"
+            (pokemonClicked)="onPokemonClick($event)"
+          />
+        }
+      }
+    </div>
+
+    @if (selectedPokemonId()) {
+      <div class="selection-info">
+        <span>Pokemon selected! Click a highlighted spot to move, or click another Pokemon.</span>
+      </div>
+    }
+  </main>
+
+  <!-- Player 2 Bench (Right side) -->
+  <aside class="bench-area bench-area--right">
+    <app-bench
+      [pokemon]="player2Bench()"
+      [playerId]="2"
+      [selectedPokemonId]="selectedPokemonId()"
+      [isCurrentPlayer]="currentPlayerId() === 2"
+      (pokemonSelected)="onBenchPokemonSelect($event)"
+    />
+  </aside>
+</div>

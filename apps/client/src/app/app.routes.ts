@@ -13,4 +13,11 @@ export const routes: Routes = [
         (m) => m.BoardCreatorComponent
       ),
   },
+  {
+    path: 'play',
+    loadComponent: () =>
+      import('./containers/game-board/game-board.component').then(
+        (m) => m.GameBoardComponent
+      ),
+  },
 ];

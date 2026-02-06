@@ -168,3 +168,96 @@ export type SelectionState = {
   /** When in add-passage mode, the source spot ID */
   passageSourceSpotId: string | null;
 };
+
+// ============================================================================
+// Pokemon Types
+// ============================================================================
+
+/**
+ * Pokemon element type - matches passage types for movement mechanics
+ */
+export type PokemonType = 'normal' | 'water' | 'fire' | 'grass';
+
+/**
+ * Pokemon species definition - template for creating instances
+ */
+export type PokemonSpecies = {
+  /** Unique species identifier */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Element type */
+  type: PokemonType;
+  /** Number of spots the Pokemon can move per turn */
+  movement: number;
+  /** Path to the Pokemon figure image */
+  imageUrl: string;
+};
+
+/**
+ * A Pokemon instance on the board or bench
+ */
+export type Pokemon = {
+  /** Unique instance identifier */
+  id: string;
+  /** Reference to the species definition */
+  speciesId: string;
+  /** Owner player ID (1-4) */
+  playerId: number;
+  /** Current spot ID (null if on bench) */
+  spotId: string | null;
+};
+
+/**
+ * Predefined Pokemon species for the game
+ * Using official Pokemon sprites from PokeAPI
+ */
+export const POKEMON_SPECIES: Record<string, PokemonSpecies> = {
+  snorlax: {
+    id: 'snorlax',
+    name: 'Snorlax',
+    type: 'normal',
+    movement: 1,
+    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
+  },
+  venusaur: {
+    id: 'venusaur',
+    name: 'Venusaur',
+    type: 'grass',
+    movement: 1,
+    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png',
+  },
+  blastoise: {
+    id: 'blastoise',
+    name: 'Blastoise',
+    type: 'water',
+    movement: 2,
+    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png',
+  },
+  charizard: {
+    id: 'charizard',
+    name: 'Charizard',
+    type: 'fire',
+    movement: 3,
+    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png',
+  },
+};
+
+/**
+ * Get species by ID
+ */
+export function getSpecies(speciesId: string): PokemonSpecies | undefined {
+  return POKEMON_SPECIES[speciesId];
+}
+
+/**
+ * Create a new Pokemon instance
+ */
+export function createPokemon(
+  partial: Partial<Pokemon> & Pick<Pokemon, 'id' | 'speciesId' | 'playerId'>
+): Pokemon {
+  return {
+    spotId: null,
+    ...partial,
+  };
+}
