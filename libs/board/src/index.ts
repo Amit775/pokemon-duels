@@ -8,3 +8,9 @@ export * from './lib/store/board.store';
 
 // Services
 export * from './lib/services/board.service';
+
+// Utils
+export * from './lib/utils/grid.utils';
+
+// Services
+export * from './lib/services/board.service';

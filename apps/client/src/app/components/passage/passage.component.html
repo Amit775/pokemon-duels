@@ -1,0 +1,19 @@
+<svg class="passage-svg">
+  <line
+    class="passage-line"
+    [class.passage--selected]="selected()"
+    [attr.x1]="fromSpot().x"
+    [attr.y1]="fromSpot().y"
+    [attr.x2]="toSpot().x"
+    [attr.y2]="toSpot().y"
+    (click)="onClick()"
+  />
+</svg>
+<div
+  class="passage-cost"
+  [style.left.px]="midpointX()"
+  [style.top.px]="midpointY()"
+  (click)="onClick()"
+>
+  {{ passage().movementCost }}
+</div>

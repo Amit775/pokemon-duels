@@ -1,0 +1,131 @@
+.board-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background-color: #fff;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.mode-btn {
+  padding: 8px 16px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+  }
+
+  &--active {
+    background-color: #2196f3;
+    border-color: #2196f3;
+    color: #fff;
+
+    &:hover {
+      background-color: #1976d2;
+      border-color: #1976d2;
+    }
+  }
+
+  &--danger {
+    &:hover {
+      background-color: #ffebee;
+      border-color: #f44336;
+      color: #f44336;
+    }
+
+    &.mode-btn--active {
+      background-color: #f44336;
+      border-color: #f44336;
+      color: #fff;
+
+      &:hover {
+        background-color: #d32f2f;
+        border-color: #d32f2f;
+      }
+    }
+  }
+}
+
+.control-btn {
+  padding: 8px 16px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #333;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+    border-color: #999;
+  }
+
+  &--active {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    color: #2196f3;
+  }
+
+  &--danger {
+    &:hover {
+      background-color: #ffebee;
+      border-color: #f44336;
+      color: #f44336;
+    }
+  }
+}
+
+.import-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.validation-status {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+
+  &--valid {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &--invalid {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+}
+
+.stats {
+  gap: 16px;
+  color: #666;
+  font-size: 14px;
+}
+
+.actions {
+  margin-left: auto;
+}

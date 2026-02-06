@@ -1,0 +1,81 @@
+<div class="board-controls">
+  <!-- Mode Selection -->
+  <div class="control-group">
+    <span class="control-label">Mode:</span>
+    <div class="mode-buttons">
+      <button
+        class="mode-btn"
+        [class.mode-btn--active]="store.editingMode() === 'select'"
+        (click)="setMode('select')"
+      >
+        Select
+      </button>
+      <button
+        class="mode-btn"
+        [class.mode-btn--active]="store.editingMode() === 'add-spot'"
+        (click)="setMode('add-spot')"
+      >
+        Add Spot
+      </button>
+      <button
+        class="mode-btn"
+        [class.mode-btn--active]="store.editingMode() === 'add-passage'"
+        (click)="setMode('add-passage')"
+      >
+        Add Passage
+      </button>
+      <button
+        class="mode-btn mode-btn--danger"
+        [class.mode-btn--active]="store.editingMode() === 'delete'"
+        (click)="setMode('delete')"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- Grid Toggle -->
+  <div class="control-group">
+    <button
+      class="control-btn"
+      data-testid="grid-toggle"
+      [class.control-btn--active]="store.gridSnapEnabled()"
+      (click)="toggleGridSnap()"
+    >
+      Grid Snap: {{ store.gridSnapEnabled() ? 'ON' : 'OFF' }}
+    </button>
+  </div>
+
+  <!-- Validation Status -->
+  <div class="control-group">
+    <div
+      class="validation-status"
+      [class.validation-status--valid]="store.allSpotsConnected()"
+      [class.validation-status--invalid]="!store.allSpotsConnected()"
+    >
+      @if (store.allSpotsConnected()) {
+        <span>✓ All spots connected</span>
+      } @else {
+        <span>✗ {{ store.isolatedSpots().length }} isolated spot(s)</span>
+      }
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="control-group stats">
+    <span>Spots: {{ store.spotCount() }}</span>
+    <span>Passages: {{ store.passageCount() }}</span>
+  </div>
+
+  <!-- Actions -->
+  <div class="control-group actions">
+    <button class="control-btn" (click)="saveBoard()">Save</button>
+    <button class="control-btn" (click)="loadBoard()">Load</button>
+    <button class="control-btn" (click)="exportBoard()">Export JSON</button>
+    <label class="control-btn import-btn">
+      Import JSON
+      <input type="file" accept=".json" (change)="onImportFile($event)" hidden />
+    </label>
+    <button class="control-btn control-btn--danger" (click)="clearBoard()">Clear</button>
+  </div>
+</div>

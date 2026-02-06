@@ -1,0 +1,15 @@
+<div
+  class="spot"
+  [class.spot--normal]="spotType() === 'normal'"
+  [class.spot--start]="spotType() === 'start'"
+  [class.spot--end]="spotType() === 'end'"
+  [class.spot--warp]="spotType() === 'warp'"
+  [class.spot--selected]="selected()"
+  [style.left.px]="spot().x"
+  [style.top.px]="spot().y"
+  (click)="onClick()"
+>
+  @if (spot().name) {
+    <span class="spot-name">{{ spot().name }}</span>
+  }
+</div>

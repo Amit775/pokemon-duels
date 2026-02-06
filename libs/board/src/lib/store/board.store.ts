@@ -6,7 +6,7 @@ import {
   removeEntity,
   updateEntity,
   removeEntities,
-  setAllEntities,
+  removeAllEntities,
 } from '@ngrx/signals/entities';
 import { Spot, Passage, EditingMode } from '../models/board.models';
 
@@ -241,8 +241,8 @@ export const BoardStore = signalStore(
     reset(): void {
       patchState(
         store,
-        setAllEntities([], { collection: 'spot' }),
-        setAllEntities([], { collection: 'passage' }),
+        removeAllEntities({ collection: 'spot' }),
+        removeAllEntities({ collection: 'passage' }),
         initialUIState
       );
     },

@@ -1,0 +1,29 @@
+<div
+  class="board-canvas"
+  [class.board-canvas--grid-visible]="store.gridSnapEnabled()"
+  [style.--cell-size.px]="cellSize"
+  (click)="onCanvasClick($event)"
+>
+  <!-- Grid overlay -->
+  <div class="board-canvas__grid"></div>
+
+  <!-- Passages layer (rendered below spots) -->
+  @for (item of passagesWithSpots(); track trackPassage($index, item)) {
+    <app-passage
+      [passage]="item.passage"
+      [fromSpot]="item.fromSpot"
+      [toSpot]="item.toSpot"
+      [selected]="store.selectedPassageId() === item.passage.id"
+      (passageClicked)="onPassageClicked($event)"
+    />
+  }
+
+  <!-- Spots layer -->
+  @for (spot of store.spotEntities(); track trackSpot($index, spot)) {
+    <app-spot
+      [spot]="spot"
+      [selected]="store.selectedSpotId() === spot.id || store.passageSourceSpotId() === spot.id"
+      (spotClicked)="onSpotClicked($event)"
+    />
+  }
+</div>
