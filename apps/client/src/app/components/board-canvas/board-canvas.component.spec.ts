@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BoardCanvasComponent } from './board-canvas.component';
 import { BoardStore, createSpot, createPassage } from '@pokemon-duel/board';

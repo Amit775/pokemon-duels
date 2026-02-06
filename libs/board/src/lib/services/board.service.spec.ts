@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { createBoard, createPassage, createSpot } from '../models/board.models';
 import { BoardService } from './board.service';
-import { Board, createBoard, createSpot, createPassage } from '../models/board.models';
 
 describe('BoardService', () => {
   let service: BoardService;
@@ -120,10 +121,7 @@ describe('BoardService', () => {
       const board = createBoard({
         id: 'test',
         name: 'Test',
-        spots: [
-          createSpot({ id: '1', x: 0, y: 0 }),
-          createSpot({ id: '2', x: 100, y: 100 }),
-        ],
+        spots: [createSpot({ id: '1', x: 0, y: 0 }), createSpot({ id: '2', x: 100, y: 100 })],
         passages: [createPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2' })],
       });
 

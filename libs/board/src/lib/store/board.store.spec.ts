@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { BoardStore } from './board.store';
 import { Spot, Passage, createSpot, createPassage } from '../models/board.models';
@@ -72,7 +73,7 @@ describe('BoardStore', () => {
 
       store.updateSpot('1', { name: 'Updated', x: 150 });
 
-      const updated = store.spotEntities().find((s) => s.id === '1');
+      const updated = store.spotEntityMap()['1'];
       expect(updated?.name).toBe('Updated');
       expect(updated?.x).toBe(150);
       expect(updated?.y).toBe(200); // unchanged
@@ -86,7 +87,7 @@ describe('BoardStore', () => {
 
       store.updateSpot('1', { x: 999 });
 
-      const unchanged = store.spotEntities().find((s) => s.id === '2');
+      const unchanged = store.spotEntityMap()['2'];
       expect(unchanged?.x).toBe(200);
     });
   });
@@ -235,7 +236,7 @@ describe('BoardStore', () => {
 
       store.updatePassage('p1', { passageType: 'water' });
 
-      const updated = store.passageEntities().find((p) => p.id === 'p1');
+      const updated = store.passageEntityMap()['p1'];
       expect(updated?.passageType).toBe('water');
     });
   });

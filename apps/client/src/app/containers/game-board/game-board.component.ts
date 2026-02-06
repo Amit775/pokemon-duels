@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, OnInit, computed, signal } from '@angular/core';
-import { GameStore, BoardService, Spot, Pokemon, getSpecies, POKEMON_SPECIES, BattleResult } from '@pokemon-duel/board';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { BoardService, GameStore, getSpecies, Pokemon, Spot } from '@pokemon-duel/board';
 import { BenchComponent } from '../../components/bench/bench.component';
-import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { PassageComponent } from '../../components/passage/passage.component';
+import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { SpotComponent } from '../../components/spot/spot.component';
 
 @Component({
@@ -30,27 +30,27 @@ export class GameBoardComponent implements OnInit {
   protected readonly lastBattle = computed(() => this.gameStore.lastBattle());
 
   // Player benches
-  protected readonly player1Bench = computed(() => 
-    this.gameStore.benchPokemon().filter(p => p.playerId === 1)
+  protected readonly player1Bench = computed(() =>
+    this.gameStore.benchPokemon().filter((p) => p.playerId === 1),
   );
-  protected readonly player2Bench = computed(() => 
-    this.gameStore.benchPokemon().filter(p => p.playerId === 2)
+  protected readonly player2Bench = computed(() =>
+    this.gameStore.benchPokemon().filter((p) => p.playerId === 2),
   );
 
   // Get Pokemon at a spot for rendering
   protected getPokemonAtSpot(spotId: string): Pokemon | undefined {
-    return this.pokemonOnBoard().find(p => p.spotId === spotId);
+    return this.pokemonOnBoard().find((p) => p.spotId === spotId);
   }
 
-  // Get spot coordinates for Pokemon
+  // Get spot coordinates for Pokemon - use spotMap for O(1) lookup
   protected getSpotCoords(spotId: string): { x: number; y: number } | null {
-    const spot = this.spots().find(s => s.id === spotId);
+    const spot = this.gameStore.spotMap()[spotId];
     return spot ? { x: spot.x, y: spot.y } : null;
   }
 
-  // Get Pokemon by ID
+  // Get Pokemon by ID - use pokemonEntityMap for O(1) lookup
   protected getPokemonById(id: string): Pokemon | undefined {
-    return this.gameStore.pokemonEntities().find(p => p.id === id);
+    return this.gameStore.pokemonEntityMap()[id];
   }
 
   // Get species name
@@ -73,11 +73,11 @@ export class GameBoardComponent implements OnInit {
 
   protected onSpotClick(spot: Spot): void {
     const selectedId = this.selectedPokemonId();
-    
+
     // If a Pokemon is selected and this is a valid target, move it
     if (selectedId && this.validMoveTargets().includes(spot.id)) {
       const result = this.gameStore.movePokemon(selectedId, spot.id);
-      
+
       // Only end turn if game hasn't ended
       if (result.success && !result.won) {
         this.gameStore.endTurn();

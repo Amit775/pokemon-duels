@@ -102,41 +102,56 @@ export const BoardStore = signalStore(
   withEntities({ entity: type<Passage>(), collection: 'passage' }),
 
   // Computed values
-  withComputed(({ spotEntities, passageEntities, selectedSpotId, selectedPassageId }) => ({
-    // Count helpers
-    spotCount: computed(() => spotEntities().length),
-    passageCount: computed(() => passageEntities().length),
+  withComputed(
+    ({
+      spotEntities,
+      spotEntityMap,
+      passageEntities,
+      passageEntityMap,
+      selectedSpotId,
+      selectedPassageId,
+    }) => ({
+      // Count helpers
+      spotCount: computed(() => spotEntities().length),
+      passageCount: computed(() => passageEntities().length),
 
-    // Selected entities
-    selectedSpot: computed(() => spotEntities().find((s) => s.id === selectedSpotId())),
-    selectedPassage: computed(() => passageEntities().find((p) => p.id === selectedPassageId())),
+      // Selected entities - use entityMap for O(1) lookup
+      selectedSpot: computed(() => {
+        const id = selectedSpotId();
+        return id ? spotEntityMap()[id] : undefined;
+      }),
+      selectedPassage: computed(() => {
+        const id = selectedPassageId();
+        return id ? passageEntityMap()[id] : undefined;
+      }),
 
-    // Validation
-    allSpotsConnected: computed(() => areAllSpotsConnected(spotEntities(), passageEntities())),
+      // Validation
+      allSpotsConnected: computed(() => areAllSpotsConnected(spotEntities(), passageEntities())),
 
-    isolatedSpots: computed(() => {
-      const spots = spotEntities();
-      const passages = passageEntities();
+      isolatedSpots: computed(() => {
+        const spots = spotEntities();
+        const passages = passageEntities();
 
-      if (spots.length <= 1) return [];
+        if (spots.length <= 1) return [];
 
-      // Build set of connected spot IDs
-      const connectedIds = new Set<string>();
-      for (const passage of passages) {
-        connectedIds.add(passage.fromSpotId);
-        connectedIds.add(passage.toSpotId);
-      }
+        // Build set of connected spot IDs
+        const connectedIds = new Set<string>();
+        for (const passage of passages) {
+          connectedIds.add(passage.fromSpotId);
+          connectedIds.add(passage.toSpotId);
+        }
 
-      // Check if we have multiple components
-      if (!areAllSpotsConnected(spots, passages)) {
-        // Return spots that are either not in any passage OR in disconnected component
-        // For simplicity, return spots not in any passage
-        return spots.filter((s) => !connectedIds.has(s.id));
-      }
+        // Check if we have multiple components
+        if (!areAllSpotsConnected(spots, passages)) {
+          // Return spots that are either not in any passage OR in disconnected component
+          // For simplicity, return spots not in any passage
+          return spots.filter((s) => !connectedIds.has(s.id));
+        }
 
-      return [];
+        return [];
+      }),
     }),
-  })),
+  ),
 
   // Methods
   withMethods((store) => ({

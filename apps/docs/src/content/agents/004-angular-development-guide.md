@@ -135,11 +135,12 @@ export const ExampleStore = signalStore(
   // Entity collections
   withEntities({ entity: type<Item>(), collection: 'item' }),
   
-  // Computed (derived signals)
-  withComputed(({ itemEntities, selectedId }) => ({
-    selectedItem: computed(() => 
-      itemEntities().find(i => i.id === selectedId())
-    ),
+  // Computed (derived signals) - use entityMap for O(1) lookups
+  withComputed(({ itemEntityMap, itemEntities, selectedId }) => ({
+    selectedItem: computed(() => {
+      const id = selectedId();
+      return id ? itemEntityMap()[id] : undefined;
+    }),
     itemCount: computed(() => itemEntities().length),
   })),
   

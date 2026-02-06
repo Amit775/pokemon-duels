@@ -29,13 +29,13 @@ export class BoardCanvasComponent {
 
   // Computed: resolve passages to their connected spots
   protected readonly passagesWithSpots = computed(() => {
-    const spots = this.store.spotEntities();
+    const spotMap = this.store.spotEntityMap();
     const passages = this.store.passageEntities();
 
     return passages
       .map((passage) => {
-        const fromSpot = spots.find((s) => s.id === passage.fromSpotId);
-        const toSpot = spots.find((s) => s.id === passage.toSpotId);
+        const fromSpot = spotMap[passage.fromSpotId];
+        const toSpot = spotMap[passage.toSpotId];
         if (!fromSpot || !toSpot) return null;
         return { passage, fromSpot, toSpot };
       })

@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SpotComponent } from './spot.component';
 import { Spot, createSpot } from '@pokemon-duel/board';
@@ -54,46 +55,10 @@ describe('SpotComponent', () => {
       expect(element.classList.contains('spot--normal')).toBe(true);
     });
 
-    it('should apply start type class', () => {
-      const startSpot = createSpot({
-        ...testSpot,
-        metadata: { type: 'start' },
-      });
-      fixture.componentRef.setInput('spot', startSpot);
-      fixture.detectChanges();
-
-      const element = fixture.nativeElement.querySelector('.spot');
-      expect(element.classList.contains('spot--start')).toBe(true);
-    });
-
-    it('should apply end type class', () => {
-      const endSpot = createSpot({
-        ...testSpot,
-        metadata: { type: 'end' },
-      });
-      fixture.componentRef.setInput('spot', endSpot);
-      fixture.detectChanges();
-
-      const element = fixture.nativeElement.querySelector('.spot');
-      expect(element.classList.contains('spot--end')).toBe(true);
-    });
-
-    it('should apply warp type class', () => {
-      const warpSpot: Spot = {
-        ...testSpot,
-        metadata: { type: 'warp', targetSpotId: 'target-1' },
-      };
-      fixture.componentRef.setInput('spot', warpSpot);
-      fixture.detectChanges();
-
-      const element = fixture.nativeElement.querySelector('.spot');
-      expect(element.classList.contains('spot--warp')).toBe(true);
-    });
-
     it('should apply entry type class and show pokeball icon', () => {
       const entrySpot = createSpot({
         ...testSpot,
-        metadata: { type: 'entry' },
+        metadata: { type: 'entry', playerId: 1 },
       });
       fixture.componentRef.setInput('spot', entrySpot);
       fixture.detectChanges();
@@ -108,7 +73,7 @@ describe('SpotComponent', () => {
     it('should apply flag type class and show flag icon', () => {
       const flagSpot = createSpot({
         ...testSpot,
-        metadata: { type: 'flag' },
+        metadata: { type: 'flag', playerId: 1 },
       });
       fixture.componentRef.setInput('spot', flagSpot);
       fixture.detectChanges();

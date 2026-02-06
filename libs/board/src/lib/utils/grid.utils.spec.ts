@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { snapToGrid, snapPointToGrid, distanceBetweenPoints } from './grid.utils';
 
 describe('Grid Utils', () => {
