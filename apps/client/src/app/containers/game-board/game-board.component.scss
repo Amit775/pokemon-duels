@@ -118,26 +118,22 @@
   min-height: 500px;
 }
 
-.spot-wrapper {
-  position: relative;
-  
-  &--valid-target {
-    app-spot {
-      cursor: pointer;
-    }
-  }
-}
-
 .valid-target-indicator {
   position: absolute;
   width: 56px;
   height: 56px;
   border-radius: 50%;
   border: 3px dashed #4caf50;
-  background-color: rgba(76, 175, 80, 0.15);
-  pointer-events: none;
+  background-color: rgba(76, 175, 80, 0.2);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
   animation: pulse-target 1s infinite;
   z-index: 5;
+
+  &:hover {
+    background-color: rgba(76, 175, 80, 0.4);
+    border-color: #2e7d32;
+  }
 }
 
 @keyframes pulse-target {

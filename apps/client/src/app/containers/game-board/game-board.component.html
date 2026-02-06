@@ -44,21 +44,25 @@
         }
       }
 
+      <!-- Valid move target indicators -->
+      @for (spot of spots(); track spot.id) {
+        @if (isValidTarget(spot.id)) {
+          <div 
+            class="valid-target-indicator"
+            [style.left.px]="spot.x"
+            [style.top.px]="spot.y"
+            (click)="onSpotClick(spot)"
+          ></div>
+        }
+      }
+
       <!-- Spots -->
       @for (spot of spots(); track spot.id) {
-        <div 
-          class="spot-wrapper"
-          [class.spot-wrapper--valid-target]="isValidTarget(spot.id)"
-          (click)="onSpotClick(spot)"
-        >
-          <app-spot
-            [spot]="spot"
-            [selected]="false"
-          />
-          @if (isValidTarget(spot.id)) {
-            <div class="valid-target-indicator"></div>
-          }
-        </div>
+        <app-spot
+          [spot]="spot"
+          [selected]="false"
+          (spotClicked)="onSpotClick($event)"
+        />
       }
 
       <!-- Pokemon on board -->

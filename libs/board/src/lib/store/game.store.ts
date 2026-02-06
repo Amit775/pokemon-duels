@@ -6,6 +6,7 @@ import {
   removeEntity,
   updateEntity,
   setAllEntities,
+  removeAllEntities,
 } from '@ngrx/signals/entities';
 import { Pokemon, Spot, Passage, POKEMON_SPECIES, createPokemon, getSpecies } from '../models/board.models';
 
@@ -277,13 +278,18 @@ export const GameStore = signalStore(
       patchState(store, { selectedPokemonId: null, validMoveTargets: [] });
     },
 
-    // Reset game
+    // Reset game - clears all Pokemon and resets state
     resetGame(): void {
-      patchState(store, {
-        ...initialGameState,
-        spots: store.spots(),
-        passages: store.passages(),
-      });
+      patchState(
+        store,
+        removeAllEntities({ collection: 'pokemon' }),
+        {
+          currentPlayerId: 1,
+          selectedPokemonId: null,
+          validMoveTargets: [],
+          phase: 'playing',
+        }
+      );
     },
   }))
 );
