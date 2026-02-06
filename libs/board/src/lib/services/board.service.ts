@@ -160,7 +160,8 @@ export class BoardService {
     if (typeof passage['fromSpotId'] !== 'string') return false;
     if (typeof passage['toSpotId'] !== 'string') return false;
     if (typeof passage['passageType'] !== 'string') return false;
-    if (!['normal', 'water', 'fire', 'grass'].includes(passage['passageType'] as string)) return false;
+    if (!['normal', 'water', 'fire', 'grass'].includes(passage['passageType'] as string))
+      return false;
 
     return true;
   }

@@ -223,7 +223,12 @@ describe('BoardStore', () => {
     it('should update passage type', () => {
       const spot1 = createSpot({ id: '1', x: 100, y: 100 });
       const spot2 = createSpot({ id: '2', x: 200, y: 200 });
-      const passage = createPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', passageType: 'normal' });
+      const passage = createPassage({
+        id: 'p1',
+        fromSpotId: '1',
+        toSpotId: '2',
+        passageType: 'normal',
+      });
       store.addSpot(spot1);
       store.addSpot(spot2);
       store.addPassage(passage);

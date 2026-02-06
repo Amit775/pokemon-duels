@@ -91,7 +91,9 @@ export type Board = {
 /**
  * Check if spot metadata is of type 'entry'
  */
-export function isEntrySpot(metadata: SpotMetadata): metadata is { type: 'entry'; playerId: number } {
+export function isEntrySpot(
+  metadata: SpotMetadata,
+): metadata is { type: 'entry'; playerId: number } {
   return metadata.type === 'entry';
 }
 
@@ -128,7 +130,7 @@ export function createSpot(partial: Partial<Spot> & Pick<Spot, 'id' | 'x' | 'y'>
  * Create a new passage with default values
  */
 export function createPassage(
-  partial: Partial<Passage> & Pick<Passage, 'id' | 'fromSpotId' | 'toSpotId'>
+  partial: Partial<Passage> & Pick<Passage, 'id' | 'fromSpotId' | 'toSpotId'>,
 ): Passage {
   return {
     passageType: 'normal',
@@ -218,28 +220,32 @@ export const POKEMON_SPECIES: Record<string, PokemonSpecies> = {
     name: 'Snorlax',
     type: 'normal',
     movement: 1,
-    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
+    imageUrl:
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png',
   },
   venusaur: {
     id: 'venusaur',
     name: 'Venusaur',
     type: 'grass',
     movement: 1,
-    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png',
+    imageUrl:
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png',
   },
   blastoise: {
     id: 'blastoise',
     name: 'Blastoise',
     type: 'water',
     movement: 2,
-    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png',
+    imageUrl:
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png',
   },
   charizard: {
     id: 'charizard',
     name: 'Charizard',
     type: 'fire',
     movement: 3,
-    imageUrl: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png',
+    imageUrl:
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png',
   },
 };
 
@@ -254,7 +260,7 @@ export function getSpecies(speciesId: string): PokemonSpecies | undefined {
  * Create a new Pokemon instance
  */
 export function createPokemon(
-  partial: Partial<Pokemon> & Pick<Pokemon, 'id' | 'speciesId' | 'playerId'>
+  partial: Partial<Pokemon> & Pick<Pokemon, 'id' | 'speciesId' | 'playerId'>,
 ): Pokemon {
   return {
     spotId: null,

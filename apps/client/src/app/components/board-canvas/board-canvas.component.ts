@@ -145,7 +145,7 @@ export class BoardCanvasComponent {
 
   protected trackPassage(
     _index: number,
-    item: { passage: Passage; fromSpot: Spot; toSpot: Spot }
+    item: { passage: Passage; fromSpot: Spot; toSpot: Spot },
   ): string {
     return item.passage.id;
   }

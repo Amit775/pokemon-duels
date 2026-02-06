@@ -89,10 +89,18 @@
             (click)="setPassageType(type)"
           >
             @switch (type) {
-              @case ('water') { 🌊 water }
-              @case ('fire') { 🔥 fire }
-              @case ('grass') { 🌿 grass }
-              @default { • normal }
+              @case ('water') {
+                🌊 water
+              }
+              @case ('fire') {
+                🔥 fire
+              }
+              @case ('grass') {
+                🌿 grass
+              }
+              @default {
+                • normal
+              }
             }
           </button>
         }
@@ -120,7 +128,10 @@
       </div>
     </div>
     <!-- Player Selection for selected spot -->
-    @if (store.selectedSpot()?.metadata?.type === 'entry' || store.selectedSpot()?.metadata?.type === 'flag') {
+    @if (
+      store.selectedSpot()?.metadata?.type === 'entry' ||
+      store.selectedSpot()?.metadata?.type === 'flag'
+    ) {
       <div class="control-group selection-editor">
         <span class="control-label">Player:</span>
         <div class="player-buttons">
@@ -155,10 +166,18 @@
             (click)="updateSelectedPassageType(type)"
           >
             @switch (type) {
-              @case ('water') { 🌊 water }
-              @case ('fire') { 🔥 fire }
-              @case ('grass') { 🌿 grass }
-              @default { • normal }
+              @case ('water') {
+                🌊 water
+              }
+              @case ('fire') {
+                🔥 fire
+              }
+              @case ('grass') {
+                🌿 grass
+              }
+              @default {
+                • normal
+              }
             }
           </button>
         }

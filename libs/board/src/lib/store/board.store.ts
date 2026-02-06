@@ -50,7 +50,7 @@ function passageExists(passages: Passage[], fromId: string, toId: string): boole
   return passages.some(
     (p) =>
       (p.fromSpotId === fromId && p.toSpotId === toId) ||
-      (p.fromSpotId === toId && p.toSpotId === fromId)
+      (p.fromSpotId === toId && p.toSpotId === fromId),
   );
 }
 
@@ -102,43 +102,41 @@ export const BoardStore = signalStore(
   withEntities({ entity: type<Passage>(), collection: 'passage' }),
 
   // Computed values
-  withComputed(
-    ({ spotEntities, passageEntities, selectedSpotId, selectedPassageId }) => ({
-      // Count helpers
-      spotCount: computed(() => spotEntities().length),
-      passageCount: computed(() => passageEntities().length),
+  withComputed(({ spotEntities, passageEntities, selectedSpotId, selectedPassageId }) => ({
+    // Count helpers
+    spotCount: computed(() => spotEntities().length),
+    passageCount: computed(() => passageEntities().length),
 
-      // Selected entities
-      selectedSpot: computed(() => spotEntities().find((s) => s.id === selectedSpotId())),
-      selectedPassage: computed(() => passageEntities().find((p) => p.id === selectedPassageId())),
+    // Selected entities
+    selectedSpot: computed(() => spotEntities().find((s) => s.id === selectedSpotId())),
+    selectedPassage: computed(() => passageEntities().find((p) => p.id === selectedPassageId())),
 
-      // Validation
-      allSpotsConnected: computed(() => areAllSpotsConnected(spotEntities(), passageEntities())),
+    // Validation
+    allSpotsConnected: computed(() => areAllSpotsConnected(spotEntities(), passageEntities())),
 
-      isolatedSpots: computed(() => {
-        const spots = spotEntities();
-        const passages = passageEntities();
+    isolatedSpots: computed(() => {
+      const spots = spotEntities();
+      const passages = passageEntities();
 
-        if (spots.length <= 1) return [];
+      if (spots.length <= 1) return [];
 
-        // Build set of connected spot IDs
-        const connectedIds = new Set<string>();
-        for (const passage of passages) {
-          connectedIds.add(passage.fromSpotId);
-          connectedIds.add(passage.toSpotId);
-        }
+      // Build set of connected spot IDs
+      const connectedIds = new Set<string>();
+      for (const passage of passages) {
+        connectedIds.add(passage.fromSpotId);
+        connectedIds.add(passage.toSpotId);
+      }
 
-        // Check if we have multiple components
-        if (!areAllSpotsConnected(spots, passages)) {
-          // Return spots that are either not in any passage OR in disconnected component
-          // For simplicity, return spots not in any passage
-          return spots.filter((s) => !connectedIds.has(s.id));
-        }
+      // Check if we have multiple components
+      if (!areAllSpotsConnected(spots, passages)) {
+        // Return spots that are either not in any passage OR in disconnected component
+        // For simplicity, return spots not in any passage
+        return spots.filter((s) => !connectedIds.has(s.id));
+      }
 
-        return [];
-      }),
-    })
-  ),
+      return [];
+    }),
+  })),
 
   // Methods
   withMethods((store) => ({
@@ -163,7 +161,7 @@ export const BoardStore = signalStore(
         removeEntities(passagesToRemove, { collection: 'passage' }),
         removeEntity(id, { collection: 'spot' }),
         // Clear selection if this spot was selected
-        store.selectedSpotId() === id ? { selectedSpotId: null } : {}
+        store.selectedSpotId() === id ? { selectedSpotId: null } : {},
       );
     },
 
@@ -199,7 +197,7 @@ export const BoardStore = signalStore(
         store,
         removeEntity(id, { collection: 'passage' }),
         // Clear selection if this passage was selected
-        store.selectedPassageId() === id ? { selectedPassageId: null } : {}
+        store.selectedPassageId() === id ? { selectedPassageId: null } : {},
       );
     },
 
@@ -264,8 +262,8 @@ export const BoardStore = signalStore(
         store,
         removeAllEntities({ collection: 'spot' }),
         removeAllEntities({ collection: 'passage' }),
-        initialUIState
+        initialUIState,
       );
     },
-  }))
+  })),
 );

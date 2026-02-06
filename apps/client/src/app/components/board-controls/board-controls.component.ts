@@ -1,5 +1,12 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { BoardStore, BoardService, EditingMode, createBoard, SpotType, PassageType } from '@pokemon-duel/board';
+import {
+  BoardStore,
+  BoardService,
+  EditingMode,
+  createBoard,
+  SpotType,
+  PassageType,
+} from '@pokemon-duel/board';
 
 @Component({
   selector: 'app-board-controls',
@@ -48,9 +55,13 @@ export class BoardControlsComponent {
   updateSelectedSpotType(type: SpotType): void {
     const selectedSpot = this.store.selectedSpot();
     if (selectedSpot) {
-      let metadata: { type: 'normal' } | { type: 'entry'; playerId: number } | { type: 'flag'; playerId: number };
+      let metadata:
+        | { type: 'normal' }
+        | { type: 'entry'; playerId: number }
+        | { type: 'flag'; playerId: number };
       if (type === 'entry' || type === 'flag') {
-        const currentPlayerId = 'playerId' in selectedSpot.metadata ? selectedSpot.metadata.playerId : 1;
+        const currentPlayerId =
+          'playerId' in selectedSpot.metadata ? selectedSpot.metadata.playerId : 1;
         metadata = { type, playerId: currentPlayerId };
       } else {
         metadata = { type: 'normal' };
@@ -61,7 +72,10 @@ export class BoardControlsComponent {
 
   updateSelectedSpotPlayerId(playerId: number): void {
     const selectedSpot = this.store.selectedSpot();
-    if (selectedSpot && (selectedSpot.metadata.type === 'entry' || selectedSpot.metadata.type === 'flag')) {
+    if (
+      selectedSpot &&
+      (selectedSpot.metadata.type === 'entry' || selectedSpot.metadata.type === 'flag')
+    ) {
       const metadata = { type: selectedSpot.metadata.type, playerId };
       this.store.updateSpot(selectedSpot.id, { metadata });
     }
