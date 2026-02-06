@@ -109,7 +109,7 @@ describe('BoardControlsComponent', () => {
       const spot2 = createSpot({ id: '2', x: 200, y: 200 });
       store.addSpot(spot1);
       store.addSpot(spot2);
-      store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', movementCost: 1 });
+      store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', passageType: 'normal' });
       fixture.detectChanges();
 
       const status = fixture.nativeElement.querySelector('.validation-status');
@@ -169,7 +169,7 @@ describe('BoardControlsComponent', () => {
       const spot2 = createSpot({ id: '2', x: 200, y: 200 });
       store.addSpot(spot1);
       store.addSpot(spot2);
-      store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', movementCost: 1 });
+      store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', passageType: 'normal' });
 
       component.clearBoard();
 

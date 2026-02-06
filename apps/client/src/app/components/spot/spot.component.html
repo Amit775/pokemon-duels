@@ -1,15 +1,46 @@
 <div
   class="spot"
   [class.spot--normal]="spotType() === 'normal'"
-  [class.spot--start]="spotType() === 'start'"
-  [class.spot--end]="spotType() === 'end'"
-  [class.spot--warp]="spotType() === 'warp'"
+  [class.spot--entry]="spotType() === 'entry'"
+  [class.spot--flag]="spotType() === 'flag'"
+  [class.spot--player-1]="playerId() === 1"
+  [class.spot--player-2]="playerId() === 2"
+  [class.spot--player-3]="playerId() === 3"
+  [class.spot--player-4]="playerId() === 4"
   [class.spot--selected]="selected()"
   [style.left.px]="spot().x"
   [style.top.px]="spot().y"
   (click)="onClick()"
 >
-  @if (spot().name) {
-    <span class="spot-name">{{ spot().name }}</span>
+  @switch (spotType()) {
+    @case ('entry') {
+      <span class="spot-icon spot-icon--pokeball">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <circle cx="12" cy="12" r="10" fill="#fff" stroke="#333" stroke-width="2"/>
+          <path d="M2 12h8M14 12h8" stroke="#333" stroke-width="2"/>
+          <path d="M2 12c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="#ef5350"/>
+          <circle cx="12" cy="12" r="3" fill="#fff" stroke="#333" stroke-width="2"/>
+        </svg>
+        @if (playerId(); as pid) {
+          <span class="player-number">{{ pid }}</span>
+        }
+      </span>
+    }
+    @case ('flag') {
+      <span class="spot-icon spot-icon--flag">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <path d="M5 21V4" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+          <path d="M5 4l12 4-12 4" fill="#ffc107" stroke="#f9a825" stroke-width="1"/>
+        </svg>
+        @if (playerId(); as pid) {
+          <span class="player-number">{{ pid }}</span>
+        }
+      </span>
+    }
+    @default {
+      @if (spot().name) {
+        <span class="spot-name">{{ spot().name }}</span>
+      }
+    }
   }
 </div>

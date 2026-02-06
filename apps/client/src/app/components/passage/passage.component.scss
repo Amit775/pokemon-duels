@@ -2,6 +2,16 @@
   display: contents;
 }
 
+// Passage type colors (UI-friendly shades)
+$color-normal: #3d3d3d;
+$color-normal-hover: #1a1a1a;
+$color-water: #2196f3;
+$color-water-hover: #1976d2;
+$color-fire: #f44336;
+$color-fire-hover: #d32f2f;
+$color-grass: #4caf50;
+$color-grass-hover: #388e3c;
+
 .passage-svg {
   position: absolute;
   top: 0;
@@ -13,7 +23,7 @@
 }
 
 .passage-line {
-  stroke: #666;
+  stroke: $color-normal;
   stroke-width: 3;
   stroke-linecap: round;
   pointer-events: stroke;
@@ -21,41 +31,49 @@
   transition: stroke 0.15s ease, stroke-width 0.15s ease;
 
   &:hover {
-    stroke: #333;
+    stroke: $color-normal-hover;
     stroke-width: 5;
   }
 
-  &.passage--selected {
-    stroke: #2196f3;
-    stroke-width: 4;
+  // Type variants
+  &.passage--normal {
+    stroke: $color-normal;
 
     &:hover {
-      stroke: #1976d2;
-      stroke-width: 5;
+      stroke: $color-normal-hover;
     }
   }
-}
 
-.passage-cost {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  border: 2px solid #666;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: #333;
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  &.passage--water {
+    stroke: $color-water;
 
-  &:hover {
-    transform: translate(-50%, -50%) scale(1.15);
-    background-color: #f0f0f0;
+    &:hover {
+      stroke: $color-water-hover;
+    }
+  }
+
+  &.passage--fire {
+    stroke: $color-fire;
+
+    &:hover {
+      stroke: $color-fire-hover;
+    }
+  }
+
+  &.passage--grass {
+    stroke: $color-grass;
+
+    &:hover {
+      stroke: $color-grass-hover;
+    }
+  }
+
+  &.passage--selected {
+    stroke-width: 4;
+    filter: drop-shadow(0 0 4px rgba(33, 150, 243, 0.5));
+
+    &:hover {
+      stroke-width: 5;
+    }
   }
 }

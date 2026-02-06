@@ -15,9 +15,8 @@
  */
 export type SpotMetadata =
   | { type: 'normal' }
-  | { type: 'start' }
-  | { type: 'end' }
-  | { type: 'warp'; targetSpotId: string };
+  | { type: 'entry'; playerId: number }
+  | { type: 'flag'; playerId: number };
 
 /**
  * Extract the type string from SpotMetadata
@@ -46,6 +45,12 @@ export type Spot = {
 // ============================================================================
 
 /**
+ * Terrain types for passages.
+ * Each type affects movement and has distinct styling.
+ */
+export type PassageType = 'normal' | 'water' | 'fire' | 'grass';
+
+/**
  * A passage connecting two spots.
  * Passages are bidirectional - can traverse in either direction.
  */
@@ -56,8 +61,8 @@ export type Passage = {
   fromSpotId: string;
   /** ID of other connected spot */
   toSpotId: string;
-  /** Cost to traverse this passage (default: 1) */
-  movementCost: number;
+  /** Terrain type affecting movement and styling */
+  passageType: PassageType;
 };
 
 // ============================================================================
@@ -84,26 +89,17 @@ export type Board = {
 // ============================================================================
 
 /**
- * Check if spot metadata is of type 'warp'
+ * Check if spot metadata is of type 'entry'
  */
-export function isWarpSpot(
-  metadata: SpotMetadata
-): metadata is { type: 'warp'; targetSpotId: string } {
-  return metadata.type === 'warp';
+export function isEntrySpot(metadata: SpotMetadata): metadata is { type: 'entry'; playerId: number } {
+  return metadata.type === 'entry';
 }
 
 /**
- * Check if spot metadata is of type 'start'
+ * Check if spot metadata is of type 'flag'
  */
-export function isStartSpot(metadata: SpotMetadata): metadata is { type: 'start' } {
-  return metadata.type === 'start';
-}
-
-/**
- * Check if spot metadata is of type 'end'
- */
-export function isEndSpot(metadata: SpotMetadata): metadata is { type: 'end' } {
-  return metadata.type === 'end';
+export function isFlagSpot(metadata: SpotMetadata): metadata is { type: 'flag'; playerId: number } {
+  return metadata.type === 'flag';
 }
 
 /**
@@ -135,7 +131,7 @@ export function createPassage(
   partial: Partial<Passage> & Pick<Passage, 'id' | 'fromSpotId' | 'toSpotId'>
 ): Passage {
   return {
-    movementCost: 1,
+    passageType: 'normal',
     ...partial,
   };
 }

@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { BoardStore, BoardService, EditingMode, createBoard } from '@pokemon-duel/board';
+import { BoardStore, BoardService, EditingMode, createBoard, SpotType, PassageType } from '@pokemon-duel/board';
 
 @Component({
   selector: 'app-board-controls',
@@ -12,12 +12,66 @@ export class BoardControlsComponent {
   protected readonly store = inject(BoardStore);
   private readonly boardService = inject(BoardService);
 
+  // Type options for UI
+  protected readonly spotTypes: SpotType[] = ['normal', 'entry', 'flag'];
+  protected readonly passageTypes: PassageType[] = ['normal', 'water', 'fire', 'grass'];
+  protected readonly playerIds = [1, 2, 3, 4];
+
   // ==========================================================================
   // Mode Selection
   // ==========================================================================
 
   setMode(mode: EditingMode): void {
     this.store.setEditingMode(mode);
+  }
+
+  // ==========================================================================
+  // Type Selection
+  // ==========================================================================
+
+  setSpotType(type: SpotType): void {
+    this.store.setNewSpotType(type);
+  }
+
+  setSpotPlayerId(playerId: number): void {
+    this.store.setNewSpotPlayerId(playerId);
+  }
+
+  setPassageType(type: PassageType): void {
+    this.store.setNewPassageType(type);
+  }
+
+  // ==========================================================================
+  // Selected Item Type Changes
+  // ==========================================================================
+
+  updateSelectedSpotType(type: SpotType): void {
+    const selectedSpot = this.store.selectedSpot();
+    if (selectedSpot) {
+      let metadata: { type: 'normal' } | { type: 'entry'; playerId: number } | { type: 'flag'; playerId: number };
+      if (type === 'entry' || type === 'flag') {
+        const currentPlayerId = 'playerId' in selectedSpot.metadata ? selectedSpot.metadata.playerId : 1;
+        metadata = { type, playerId: currentPlayerId };
+      } else {
+        metadata = { type: 'normal' };
+      }
+      this.store.updateSpot(selectedSpot.id, { metadata });
+    }
+  }
+
+  updateSelectedSpotPlayerId(playerId: number): void {
+    const selectedSpot = this.store.selectedSpot();
+    if (selectedSpot && (selectedSpot.metadata.type === 'entry' || selectedSpot.metadata.type === 'flag')) {
+      const metadata = { type: selectedSpot.metadata.type, playerId };
+      this.store.updateSpot(selectedSpot.id, { metadata });
+    }
+  }
+
+  updateSelectedPassageType(type: PassageType): void {
+    const selectedPassage = this.store.selectedPassage();
+    if (selectedPassage) {
+      this.store.updatePassage(selectedPassage.id, { passageType: type });
+    }
   }
 
   // ==========================================================================

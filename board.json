@@ -1,0 +1,470 @@
+{
+  "name": "Board",
+  "spots": [
+    {
+      "name": "",
+      "metadata": {
+        "type": "entry",
+        "playerId": 1
+      },
+      "id": "1770378073126-fk7myrx",
+      "x": 200,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378075099-m6onh29",
+      "x": 300,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378077628-grdhevs",
+      "x": 400,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "flag",
+        "playerId": 1
+      },
+      "id": "1770378079876-ww5bpqc",
+      "x": 500,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378081090-m7xlbal",
+      "x": 600,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378083019-na6is6j",
+      "x": 700,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "entry",
+        "playerId": 1
+      },
+      "id": "1770378084591-mfk7ilk",
+      "x": 800,
+      "y": 450
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378090481-ecwl1gd",
+      "x": 800,
+      "y": 350
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378092725-edp1csi",
+      "x": 800,
+      "y": 250
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378094036-noeqmet",
+      "x": 800,
+      "y": 150
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "entry",
+        "playerId": 2
+      },
+      "id": "1770378098559-gis12d1",
+      "x": 800,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378099894-tu1m5ko",
+      "x": 700,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378101324-687agvb",
+      "x": 600,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "flag",
+        "playerId": 2
+      },
+      "id": "1770378102970-97q5wdf",
+      "x": 500,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378104150-ftwsa55",
+      "x": 400,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378105452-ujjiar2",
+      "x": 300,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "entry",
+        "playerId": 2
+      },
+      "id": "1770378107104-jjr3bk7",
+      "x": 200,
+      "y": 50
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378111319-thtzhid",
+      "x": 200,
+      "y": 150
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378112452-4sctn41",
+      "x": 200,
+      "y": 250
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378114407-lx7xkef",
+      "x": 200,
+      "y": 350
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378118668-m4phec3",
+      "x": 350,
+      "y": 350
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378121196-sxxpvam",
+      "x": 500,
+      "y": 350
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378123408-ol7ctrw",
+      "x": 650,
+      "y": 350
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378126197-x6cpu1w",
+      "x": 650,
+      "y": 250
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378130211-wpzbb5h",
+      "x": 350,
+      "y": 250
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378132162-c9hbsvs",
+      "x": 350,
+      "y": 150
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378134074-ko8ae7s",
+      "x": 500,
+      "y": 150
+    },
+    {
+      "name": "",
+      "metadata": {
+        "type": "normal"
+      },
+      "id": "1770378136165-batk2pw",
+      "x": 650,
+      "y": 150
+    }
+  ],
+  "passages": [
+    {
+      "passageType": "normal",
+      "id": "1770378150445-bpjg6jd",
+      "fromSpotId": "1770378073126-fk7myrx",
+      "toSpotId": "1770378114407-lx7xkef"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378153057-fs17sl6",
+      "fromSpotId": "1770378114407-lx7xkef",
+      "toSpotId": "1770378112452-4sctn41"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378157013-6jwt76g",
+      "fromSpotId": "1770378112452-4sctn41",
+      "toSpotId": "1770378111319-thtzhid"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378158982-nlpuock",
+      "fromSpotId": "1770378111319-thtzhid",
+      "toSpotId": "1770378107104-jjr3bk7"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378161576-mm6mddo",
+      "fromSpotId": "1770378107104-jjr3bk7",
+      "toSpotId": "1770378105452-ujjiar2"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378163103-e92radx",
+      "fromSpotId": "1770378105452-ujjiar2",
+      "toSpotId": "1770378104150-ftwsa55"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378165278-glypccz",
+      "fromSpotId": "1770378104150-ftwsa55",
+      "toSpotId": "1770378102970-97q5wdf"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378166963-8r8d57g",
+      "fromSpotId": "1770378102970-97q5wdf",
+      "toSpotId": "1770378101324-687agvb"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378168917-n0xzmah",
+      "fromSpotId": "1770378101324-687agvb",
+      "toSpotId": "1770378099894-tu1m5ko"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378170971-lfj330t",
+      "fromSpotId": "1770378099894-tu1m5ko",
+      "toSpotId": "1770378098559-gis12d1"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378172841-f2el55l",
+      "fromSpotId": "1770378098559-gis12d1",
+      "toSpotId": "1770378094036-noeqmet"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378175194-6aqokuv",
+      "fromSpotId": "1770378094036-noeqmet",
+      "toSpotId": "1770378092725-edp1csi"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378178032-ufdabt3",
+      "fromSpotId": "1770378092725-edp1csi",
+      "toSpotId": "1770378090481-ecwl1gd"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378179952-lt6iwqv",
+      "fromSpotId": "1770378090481-ecwl1gd",
+      "toSpotId": "1770378084591-mfk7ilk"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378181653-eoldvyr",
+      "fromSpotId": "1770378084591-mfk7ilk",
+      "toSpotId": "1770378083019-na6is6j"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378183587-a2zj38v",
+      "fromSpotId": "1770378083019-na6is6j",
+      "toSpotId": "1770378081090-m7xlbal"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378185708-6h791gp",
+      "fromSpotId": "1770378081090-m7xlbal",
+      "toSpotId": "1770378079876-ww5bpqc"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378188126-cbk61y9",
+      "fromSpotId": "1770378079876-ww5bpqc",
+      "toSpotId": "1770378077628-grdhevs"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378190833-qnz2jk6",
+      "fromSpotId": "1770378077628-grdhevs",
+      "toSpotId": "1770378075099-m6onh29"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378193292-w8e4vnc",
+      "fromSpotId": "1770378075099-m6onh29",
+      "toSpotId": "1770378073126-fk7myrx"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378195790-7p31fms",
+      "fromSpotId": "1770378073126-fk7myrx",
+      "toSpotId": "1770378118668-m4phec3"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378198301-9yl8r6r",
+      "fromSpotId": "1770378118668-m4phec3",
+      "toSpotId": "1770378121196-sxxpvam"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378201276-yorqy20",
+      "fromSpotId": "1770378121196-sxxpvam",
+      "toSpotId": "1770378081090-m7xlbal"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378204643-r5dh1lo",
+      "fromSpotId": "1770378121196-sxxpvam",
+      "toSpotId": "1770378123408-ol7ctrw"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378207097-o5jk5ph",
+      "fromSpotId": "1770378123408-ol7ctrw",
+      "toSpotId": "1770378084591-mfk7ilk"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378209743-mufh094",
+      "fromSpotId": "1770378123408-ol7ctrw",
+      "toSpotId": "1770378126197-x6cpu1w"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378212261-wew3hop",
+      "fromSpotId": "1770378126197-x6cpu1w",
+      "toSpotId": "1770378136165-batk2pw"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378215868-dg8t99i",
+      "fromSpotId": "1770378118668-m4phec3",
+      "toSpotId": "1770378130211-wpzbb5h"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378218260-9jlocfj",
+      "fromSpotId": "1770378130211-wpzbb5h",
+      "toSpotId": "1770378132162-c9hbsvs"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378221365-jz30gzy",
+      "fromSpotId": "1770378132162-c9hbsvs",
+      "toSpotId": "1770378134074-ko8ae7s"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378223345-d0cxmlv",
+      "fromSpotId": "1770378134074-ko8ae7s",
+      "toSpotId": "1770378136165-batk2pw"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378225280-d39adu4",
+      "fromSpotId": "1770378136165-batk2pw",
+      "toSpotId": "1770378098559-gis12d1"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378227865-8vkjeec",
+      "fromSpotId": "1770378132162-c9hbsvs",
+      "toSpotId": "1770378107104-jjr3bk7"
+    },
+    {
+      "passageType": "normal",
+      "id": "1770378231262-jznhvms",
+      "fromSpotId": "1770378104150-ftwsa55",
+      "toSpotId": "1770378134074-ko8ae7s"
+    }
+  ],
+  "id": "1770383455990-utn3mss"
+}

@@ -34,6 +34,138 @@
     </div>
   </div>
 
+  <!-- Spot Type Selection (visible when in add-spot mode) -->
+  @if (store.editingMode() === 'add-spot') {
+    <div class="control-group">
+      <span class="control-label">Spot Type:</span>
+      <div class="type-buttons">
+        @for (type of spotTypes; track type) {
+          <button
+            class="type-btn"
+            [class.type-btn--active]="store.newSpotType() === type"
+            [class.type-btn--normal]="type === 'normal'"
+            [class.type-btn--entry]="type === 'entry'"
+            [class.type-btn--flag]="type === 'flag'"
+            (click)="setSpotType(type)"
+          >
+            {{ type }}
+          </button>
+        }
+      </div>
+    </div>
+    <!-- Player Selection (visible when entry or flag is selected) -->
+    @if (store.newSpotType() === 'entry' || store.newSpotType() === 'flag') {
+      <div class="control-group">
+        <span class="control-label">Player:</span>
+        <div class="player-buttons">
+          @for (id of playerIds; track id) {
+            <button
+              class="player-btn"
+              [class.player-btn--active]="store.newSpotPlayerId() === id"
+              [attr.data-player]="id"
+              (click)="setSpotPlayerId(id)"
+            >
+              P{{ id }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Passage Type Selection (visible when in add-passage mode) -->
+  @if (store.editingMode() === 'add-passage') {
+    <div class="control-group">
+      <span class="control-label">Passage Type:</span>
+      <div class="type-buttons">
+        @for (type of passageTypes; track type) {
+          <button
+            class="type-btn"
+            [class.type-btn--active]="store.newPassageType() === type"
+            [class.type-btn--passage-normal]="type === 'normal'"
+            [class.type-btn--passage-water]="type === 'water'"
+            [class.type-btn--passage-fire]="type === 'fire'"
+            [class.type-btn--passage-grass]="type === 'grass'"
+            (click)="setPassageType(type)"
+          >
+            @switch (type) {
+              @case ('water') { 🌊 water }
+              @case ('fire') { 🔥 fire }
+              @case ('grass') { 🌿 grass }
+              @default { • normal }
+            }
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Selected Spot Editor (visible when a spot is selected in select mode) -->
+  @if (store.editingMode() === 'select' && store.selectedSpot()) {
+    <div class="control-group selection-editor">
+      <span class="control-label">Edit Spot:</span>
+      <div class="type-buttons">
+        @for (type of spotTypes; track type) {
+          <button
+            class="type-btn"
+            [class.type-btn--active]="store.selectedSpot()?.metadata?.type === type"
+            [class.type-btn--normal]="type === 'normal'"
+            [class.type-btn--entry]="type === 'entry'"
+            [class.type-btn--flag]="type === 'flag'"
+            (click)="updateSelectedSpotType(type)"
+          >
+            {{ type }}
+          </button>
+        }
+      </div>
+    </div>
+    <!-- Player Selection for selected spot -->
+    @if (store.selectedSpot()?.metadata?.type === 'entry' || store.selectedSpot()?.metadata?.type === 'flag') {
+      <div class="control-group selection-editor">
+        <span class="control-label">Player:</span>
+        <div class="player-buttons">
+          @for (id of playerIds; track id) {
+            <button
+              class="player-btn"
+              [class.player-btn--active]="$any(store.selectedSpot()?.metadata)?.playerId === id"
+              [attr.data-player]="id"
+              (click)="updateSelectedSpotPlayerId(id)"
+            >
+              P{{ id }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Selected Passage Editor (visible when a passage is selected in select mode) -->
+  @if (store.editingMode() === 'select' && store.selectedPassage()) {
+    <div class="control-group selection-editor">
+      <span class="control-label">Edit Passage:</span>
+      <div class="type-buttons">
+        @for (type of passageTypes; track type) {
+          <button
+            class="type-btn"
+            [class.type-btn--active]="store.selectedPassage()?.passageType === type"
+            [class.type-btn--passage-normal]="type === 'normal'"
+            [class.type-btn--passage-water]="type === 'water'"
+            [class.type-btn--passage-fire]="type === 'fire'"
+            [class.type-btn--passage-grass]="type === 'grass'"
+            (click)="updateSelectedPassageType(type)"
+          >
+            @switch (type) {
+              @case ('water') { 🌊 water }
+              @case ('fire') { 🔥 fire }
+              @case ('grass') { 🌿 grass }
+              @default { • normal }
+            }
+          </button>
+        }
+      </div>
+    </div>
+  }
+
   <!-- Grid Toggle -->
   <div class="control-group">
     <button

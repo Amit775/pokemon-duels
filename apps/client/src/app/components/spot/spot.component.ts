@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
-import { Spot } from '@pokemon-duel/board';
+import { Spot, isEntrySpot, isFlagSpot } from '@pokemon-duel/board';
 
 @Component({
   selector: 'app-spot',
@@ -18,6 +18,13 @@ export class SpotComponent {
 
   // Computed
   protected spotType = computed(() => this.spot().metadata.type);
+  protected playerId = computed(() => {
+    const metadata = this.spot().metadata;
+    if (isEntrySpot(metadata) || isFlagSpot(metadata)) {
+      return metadata.playerId;
+    }
+    return null;
+  });
 
   // Methods
   protected onClick(): void {

@@ -2,6 +2,10 @@
   <line
     class="passage-line"
     [class.passage--selected]="selected()"
+    [class.passage--normal]="passage().passageType === 'normal'"
+    [class.passage--water]="passage().passageType === 'water'"
+    [class.passage--fire]="passage().passageType === 'fire'"
+    [class.passage--grass]="passage().passageType === 'grass'"
     [attr.x1]="fromSpot().x"
     [attr.y1]="fromSpot().y"
     [attr.x2]="toSpot().x"
@@ -9,11 +13,3 @@
     (click)="onClick()"
   />
 </svg>
-<div
-  class="passage-cost"
-  [style.left.px]="midpointX()"
-  [style.top.px]="midpointY()"
-  (click)="onClick()"
->
-  {{ passage().movementCost }}
-</div>

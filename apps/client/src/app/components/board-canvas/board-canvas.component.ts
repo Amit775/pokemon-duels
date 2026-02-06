@@ -95,11 +95,23 @@ export class BoardCanvasComponent {
 
   private addSpotAtPosition(x: number, y: number): void {
     const snapped = snapPointToGrid(x, y, this.cellSize, this.store.gridSnapEnabled());
+    const spotType = this.store.newSpotType();
+    const playerId = this.store.newSpotPlayerId();
+
+    let metadata: Spot['metadata'];
+    if (spotType === 'entry') {
+      metadata = { type: 'entry', playerId };
+    } else if (spotType === 'flag') {
+      metadata = { type: 'flag', playerId };
+    } else {
+      metadata = { type: 'normal' };
+    }
 
     const newSpot = createSpot({
       id: this.boardService.generateId(),
       x: snapped.x,
       y: snapped.y,
+      metadata,
     });
 
     this.store.addSpot(newSpot);
@@ -117,6 +129,7 @@ export class BoardCanvasComponent {
         id: this.boardService.generateId(),
         fromSpotId: sourceId,
         toSpotId: spot.id,
+        passageType: this.store.newPassageType(),
       });
 
       this.store.addPassage(newPassage);

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { Spot, Passage } from '@pokemon-duel/board';
 
 @Component({
@@ -17,10 +17,6 @@ export class PassageComponent {
 
   // Outputs
   passageClicked = output<Passage>();
-
-  // Computed for midpoint (cost label position)
-  protected midpointX = computed(() => (this.fromSpot().x + this.toSpot().x) / 2);
-  protected midpointY = computed(() => (this.fromSpot().y + this.toSpot().y) / 2);
 
   // Methods
   protected onClick(): void {

@@ -8,7 +8,7 @@ import {
   removeEntities,
   removeAllEntities,
 } from '@ngrx/signals/entities';
-import { Spot, Passage, EditingMode } from '../models/board.models';
+import { Spot, Passage, EditingMode, SpotType, PassageType } from '../models/board.models';
 
 // ============================================================================
 // State Types
@@ -20,6 +20,12 @@ type BoardUIState = {
   passageSourceSpotId: string | null;
   editingMode: EditingMode;
   gridSnapEnabled: boolean;
+  /** Spot type to use when creating new spots */
+  newSpotType: SpotType;
+  /** Player ID to use when creating entry/flag spots */
+  newSpotPlayerId: number;
+  /** Passage type to use when creating new passages */
+  newPassageType: PassageType;
 };
 
 const initialUIState: BoardUIState = {
@@ -28,6 +34,9 @@ const initialUIState: BoardUIState = {
   passageSourceSpotId: null,
   editingMode: 'select',
   gridSnapEnabled: true,
+  newSpotType: 'normal',
+  newSpotPlayerId: 1,
+  newPassageType: 'normal',
 };
 
 // ============================================================================
@@ -235,6 +244,18 @@ export const BoardStore = signalStore(
 
     toggleGridSnap(): void {
       patchState(store, { gridSnapEnabled: !store.gridSnapEnabled() });
+    },
+
+    setNewSpotType(type: SpotType): void {
+      patchState(store, { newSpotType: type });
+    },
+
+    setNewSpotPlayerId(playerId: number): void {
+      patchState(store, { newSpotPlayerId: playerId });
+    },
+
+    setNewPassageType(type: PassageType): void {
+      patchState(store, { newPassageType: type });
     },
 
     // Reset

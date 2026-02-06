@@ -89,6 +89,36 @@ describe('SpotComponent', () => {
       const element = fixture.nativeElement.querySelector('.spot');
       expect(element.classList.contains('spot--warp')).toBe(true);
     });
+
+    it('should apply entry type class and show pokeball icon', () => {
+      const entrySpot = createSpot({
+        ...testSpot,
+        metadata: { type: 'entry' },
+      });
+      fixture.componentRef.setInput('spot', entrySpot);
+      fixture.detectChanges();
+
+      const element = fixture.nativeElement.querySelector('.spot');
+      expect(element.classList.contains('spot--entry')).toBe(true);
+
+      const icon = fixture.nativeElement.querySelector('.spot-icon--pokeball');
+      expect(icon).toBeTruthy();
+    });
+
+    it('should apply flag type class and show flag icon', () => {
+      const flagSpot = createSpot({
+        ...testSpot,
+        metadata: { type: 'flag' },
+      });
+      fixture.componentRef.setInput('spot', flagSpot);
+      fixture.detectChanges();
+
+      const element = fixture.nativeElement.querySelector('.spot');
+      expect(element.classList.contains('spot--flag')).toBe(true);
+
+      const icon = fixture.nativeElement.querySelector('.spot-icon--flag');
+      expect(icon).toBeTruthy();
+    });
   });
 
   // ==========================================================================

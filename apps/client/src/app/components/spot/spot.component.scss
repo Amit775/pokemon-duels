@@ -27,25 +27,43 @@ $spot-border-width: 3px;
     border-color: #666;
   }
 
-  &--start {
-    background-color: #4caf50;
-    border-color: #2e7d32;
+  &--entry {
+    background-color: #fff;
+    border-color: #ef5350;
+    border-width: 2px;
   }
 
-  &--end {
-    background-color: #f44336;
-    border-color: #c62828;
+  &--flag {
+    background-color: #fff8e1;
+    border-color: #f9a825;
   }
 
-  &--warp {
-    background-color: #9c27b0;
-    border-color: #6a1b9a;
+  // Player variants (border styles)
+  &--player-1 {
+    border-style: solid;
+    border-color: #1976d2;
+  }
+
+  &--player-2 {
+    border-style: dashed;
+    border-color: #d32f2f;
+  }
+
+  &--player-3 {
+    border-style: dotted;
+    border-color: #388e3c;
+    border-width: 4px;
+  }
+
+  &--player-4 {
+    border-style: double;
+    border-color: #7b1fa2;
+    border-width: 5px;
   }
 
   // Selection state
   &--selected {
     box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.5);
-    border-color: #2196f3;
 
     &:hover {
       box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.7);
@@ -62,10 +80,62 @@ $spot-border-width: 3px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
 
-  .spot--start &,
-  .spot--end &,
-  .spot--warp & {
-    color: #fff;
+.spot-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  svg {
+    display: block;
+  }
+
+  &--pokeball {
+    svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  &--flag {
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+.player-number {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #333;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+
+  .spot--player-1 & {
+    background-color: #1976d2;
+  }
+
+  .spot--player-2 & {
+    background-color: #d32f2f;
+  }
+
+  .spot--player-3 & {
+    background-color: #388e3c;
+  }
+
+  .spot--player-4 & {
+    background-color: #7b1fa2;
   }
 }

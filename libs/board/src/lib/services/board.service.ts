@@ -135,11 +135,14 @@ export class BoardService {
     if (typeof metadata['type'] !== 'string') return false;
 
     // Validate type-specific fields
-    const validTypes = ['normal', 'start', 'end', 'warp'];
+    const validTypes = ['normal', 'entry', 'flag'];
     if (!validTypes.includes(metadata['type'] as string)) return false;
 
-    if (metadata['type'] === 'warp') {
-      if (typeof metadata['targetSpotId'] !== 'string') return false;
+    // Entry and flag spots require playerId
+    if (metadata['type'] === 'entry' || metadata['type'] === 'flag') {
+      if (typeof metadata['playerId'] !== 'number') return false;
+      const playerId = metadata['playerId'] as number;
+      if (playerId < 1 || playerId > 4 || !Number.isInteger(playerId)) return false;
     }
 
     return true;
@@ -156,7 +159,8 @@ export class BoardService {
     if (typeof passage['id'] !== 'string') return false;
     if (typeof passage['fromSpotId'] !== 'string') return false;
     if (typeof passage['toSpotId'] !== 'string') return false;
-    if (typeof passage['movementCost'] !== 'number') return false;
+    if (typeof passage['passageType'] !== 'string') return false;
+    if (!['normal', 'water', 'fire', 'grass'].includes(passage['passageType'] as string)) return false;
 
     return true;
   }

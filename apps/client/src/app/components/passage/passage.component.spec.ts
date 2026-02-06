@@ -24,7 +24,7 @@ describe('PassageComponent', () => {
     id: 'passage-1',
     fromSpotId: 'from-1',
     toSpotId: 'to-1',
-    movementCost: 1,
+    passageType: 'normal',
   });
 
   beforeEach(async () => {
@@ -61,34 +61,44 @@ describe('PassageComponent', () => {
       expect(line.getAttribute('y2')).toBe('200');
     });
 
-    it('should display movement cost', () => {
-      const costLabel = fixture.nativeElement.querySelector('.passage-cost');
-      expect(costLabel?.textContent?.trim()).toBe('1');
-    });
-
-    it('should position cost label at midpoint', () => {
-      const costLabel = fixture.nativeElement.querySelector('.passage-cost') as HTMLElement;
-      // Midpoint of (100,100) to (300,200) is (200, 150)
-      expect(costLabel.style.left).toBe('200px');
-      expect(costLabel.style.top).toBe('150px');
+    it('should apply normal type class', () => {
+      const line = fixture.nativeElement.querySelector('line');
+      expect(line.classList.contains('passage--normal')).toBe(true);
     });
   });
 
-  describe('movement cost display', () => {
-    it('should show higher cost values', () => {
-      const highCostPassage = createPassage({
-        id: 'high-cost',
-        fromSpotId: 'from-1',
-        toSpotId: 'to-1',
-        movementCost: 5,
-      });
-      fixture.componentRef.setInput('passage', highCostPassage);
+  describe('passage type styling', () => {
+    beforeEach(() => {
       fixture.componentRef.setInput('fromSpot', fromSpot);
       fixture.componentRef.setInput('toSpot', toSpot);
+    });
+
+    it('should apply water type class', () => {
+      const waterPassage = createPassage({
+        id: 'water-1',
+        fromSpotId: 'from-1',
+        toSpotId: 'to-1',
+        passageType: 'water',
+      });
+      fixture.componentRef.setInput('passage', waterPassage);
       fixture.detectChanges();
 
-      const costLabel = fixture.nativeElement.querySelector('.passage-cost');
-      expect(costLabel?.textContent?.trim()).toBe('5');
+      const line = fixture.nativeElement.querySelector('line');
+      expect(line.classList.contains('passage--water')).toBe(true);
+    });
+
+    it('should apply fire type class', () => {
+      const firePassage = createPassage({
+        id: 'fire-1',
+        fromSpotId: 'from-1',
+        toSpotId: 'to-1',
+        passageType: 'fire',
+      });
+      fixture.componentRef.setInput('passage', firePassage);
+      fixture.detectChanges();
+
+      const line = fixture.nativeElement.querySelector('line');
+      expect(line.classList.contains('passage--fire')).toBe(true);
     });
   });
 
@@ -135,14 +145,6 @@ describe('PassageComponent', () => {
       const emitSpy = vi.spyOn(component.passageClicked, 'emit');
       const line = fixture.nativeElement.querySelector('line');
       line.dispatchEvent(new MouseEvent('click'));
-
-      expect(emitSpy).toHaveBeenCalledWith(testPassage);
-    });
-
-    it('should emit passageClicked when cost label is clicked', () => {
-      const emitSpy = vi.spyOn(component.passageClicked, 'emit');
-      const costLabel = fixture.nativeElement.querySelector('.passage-cost');
-      costLabel.click();
 
       expect(emitSpy).toHaveBeenCalledWith(testPassage);
     });
