@@ -65,13 +65,8 @@ const initialGameState: GameState = {
 /**
  * Calculate type advantage bonus
  * Fire > Grass, Water > Fire, Grass > Water
- * Snorlax gets +1 against all types
  */
-function getTypeAdvantageBonus(attackerType: PokemonType, defenderType: PokemonType, attackerSpeciesId: string): number {
-  // Snorlax bonus - strong against everyone
-  if (attackerSpeciesId === 'snorlax') return 1;
-  
-  // Type advantages
+function getTypeAdvantageBonus(attackerType: PokemonType, defenderType: PokemonType): number {
   if (attackerType === 'fire' && defenderType === 'grass') return 1;
   if (attackerType === 'water' && defenderType === 'fire') return 1;
   if (attackerType === 'grass' && defenderType === 'water') return 1;
@@ -87,8 +82,9 @@ function rollDice(): number {
 
 /**
  * Execute a battle between two Pokemon
+ * @param defenderOnFlagSpot - true if defender is on a flag spot (normal types get +1)
  */
-function executeBattle(attacker: Pokemon, defender: Pokemon): BattleResult {
+function executeBattle(attacker: Pokemon, defender: Pokemon, defenderOnFlagSpot: boolean): BattleResult {
   const attackerSpecies = getSpecies(attacker.speciesId);
   const defenderSpecies = getSpecies(defender.speciesId);
 
@@ -97,14 +93,19 @@ function executeBattle(attacker: Pokemon, defender: Pokemon): BattleResult {
   
   const attackerBonus = getTypeAdvantageBonus(
     attackerSpecies?.type ?? 'normal',
-    defenderSpecies?.type ?? 'normal',
-    attacker.speciesId
+    defenderSpecies?.type ?? 'normal'
   );
-  const defenderBonus = getTypeAdvantageBonus(
+  
+  // Defender gets type advantage + flag spot bonus for normal types
+  let defenderBonus = getTypeAdvantageBonus(
     defenderSpecies?.type ?? 'normal',
-    attackerSpecies?.type ?? 'normal',
-    defender.speciesId
+    attackerSpecies?.type ?? 'normal'
   );
+  
+  // Normal-type Pokemon get +1 when defending on Flag spot
+  if (defenderOnFlagSpot && defenderSpecies?.type === 'normal') {
+    defenderBonus += 1;
+  }
 
   const attackerTotal = attackerRoll + attackerBonus;
   const defenderTotal = defenderRoll + defenderBonus;
@@ -424,8 +425,12 @@ export const GameStore = signalStore(
       let battleResult: BattleResult | undefined;
 
       if (defender) {
+        // Check if defender is on a flag spot (normal types get bonus)
+        const targetSpot = store.spots().find(s => s.id === targetSpotId);
+        const defenderOnFlagSpot = targetSpot?.metadata.type === 'flag';
+        
         // Execute battle
-        battleResult = executeBattle(pokemon, defender);
+        battleResult = executeBattle(pokemon, defender, defenderOnFlagSpot);
         patchState(store, { lastBattle: battleResult });
 
         if (battleResult.winnerId === pokemon.id) {
