@@ -167,11 +167,26 @@ export const GameStore = signalStore(
 
     // Setup initial Pokemon for both players
     setupInitialPokemon(): void {
-      const speciesIds = ['snorlax', 'venusaur', 'blastoise', 'charizard'];
+      const benchSpecies = ['venusaur', 'blastoise', 'charizard'];
       
-      // Give each player one of each Pokemon
+      // Give each player Pokemon
       for (let playerId = 1; playerId <= store.playerCount(); playerId++) {
-        for (const speciesId of speciesIds) {
+        // Find player's flag spot for starting Snorlax
+        const flagSpot = store.spots().find(
+          s => s.metadata.type === 'flag' && 'playerId' in s.metadata && s.metadata.playerId === playerId
+        );
+
+        // Place Snorlax at the flag spot
+        const snorlax = createPokemon({
+          id: `${Date.now()}-${playerId}-snorlax-${Math.random().toString(36).substring(2, 9)}`,
+          speciesId: 'snorlax',
+          playerId,
+          spotId: flagSpot?.id ?? null,
+        });
+        patchState(store, addEntity(snorlax, { collection: 'pokemon' }));
+
+        // Add remaining Pokemon to bench
+        for (const speciesId of benchSpecies) {
           const pokemon = createPokemon({
             id: `${Date.now()}-${playerId}-${speciesId}-${Math.random().toString(36).substring(2, 9)}`,
             speciesId,
