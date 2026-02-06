@@ -8,11 +8,22 @@ import {
   setAllEntities,
   removeAllEntities,
 } from '@ngrx/signals/entities';
-import { Pokemon, Spot, Passage, POKEMON_SPECIES, createPokemon, getSpecies } from '../models/board.models';
+import { Pokemon, Spot, Passage, PokemonType, POKEMON_SPECIES, createPokemon, getSpecies } from '../models/board.models';
 
 // ============================================================================
 // State Types
 // ============================================================================
+
+type BattleResult = {
+  attackerId: string;
+  defenderId: string;
+  attackerRoll: number;
+  defenderRoll: number;
+  attackerBonus: number;
+  defenderBonus: number;
+  winnerId: string;
+  loserId: string;
+};
 
 type GameState = {
   /** Current player's turn (1-4) */
@@ -21,10 +32,14 @@ type GameState = {
   playerCount: number;
   /** Currently selected Pokemon ID */
   selectedPokemonId: string | null;
-  /** Spot IDs that the selected Pokemon can move to */
+  /** Spot IDs that the selected Pokemon can move to (including enemy-occupied for battles) */
   validMoveTargets: string[];
   /** Game phase */
   phase: 'setup' | 'playing' | 'ended';
+  /** Winner player ID (null if game not ended) */
+  winnerId: number | null;
+  /** Last battle result for UI display */
+  lastBattle: BattleResult | null;
   /** Spots loaded from board */
   spots: Spot[];
   /** Passages loaded from board */
@@ -37,9 +52,77 @@ const initialGameState: GameState = {
   selectedPokemonId: null,
   validMoveTargets: [],
   phase: 'setup',
+  winnerId: null,
+  lastBattle: null,
   spots: [],
   passages: [],
 };
+
+// ============================================================================
+// Type Advantage System
+// ============================================================================
+
+/**
+ * Calculate type advantage bonus
+ * Fire > Grass, Water > Fire, Grass > Water
+ * Snorlax gets +1 against all types
+ */
+function getTypeAdvantageBonus(attackerType: PokemonType, defenderType: PokemonType, attackerSpeciesId: string): number {
+  // Snorlax bonus - strong against everyone
+  if (attackerSpeciesId === 'snorlax') return 1;
+  
+  // Type advantages
+  if (attackerType === 'fire' && defenderType === 'grass') return 1;
+  if (attackerType === 'water' && defenderType === 'fire') return 1;
+  if (attackerType === 'grass' && defenderType === 'water') return 1;
+  return 0;
+}
+
+/**
+ * Roll a dice (1-6)
+ */
+function rollDice(): number {
+  return Math.floor(Math.random() * 6) + 1;
+}
+
+/**
+ * Execute a battle between two Pokemon
+ */
+function executeBattle(attacker: Pokemon, defender: Pokemon): BattleResult {
+  const attackerSpecies = getSpecies(attacker.speciesId);
+  const defenderSpecies = getSpecies(defender.speciesId);
+
+  const attackerRoll = rollDice();
+  const defenderRoll = rollDice();
+  
+  const attackerBonus = getTypeAdvantageBonus(
+    attackerSpecies?.type ?? 'normal',
+    defenderSpecies?.type ?? 'normal',
+    attacker.speciesId
+  );
+  const defenderBonus = getTypeAdvantageBonus(
+    defenderSpecies?.type ?? 'normal',
+    attackerSpecies?.type ?? 'normal',
+    defender.speciesId
+  );
+
+  const attackerTotal = attackerRoll + attackerBonus;
+  const defenderTotal = defenderRoll + defenderBonus;
+
+  // Defender wins ties
+  const attackerWins = attackerTotal > defenderTotal;
+
+  return {
+    attackerId: attacker.id,
+    defenderId: defender.id,
+    attackerRoll,
+    defenderRoll,
+    attackerBonus,
+    defenderBonus,
+    winnerId: attackerWins ? attacker.id : defender.id,
+    loserId: attackerWins ? defender.id : attacker.id,
+  };
+}
 
 // ============================================================================
 // Movement Calculation
@@ -47,13 +130,15 @@ const initialGameState: GameState = {
 
 /**
  * Find all spots reachable within N moves using BFS
+ * Now includes enemy-occupied spots (for battles) but not own-occupied spots
  */
 function findReachableSpots(
   startSpotId: string,
   maxMoves: number,
   spots: Spot[],
   passages: Passage[],
-  occupiedSpotIds: Set<string>
+  ownOccupiedSpotIds: Set<string>,
+  enemyOccupiedSpotIds: Set<string>
 ): string[] {
   if (maxMoves <= 0) return [];
 
@@ -75,12 +160,23 @@ function findReachableSpots(
 
   while (queue.length > 0) {
     const { spotId, distance } = queue.shift()!;
+    const isStartingSpot = distance === 0;
 
-    if (distance > 0 && !occupiedSpotIds.has(spotId)) {
-      reachable.push(spotId);
+    if (distance > 0) {
+      // Can't land on own Pokemon
+      if (!ownOccupiedSpotIds.has(spotId)) {
+        reachable.push(spotId);
+      }
     }
 
-    if (distance < maxMoves) {
+    // Can't move through enemy Pokemon (battle stops movement)
+    // Can't move through own Pokemon either
+    // BUT: starting spot (distance 0) is where the Pokemon IS, so allow exploring from it
+    const isBlockedByOwn = !isStartingSpot && ownOccupiedSpotIds.has(spotId);
+    const isBlockedByEnemy = enemyOccupiedSpotIds.has(spotId);
+    const isBlocked = isBlockedByOwn || isBlockedByEnemy;
+    
+    if (distance < maxMoves && !isBlocked) {
       const neighbors = adjacency.get(spotId) || [];
       for (const neighbor of neighbors) {
         if (!visited.has(neighbor)) {
@@ -92,6 +188,24 @@ function findReachableSpots(
   }
 
   return reachable;
+}
+
+/**
+ * Find reachable spots from entry point (for Pokemon leaving bench)
+ * Entry spot itself costs 1 movement, so remaining moves is (totalMoves - 1)
+ */
+function findReachableSpotsFromEntry(
+  entrySpotId: string,
+  totalMoves: number,
+  spots: Spot[],
+  passages: Passage[],
+  ownOccupiedSpotIds: Set<string>,
+  enemyOccupiedSpotIds: Set<string>
+): string[] {
+  // Entry counts as 1 move, so remaining moves are (totalMoves - 1)
+  const remainingMoves = totalMoves - 1;
+  if (remainingMoves <= 0) return []; // No further movement after entry
+  return findReachableSpots(entrySpotId, remainingMoves, spots, passages, ownOccupiedSpotIds, enemyOccupiedSpotIds);
 }
 
 // ============================================================================
@@ -130,7 +244,21 @@ export const GameStore = signalStore(
       pokemonEntities().find(p => p.spotId === spotId)
     ),
 
-    // Get occupied spot IDs
+    // Get occupied spot IDs by current player
+    ownOccupiedSpotIds: computed(() => 
+      new Set(pokemonEntities()
+        .filter(p => p.spotId !== null && p.playerId === currentPlayerId())
+        .map(p => p.spotId!))
+    ),
+
+    // Get occupied spot IDs by enemies
+    enemyOccupiedSpotIds: computed(() => 
+      new Set(pokemonEntities()
+        .filter(p => p.spotId !== null && p.playerId !== currentPlayerId())
+        .map(p => p.spotId!))
+    ),
+
+    // Get all occupied spot IDs (for backward compatibility)
     occupiedSpotIds: computed(() => 
       new Set(pokemonEntities().filter(p => p.spotId !== null).map(p => p.spotId!))
     ),
@@ -139,6 +267,18 @@ export const GameStore = signalStore(
     getPlayerEntrySpots: computed(() => (playerId: number) =>
       spots().filter(s => s.metadata.type === 'entry' && 'playerId' in s.metadata && s.metadata.playerId === playerId)
     ),
+
+    // Get player's flag spot
+    getPlayerFlagSpot: computed(() => (playerId: number) =>
+      spots().find(s => s.metadata.type === 'flag' && 'playerId' in s.metadata && s.metadata.playerId === playerId)
+    ),
+
+    // Get opponent's flag spot
+    getOpponentFlagSpot: computed(() => {
+      const current = currentPlayerId();
+      const opponent = current === 1 ? 2 : 1;
+      return spots().find(s => s.metadata.type === 'flag' && 'playerId' in s.metadata && s.metadata.playerId === opponent);
+    }),
   })),
 
   // Methods
@@ -151,6 +291,8 @@ export const GameStore = signalStore(
         playerCount,
         currentPlayerId: 1,
         phase: 'playing',
+        winnerId: null,
+        lastBattle: null,
         selectedPokemonId: null,
         validMoveTargets: [],
       });
@@ -200,7 +342,10 @@ export const GameStore = signalStore(
 
     // Select a Pokemon
     selectPokemon(id: string | null): void {
-      if (!id) {
+      // Clear last battle when starting a new selection
+      patchState(store, { lastBattle: null });
+      
+      if (!id || store.phase() === 'ended') {
         patchState(store, { selectedPokemonId: null, validMoveTargets: [] });
         return;
       }
@@ -217,14 +362,35 @@ export const GameStore = signalStore(
       }
 
       let validTargets: string[] = [];
+      const ownOccupied = store.ownOccupiedSpotIds();
+      const enemyOccupied = store.enemyOccupiedSpotIds();
 
       if (pokemon.spotId === null) {
-        // Pokemon is on bench - can move to unoccupied entry spots
+        // Pokemon is on bench - can enter via entry spots and use full movement
         const entrySpots = store.getPlayerEntrySpots()(pokemon.playerId);
-        const occupied = store.occupiedSpotIds();
-        validTargets = entrySpots
-          .filter(s => !occupied.has(s.id))
-          .map(s => s.id);
+        const allTargets = new Set<string>();
+        
+        for (const entrySpot of entrySpots) {
+          // If entry spot is unoccupied by own Pokemon, can reach spots from there
+          if (!ownOccupied.has(entrySpot.id)) {
+            // Can land on entry spot itself (uses all moves)
+            if (!enemyOccupied.has(entrySpot.id)) {
+              allTargets.add(entrySpot.id);
+            }
+            // Can also reach spots beyond entry with remaining moves
+            const reachableFromEntry = findReachableSpotsFromEntry(
+              entrySpot.id,
+              species.movement,
+              store.spots(),
+              store.passages(),
+              ownOccupied,
+              enemyOccupied
+            );
+            reachableFromEntry.forEach(id => allTargets.add(id));
+          }
+        }
+        
+        validTargets = Array.from(allTargets);
       } else {
         // Pokemon is on board - calculate reachable spots
         validTargets = findReachableSpots(
@@ -232,45 +398,96 @@ export const GameStore = signalStore(
           species.movement,
           store.spots(),
           store.passages(),
-          store.occupiedSpotIds()
+          ownOccupied,
+          enemyOccupied
         );
       }
 
       patchState(store, { selectedPokemonId: id, validMoveTargets: validTargets });
     },
 
-    // Move Pokemon to a spot
-    movePokemon(pokemonId: string, targetSpotId: string): boolean {
+    // Move Pokemon to a spot (includes battle handling and win check)
+    movePokemon(pokemonId: string, targetSpotId: string): { success: boolean; battle?: BattleResult; won?: boolean } {
       const pokemon = store.pokemonEntities().find(p => p.id === pokemonId);
-      if (!pokemon) return false;
+      if (!pokemon) return { success: false };
 
       // Verify it's a valid move
       if (!store.validMoveTargets().includes(targetSpotId)) {
-        return false;
+        return { success: false };
       }
 
-      // Update Pokemon position
-      patchState(store, 
-        updateEntity({ id: pokemonId, changes: { spotId: targetSpotId } }, { collection: 'pokemon' })
+      // Check if there's an enemy Pokemon at the target (battle!)
+      const defender = store.pokemonEntities().find(
+        p => p.spotId === targetSpotId && p.playerId !== pokemon.playerId
       );
 
-      // Clear selection and end turn
+      let battleResult: BattleResult | undefined;
+
+      if (defender) {
+        // Execute battle
+        battleResult = executeBattle(pokemon, defender);
+        patchState(store, { lastBattle: battleResult });
+
+        if (battleResult.winnerId === pokemon.id) {
+          // Attacker wins - defender goes back to bench
+          patchState(store, 
+            updateEntity({ id: defender.id, changes: { spotId: null } }, { collection: 'pokemon' }),
+            updateEntity({ id: pokemonId, changes: { spotId: targetSpotId } }, { collection: 'pokemon' })
+          );
+        } else {
+          // Defender wins - attacker goes back to bench
+          patchState(store, 
+            updateEntity({ id: pokemonId, changes: { spotId: null } }, { collection: 'pokemon' })
+          );
+        }
+      } else {
+        // No battle - just move
+        patchState(store, 
+          updateEntity({ id: pokemonId, changes: { spotId: targetSpotId } }, { collection: 'pokemon' })
+        );
+      }
+
+      // Check win condition - did the moving Pokemon reach opponent's flag?
+      const movedPokemon = store.pokemonEntities().find(p => p.id === pokemonId);
+      if (movedPokemon?.spotId === targetSpotId) {
+        const opponentFlag = store.getOpponentFlagSpot();
+        if (opponentFlag && targetSpotId === opponentFlag.id) {
+          // Current player wins!
+          patchState(store, {
+            phase: 'ended',
+            winnerId: store.currentPlayerId(),
+            selectedPokemonId: null,
+            validMoveTargets: [],
+          });
+          return { success: true, battle: battleResult, won: true };
+        }
+      }
+
+      // Clear selection
       patchState(store, { 
         selectedPokemonId: null, 
         validMoveTargets: [],
       });
 
-      return true;
+      return { success: true, battle: battleResult };
     },
 
     // End current player's turn
     endTurn(): void {
+      if (store.phase() === 'ended') return;
+      
       const nextPlayer = (store.currentPlayerId() % store.playerCount()) + 1;
       patchState(store, { 
         currentPlayerId: nextPlayer,
         selectedPokemonId: null,
         validMoveTargets: [],
+        // Keep lastBattle visible until next player acts
       });
+    },
+
+    // Clear the last battle result (called when starting a new action)
+    clearBattle(): void {
+      patchState(store, { lastBattle: null });
     },
 
     // Clear selection
@@ -288,8 +505,13 @@ export const GameStore = signalStore(
           selectedPokemonId: null,
           validMoveTargets: [],
           phase: 'playing',
+          winnerId: null,
+          lastBattle: null,
         }
       );
     },
   }))
 );
+
+// Export types
+export type { BattleResult };

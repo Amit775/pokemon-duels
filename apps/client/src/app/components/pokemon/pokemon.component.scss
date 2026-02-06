@@ -43,13 +43,22 @@ $pokemon-size: 48px;
     background-color: #e8f5e9;
   }
 
-  // Selection state
+  // Player ownership indicator (outer ring)
+  &--player-1 {
+    box-shadow: 0 0 0 3px #1976d2;
+  }
+
+  &--player-2 {
+    box-shadow: 0 0 0 3px #d32f2f;
+  }
+
+  // Selection state (overrides player indicator)
   &--selected {
-    box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.6);
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.9), 0 0 12px rgba(255, 215, 0, 0.6);
     transform: translate(-50%, -50%) scale(1.1);
 
     &:hover {
-      box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.8);
+      box-shadow: 0 0 0 4px rgba(255, 215, 0, 1), 0 0 16px rgba(255, 215, 0, 0.8);
     }
   }
 

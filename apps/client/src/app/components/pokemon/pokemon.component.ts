@@ -28,6 +28,7 @@ export class PokemonComponent {
   protected name = computed(() => this.species()?.name ?? 'Unknown');
   protected movement = computed(() => this.species()?.movement ?? 0);
   protected type = computed(() => this.species()?.type ?? 'normal');
+  protected playerId = computed(() => this.pokemon().playerId);
 
   // Methods
   protected onClick(): void {

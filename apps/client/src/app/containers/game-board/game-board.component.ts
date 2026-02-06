@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, computed, signal } from '@angular/core';
-import { GameStore, BoardService, Spot, Pokemon, getSpecies, POKEMON_SPECIES } from '@pokemon-duel/board';
+import { GameStore, BoardService, Spot, Pokemon, getSpecies, POKEMON_SPECIES, BattleResult } from '@pokemon-duel/board';
 import { BenchComponent } from '../../components/bench/bench.component';
 import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { PassageComponent } from '../../components/passage/passage.component';
@@ -26,6 +26,8 @@ export class GameBoardComponent implements OnInit {
   protected readonly selectedPokemonId = computed(() => this.gameStore.selectedPokemonId());
   protected readonly validMoveTargets = computed(() => this.gameStore.validMoveTargets());
   protected readonly phase = computed(() => this.gameStore.phase());
+  protected readonly winnerId = computed(() => this.gameStore.winnerId());
+  protected readonly lastBattle = computed(() => this.gameStore.lastBattle());
 
   // Player benches
   protected readonly player1Bench = computed(() => 
@@ -46,6 +48,16 @@ export class GameBoardComponent implements OnInit {
     return spot ? { x: spot.x, y: spot.y } : null;
   }
 
+  // Get Pokemon by ID
+  protected getPokemonById(id: string): Pokemon | undefined {
+    return this.gameStore.pokemonEntities().find(p => p.id === id);
+  }
+
+  // Get species name
+  protected getSpeciesName(speciesId: string): string {
+    return getSpecies(speciesId)?.name ?? 'Unknown';
+  }
+
   ngOnInit(): void {
     this.loadBoardAndStart();
   }
@@ -64,8 +76,12 @@ export class GameBoardComponent implements OnInit {
     
     // If a Pokemon is selected and this is a valid target, move it
     if (selectedId && this.validMoveTargets().includes(spot.id)) {
-      this.gameStore.movePokemon(selectedId, spot.id);
-      this.gameStore.endTurn();
+      const result = this.gameStore.movePokemon(selectedId, spot.id);
+      
+      // Only end turn if game hasn't ended
+      if (result.success && !result.won) {
+        this.gameStore.endTurn();
+      }
       return;
     }
 
@@ -77,19 +93,20 @@ export class GameBoardComponent implements OnInit {
   }
 
   protected onPokemonClick(pokemon: Pokemon): void {
-    if (pokemon.playerId === this.currentPlayerId()) {
+    if (pokemon.playerId === this.currentPlayerId() && this.phase() !== 'ended') {
       this.gameStore.selectPokemon(pokemon.id);
     }
   }
 
   protected onBenchPokemonSelect(pokemon: Pokemon): void {
-    if (pokemon.playerId === this.currentPlayerId()) {
+    if (pokemon.playerId === this.currentPlayerId() && this.phase() !== 'ended') {
       this.gameStore.selectPokemon(pokemon.id);
     }
   }
 
   protected skipTurn(): void {
     this.gameStore.clearSelection();
+    this.gameStore.clearBattle();
     this.gameStore.endTurn();
   }
 
@@ -100,5 +117,10 @@ export class GameBoardComponent implements OnInit {
 
   protected isValidTarget(spotId: string): boolean {
     return this.validMoveTargets().includes(spotId);
+  }
+
+  protected isEnemyOccupied(spotId: string): boolean {
+    const pokemon = this.getPokemonAtSpot(spotId);
+    return pokemon !== undefined && pokemon.playerId !== this.currentPlayerId();
   }
 }

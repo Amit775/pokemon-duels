@@ -1,4 +1,38 @@
 <div class="game-layout">
+  <!-- Win Overlay -->
+  @if (phase() === 'ended' && winnerId()) {
+    <div class="win-overlay">
+      <div class="win-modal">
+        <h2 class="win-title">🏆 Victory! 🏆</h2>
+        <p class="win-message">Player {{ winnerId() }} wins!</p>
+        <button class="btn btn--primary" (click)="resetGame()">Play Again</button>
+      </div>
+    </div>
+  }
+
+  <!-- Battle Result Toast -->
+  @if (lastBattle(); as battle) {
+    <div class="battle-toast">
+      <div class="battle-header">⚔️ Battle!</div>
+      <div class="battle-rolls">
+        <div class="battle-roll">
+          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.attackerId)?.speciesId ?? '') }}</span>
+          <span class="battle-dice">🎲 {{ battle.attackerRoll }}{{ battle.attackerBonus > 0 ? ' +' + battle.attackerBonus : '' }}</span>
+          <span class="battle-total">= {{ battle.attackerRoll + battle.attackerBonus }}</span>
+        </div>
+        <div class="battle-vs">VS</div>
+        <div class="battle-roll">
+          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.defenderId)?.speciesId ?? '') }}</span>
+          <span class="battle-dice">🎲 {{ battle.defenderRoll }}{{ battle.defenderBonus > 0 ? ' +' + battle.defenderBonus : '' }}</span>
+          <span class="battle-total">= {{ battle.defenderRoll + battle.defenderBonus }}</span>
+        </div>
+      </div>
+      <div class="battle-result">
+        {{ getSpeciesName(getPokemonById(battle.winnerId)?.speciesId ?? '') }} wins!
+      </div>
+    </div>
+  }
+
   <!-- Player 1 Bench (Left side) -->
   <aside class="bench-area bench-area--left">
     <app-bench
@@ -25,7 +59,7 @@
         </span>
       </div>
       <div class="game-actions">
-        <button class="btn btn--secondary" (click)="skipTurn()">Skip Turn</button>
+        <button class="btn btn--secondary" (click)="skipTurn()" [disabled]="phase() === 'ended'">Skip Turn</button>
         <button class="btn btn--danger" (click)="resetGame()">Reset Game</button>
       </div>
     </header>
@@ -49,10 +83,15 @@
         @if (isValidTarget(spot.id)) {
           <div 
             class="valid-target-indicator"
+            [class.valid-target-indicator--battle]="isEnemyOccupied(spot.id)"
             [style.left.px]="spot.x"
             [style.top.px]="spot.y"
             (click)="onSpotClick(spot)"
-          ></div>
+          >
+            @if (isEnemyOccupied(spot.id)) {
+              <span class="battle-icon">⚔️</span>
+            }
+          </div>
         }
       }
 
@@ -73,16 +112,16 @@
             [x]="coords.x"
             [y]="coords.y"
             [selected]="selectedPokemonId() === pokemon.id"
-            [draggable]="pokemon.playerId === currentPlayerId()"
+            [draggable]="pokemon.playerId === currentPlayerId() && phase() !== 'ended'"
             (pokemonClicked)="onPokemonClick($event)"
           />
         }
       }
     </div>
 
-    @if (selectedPokemonId()) {
+    @if (selectedPokemonId() && phase() !== 'ended') {
       <div class="selection-info">
-        <span>Pokemon selected! Click a highlighted spot to move, or click another Pokemon.</span>
+        <span>Pokemon selected! Click a highlighted spot to move. Red targets = battle!</span>
       </div>
     }
   </main>
