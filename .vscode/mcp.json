@@ -14,6 +14,10 @@
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
       }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-playwright"]
     }
   },
   "inputs": [

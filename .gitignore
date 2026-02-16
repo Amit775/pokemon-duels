@@ -41,6 +41,7 @@ yarn-error.log*
 .env.local
 .env.*.local
 appsettings.Development.json
+env.firebase.json
 
 # Testing
 coverage/
