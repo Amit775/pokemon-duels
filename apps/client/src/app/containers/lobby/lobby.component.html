@@ -1,0 +1,133 @@
+<div class="lobby-container">
+  <!-- Header -->
+  <div class="lobby-header">
+    <h1 class="title">
+      <span class="title-icon">🎮</span>
+      Pokemon Duel
+    </h1>
+    <p class="subtitle">Challenge your friends in real-time battles!</p>
+  </div>
+
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="error-banner">
+      <span class="error-icon">⚠️</span>
+      <span>{{ error() }}</span>
+    </div>
+  }
+
+  <!-- Main Content -->
+  @if (!isInRoom()) {
+    <!-- Not in a room - show create/join options -->
+    <div class="lobby-cards">
+      <!-- Create Room Card -->
+      <div class="lobby-card create-card">
+        <div class="card-icon">🏠</div>
+        <h2 class="card-title">Create Room</h2>
+        <p class="card-description">
+          Start a new game and invite a friend to join with a room code.
+        </p>
+        <button 
+          class="btn btn-primary" 
+          [disabled]="isLoading()"
+          (click)="createRoom()">
+          @if (isLoading() && roomState() === 'creating') {
+            <span class="spinner"></span>
+            Creating...
+          } @else {
+            Create New Room
+          }
+        </button>
+      </div>
+
+      <!-- Join Room Card -->
+      <div class="lobby-card join-card">
+        <div class="card-icon">🚪</div>
+        <h2 class="card-title">Join Room</h2>
+        <p class="card-description">
+          Enter a room code to join a friend's game.
+        </p>
+        <div class="join-form">
+          <input 
+            type="text" 
+            class="room-input"
+            placeholder="Enter room code"
+            [value]="joinCode()"
+            (input)="updateJoinCode($event)"
+            maxlength="4"
+            [disabled]="isLoading()">
+          <button 
+            class="btn btn-secondary" 
+            [disabled]="isLoading() || !joinCode()"
+            (click)="joinRoom()">
+            @if (isLoading() && roomState() === 'joining') {
+              <span class="spinner"></span>
+              Joining...
+            } @else {
+              Join
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <!-- In a room - show waiting state -->
+    <div class="waiting-room">
+      <div class="waiting-card">
+        @if (isWaiting()) {
+          <!-- Waiting for opponent -->
+          <div class="waiting-icon">
+            <div class="pulse-ring"></div>
+            <span>⏳</span>
+          </div>
+          <h2 class="waiting-title">Waiting for Opponent</h2>
+          
+          <div class="room-code-display">
+            <span class="code-label">Room Code:</span>
+            <div class="code-box">
+              <span class="code-text">{{ roomCode() }}</span>
+              <button class="copy-btn" (click)="copyRoomCode()" title="Copy code">
+                📋
+              </button>
+            </div>
+          </div>
+          
+          <p class="waiting-hint">
+            Share this code with your friend to start the battle!
+          </p>
+
+          <div class="player-indicator">
+            <span class="player-badge">You are Player {{ localPlayerId() }}</span>
+          </div>
+        } @else {
+          <!-- Game is ready -->
+          <div class="ready-icon">✅</div>
+          <h2 class="ready-title">Opponent Connected!</h2>
+          <p class="ready-text">Both players are ready. Let the battle begin!</p>
+          
+          <button class="btn btn-success btn-large" (click)="navigateToGame()">
+            Start Battle!
+          </button>
+        }
+        
+        <button class="btn btn-outline leave-btn" (click)="leaveRoom()">
+          Leave Room
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Connection Status -->
+  <div class="connection-status" [class.connected]="connectionState() === 'connected'">
+    <span class="status-dot"></span>
+    <span class="status-text">
+      @switch (connectionState()) {
+        @case ('connected') { Connected }
+        @case ('connecting') { Connecting... }
+        @case ('reconnecting') { Reconnecting... }
+        @case ('error') { Connection Error }
+        @default { Disconnected }
+      }
+    </span>
+  </div>
+</div>

@@ -1,41 +1,55 @@
+using Server.Hubs;
+using Server.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+// Add services to the container
 builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<GameRoomService>();
+
+// Configure CORS for local development
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:4200", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Load default board
+var boardPath = Path.Combine(app.Environment.ContentRootPath, "..", "..", "board.json");
+if (File.Exists(boardPath))
+{
+    var boardJson = await File.ReadAllTextAsync(boardPath);
+    GameHub.LoadDefaultBoard(boardJson);
+    Console.WriteLine($"Loaded board from {boardPath}");
+}
+else
+{
+    Console.WriteLine($"WARNING: Board not found at {boardPath}");
+}
+
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
+app.UseCors();
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Map SignalR hub
+app.MapHub<GameHub>("/gamehub");
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+// Health check endpoint
+app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }))
+   .WithName("HealthCheck");
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
