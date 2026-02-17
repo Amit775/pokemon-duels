@@ -8,10 +8,8 @@
   [class.pokemon--grass]="type() === 'grass'"
   [class.pokemon--player-1]="playerId() === 1"
   [class.pokemon--player-2]="playerId() === 2"
-  [style.left.%]="usePercent() ? xPercent() : null"
-  [style.top.%]="usePercent() ? yPercent() : null"
-  [style.left.px]="usePercent() ? null : x()"
-  [style.top.px]="usePercent() ? null : y()"
+  [style.left]="positionLeft()"
+  [style.top]="positionTop()"
   (click)="onClick()"
 >
   <img 

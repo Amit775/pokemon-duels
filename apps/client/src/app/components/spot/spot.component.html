@@ -8,10 +8,8 @@
   [class.spot--player-3]="playerId() === 3"
   [class.spot--player-4]="playerId() === 4"
   [class.spot--selected]="selected()"
-  [style.left.%]="usePercent() ? xPercent() : null"
-  [style.top.%]="usePercent() ? yPercent() : null"
-  [style.left.px]="usePercent() ? null : spot().x"
-  [style.top.px]="usePercent() ? null : spot().y"
+  [style.left]="positionLeft()"
+  [style.top]="positionTop()"
   (click)="onClick()"
 >
   @switch (spotType()) {

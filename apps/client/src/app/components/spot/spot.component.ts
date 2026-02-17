@@ -29,8 +29,16 @@ export class SpotComponent {
     return null;
   });
 
-  // Use percentage if provided, otherwise fall back to pixels
-  protected usePercent = computed(() => this.xPercent() !== null && this.yPercent() !== null);
+  // Position with units - use percentage if provided, otherwise pixels
+  protected positionLeft = computed(() => {
+    const percent = this.xPercent();
+    return percent !== null ? `${percent}%` : `${this.spot().x}px`;
+  });
+
+  protected positionTop = computed(() => {
+    const percent = this.yPercent();
+    return percent !== null ? `${percent}%` : `${this.spot().y}px`;
+  });
 
   // Methods
   protected onClick(): void {
