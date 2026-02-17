@@ -12,6 +12,9 @@ export class SpotComponent {
   // Inputs
   spot = input.required<Spot>();
   selected = input(false);
+  // Percentage-based positioning for responsive layout
+  xPercent = input<number | null>(null);
+  yPercent = input<number | null>(null);
 
   // Outputs
   spotClicked = output<Spot>();
@@ -25,6 +28,9 @@ export class SpotComponent {
     }
     return null;
   });
+
+  // Use percentage if provided, otherwise fall back to pixels
+  protected usePercent = computed(() => this.xPercent() !== null && this.yPercent() !== null);
 
   // Methods
   protected onClick(): void {

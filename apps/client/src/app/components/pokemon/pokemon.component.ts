@@ -13,6 +13,9 @@ export class PokemonComponent {
   pokemon = input.required<Pokemon>();
   x = input(0);
   y = input(0);
+  // Percentage-based positioning for responsive layout
+  xPercent = input<number | null>(null);
+  yPercent = input<number | null>(null);
   selected = input(false);
   draggable = input(false);
 
@@ -29,6 +32,9 @@ export class PokemonComponent {
   protected movement = computed(() => this.species()?.movement ?? 0);
   protected type = computed(() => this.species()?.type ?? 'normal');
   protected playerId = computed(() => this.pokemon().playerId);
+
+  // Use percentage if provided, otherwise fall back to pixels
+  protected usePercent = computed(() => this.xPercent() !== null && this.yPercent() !== null);
 
   // Methods
   protected onClick(): void {

@@ -3,20 +3,21 @@
 
 .game-layout {
   display: flex;
-  gap: 20px;
-  height: calc(100vh - 80px);
+  gap: clamp(8px, 2vw, 20px);
+  height: 100%;
   box-sizing: border-box;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  overflow: hidden;
 }
 
 .bench-area {
   flex-shrink: 0;
-  width: 220px;
+  width: clamp(120px, 15vw, 220px);
   display: flex;
   flex-direction: column;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 12px;
-  padding: 1rem;
+  padding: clamp(0.5rem, 1vw, 1rem);
 
   &--left {
     order: 1;
@@ -222,16 +223,25 @@
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 100px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  min-height: 500px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  // CSS Container for responsive sizing of child elements
+  container-type: size;
+  container-name: board;
+  // Maintain aspect ratio matching design dimensions (1000x500 = 2:1)
+  aspect-ratio: 2 / 1;
+  width: 100%;
+  max-height: 100%;
+  // Let flexbox handle sizing
+  min-height: 0;
 }
 
 .valid-target-indicator {
   position: absolute;
-  width: 56px;
-  height: 56px;
+  // Use container query units for responsive sizing
+  width: min(56px, 8cqmin);
+  height: min(56px, 8cqmin);
   border-radius: 50%;
-  border: 3px dashed #27ae60;
+  border: max(2px, 0.3cqmin) dashed #27ae60;
   background-color: rgba(46, 204, 113, 0.2);
   transform: translate(-50%, -50%);
   cursor: pointer;
@@ -294,7 +304,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  font-size: 24px;
+  font-size: min(24px, 4cqmin);
 }
 
 // Win overlay
