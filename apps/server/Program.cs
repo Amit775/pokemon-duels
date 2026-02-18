@@ -13,11 +13,12 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        var allowedOrigins = builder.Environment.IsDevelopment()
-            ? new[] { "http://localhost:4200", "http://localhost:3000" }
-            : new[] { "https://pokemon-duels.web.app", "https://pokemon-duels.firebaseapp.com" };
-        
-        policy.WithOrigins(allowedOrigins)
+        policy.WithOrigins(
+                  "http://localhost:4200",
+                  "http://localhost:3000",
+                  "https://pokemon-duels.web.app",
+                  "https://pokemon-duels.firebaseapp.com"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
