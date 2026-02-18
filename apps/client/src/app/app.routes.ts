@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'board-creator',
+    redirectTo: 'lobby',
     pathMatch: 'full',
   },
   {
@@ -14,8 +14,21 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'lobby',
+    loadComponent: () =>
+      import('./containers/lobby/lobby.component').then((m) => m.LobbyComponent),
+  },
+  {
     path: 'play',
     loadComponent: () =>
       import('./containers/game-board/game-board.component').then((m) => m.GameBoardComponent),
   },
+  {
+    path: 'play/:roomId',
+    loadComponent: () =>
+      import('./containers/multiplayer-game/multiplayer-game.component').then(
+        (m) => m.MultiplayerGameComponent,
+      ),
+  },
 ];
+
