@@ -7,5 +7,5 @@ export interface BoardConfig {
 export const BOARD_CONFIG = new InjectionToken<BoardConfig>('BOARD_CONFIG');
 
 export const DEFAULT_BOARD_CONFIG: BoardConfig = {
-  signalRUrl: 'http://localhost:5100/gamehub'
+  signalRUrl: 'http://localhost:5100/gamehub',
 };

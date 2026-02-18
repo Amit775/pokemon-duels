@@ -2,7 +2,12 @@ import { Injectable, signal, computed, inject, OnDestroy, Optional } from '@angu
 import * as signalR from '@microsoft/signalr';
 import { BOARD_CONFIG, DEFAULT_BOARD_CONFIG } from '../config/board.config';
 
-export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error';
+export type ConnectionState =
+  | 'disconnected'
+  | 'connecting'
+  | 'connected'
+  | 'reconnecting'
+  | 'error';
 
 type EventHandler = { eventName: string; callback: (data: unknown) => void };
 
@@ -10,21 +15,21 @@ type EventHandler = { eventName: string; callback: (data: unknown) => void };
  * Service for managing SignalR connection to game server
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SignalRService implements OnDestroy {
   private connection: signalR.HubConnection | null = null;
   private pendingHandlers: EventHandler[] = [];
   private readonly config = inject(BOARD_CONFIG, { optional: true }) ?? DEFAULT_BOARD_CONFIG;
-  
+
   // Connection state
   private readonly _connectionState = signal<ConnectionState>('disconnected');
   private readonly _error = signal<string | null>(null);
-  
+
   readonly connectionState = this._connectionState.asReadonly();
   readonly error = this._error.asReadonly();
   readonly isConnected = computed(() => this._connectionState() === 'connected');
-  
+
   // Server URL - from configuration
   private get serverUrl(): string {
     return this.config.signalRUrl;
@@ -124,7 +129,7 @@ export class SignalRService implements OnDestroy {
   on<T>(eventName: string, callback: (data: T) => void): void {
     // Store for later if connection doesn't exist yet
     this.pendingHandlers.push({ eventName, callback: callback as (data: unknown) => void });
-    
+
     // Also apply immediately if connection exists
     this.connection?.on(eventName, callback);
   }
@@ -134,8 +139,8 @@ export class SignalRService implements OnDestroy {
    */
   off(eventName: string, callback?: (...args: unknown[]) => void): void {
     // Remove from pending handlers
-    this.pendingHandlers = this.pendingHandlers.filter(h => h.eventName !== eventName);
-    
+    this.pendingHandlers = this.pendingHandlers.filter((h) => h.eventName !== eventName);
+
     if (callback) {
       this.connection?.off(eventName, callback);
     } else {

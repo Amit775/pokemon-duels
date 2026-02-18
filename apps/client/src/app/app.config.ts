@@ -11,7 +11,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     {
       provide: BOARD_CONFIG,
-      useValue: { signalRUrl: environment.signalRUrl }
-    }
-  ]
+      useValue: { signalRUrl: environment.signalRUrl },
+    },
+  ],
 };
