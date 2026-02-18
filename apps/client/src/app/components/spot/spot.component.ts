@@ -12,6 +12,9 @@ export class SpotComponent {
   // Inputs
   spot = input.required<Spot>();
   selected = input(false);
+  // Percentage-based positioning for responsive layout
+  xPercent = input<number | null>(null);
+  yPercent = input<number | null>(null);
 
   // Outputs
   spotClicked = output<Spot>();
@@ -24,6 +27,17 @@ export class SpotComponent {
       return metadata.playerId;
     }
     return null;
+  });
+
+  // Position with units - use percentage if provided, otherwise pixels
+  protected positionLeft = computed(() => {
+    const percent = this.xPercent();
+    return percent !== null ? `${percent}%` : `${this.spot().x}px`;
+  });
+
+  protected positionTop = computed(() => {
+    const percent = this.yPercent();
+    return percent !== null ? `${percent}%` : `${this.spot().y}px`;
   });
 
   // Methods

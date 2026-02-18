@@ -8,8 +8,8 @@
   [class.spot--player-3]="playerId() === 3"
   [class.spot--player-4]="playerId() === 4"
   [class.spot--selected]="selected()"
-  [style.left.px]="spot().x"
-  [style.top.px]="spot().y"
+  [style.left]="positionLeft()"
+  [style.top]="positionTop()"
   (click)="onClick()"
 >
   @switch (spotType()) {

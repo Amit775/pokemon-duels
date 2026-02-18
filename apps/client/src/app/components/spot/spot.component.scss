@@ -1,5 +1,7 @@
-$spot-size: 40px;
-$spot-border-width: 3px;
+// Responsive spot size using container query units
+// Falls back to pixel values when not inside a container
+$spot-size: min(40px, 6cqmin);
+$spot-border-width: max(2px, 0.4cqmin);
 
 .spot {
   position: absolute;
@@ -72,11 +74,11 @@ $spot-border-width: 3px;
 }
 
 .spot-name {
-  font-size: 10px;
+  font-size: min(10px, 1.5cqmin);
   font-weight: 600;
   color: #333;
   text-align: center;
-  max-width: 36px;
+  max-width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -94,15 +96,15 @@ $spot-border-width: 3px;
 
   &--pokeball {
     svg {
-      width: 28px;
-      height: 28px;
+      width: min(28px, 4.5cqmin);
+      height: min(28px, 4.5cqmin);
     }
   }
 
   &--flag {
     svg {
-      width: 22px;
-      height: 22px;
+      width: min(22px, 3.5cqmin);
+      height: min(22px, 3.5cqmin);
     }
   }
 }
@@ -111,12 +113,12 @@ $spot-border-width: 3px;
   position: absolute;
   bottom: -4px;
   right: -4px;
-  width: 14px;
-  height: 14px;
+  width: min(14px, 2cqmin);
+  height: min(14px, 2cqmin);
   border-radius: 50%;
   background-color: #333;
   color: #fff;
-  font-size: 9px;
+  font-size: min(9px, 1.3cqmin);
   font-weight: 700;
   display: flex;
   align-items: center;

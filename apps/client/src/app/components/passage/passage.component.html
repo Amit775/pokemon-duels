@@ -6,10 +6,10 @@
     [class.passage--water]="passage().passageType === 'water'"
     [class.passage--fire]="passage().passageType === 'fire'"
     [class.passage--grass]="passage().passageType === 'grass'"
-    [attr.x1]="fromSpot().x"
-    [attr.y1]="fromSpot().y"
-    [attr.x2]="toSpot().x"
-    [attr.y2]="toSpot().y"
+    [attr.x1]="getX(fromSpot().x)"
+    [attr.y1]="getY(fromSpot().y)"
+    [attr.x2]="getX(toSpot().x)"
+    [attr.y2]="getY(toSpot().y)"
     (click)="onClick()"
   />
 </svg>

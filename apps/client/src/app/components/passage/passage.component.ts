@@ -14,6 +14,9 @@ export class PassageComponent {
   fromSpot = input.required<Spot>();
   toSpot = input.required<Spot>();
   selected = input(false);
+  // Percentage converters for responsive layout
+  xPercent = input<((x: number) => number) | null>(null);
+  yPercent = input<((y: number) => number) | null>(null);
 
   // Outputs
   passageClicked = output<Passage>();
@@ -21,5 +24,17 @@ export class PassageComponent {
   // Methods
   protected onClick(): void {
     this.passageClicked.emit(this.passage());
+  }
+
+  // Get x coordinate (percentage or pixel)
+  protected getX(value: number): string {
+    const converter = this.xPercent();
+    return converter ? `${converter(value)}%` : `${value}`;
+  }
+
+  // Get y coordinate (percentage or pixel)
+  protected getY(value: number): string {
+    const converter = this.yPercent();
+    return converter ? `${converter(value)}%` : `${value}`;
   }
 }

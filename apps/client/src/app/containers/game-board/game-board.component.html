@@ -73,6 +73,8 @@
               [passage]="passage"
               [fromSpot]="{ id: passage.fromSpotId, x: fromCoords.x, y: fromCoords.y, name: '', metadata: { type: 'normal' } }"
               [toSpot]="{ id: passage.toSpotId, x: toCoords.x, y: toCoords.y, name: '', metadata: { type: 'normal' } }"
+              [xPercent]="toPercentX"
+              [yPercent]="toPercentY"
             />
           }
         }
@@ -84,8 +86,8 @@
           <div 
             class="valid-target-indicator"
             [class.valid-target-indicator--battle]="isEnemyOccupied(spot.id)"
-            [style.left.px]="spot.x"
-            [style.top.px]="spot.y"
+            [style.left.%]="toPercentX(spot.x)"
+            [style.top.%]="toPercentY(spot.y)"
             (click)="onSpotClick(spot)"
           >
             @if (isEnemyOccupied(spot.id)) {
@@ -100,6 +102,8 @@
         <app-spot
           [spot]="spot"
           [selected]="false"
+          [xPercent]="toPercentX(spot.x)"
+          [yPercent]="toPercentY(spot.y)"
           (spotClicked)="onSpotClick($event)"
         />
       }
@@ -111,6 +115,8 @@
             [pokemon]="pokemon"
             [x]="coords.x"
             [y]="coords.y"
+            [xPercent]="toPercentX(coords.x)"
+            [yPercent]="toPercentY(coords.y)"
             [selected]="selectedPokemonId() === pokemon.id"
             [draggable]="pokemon.playerId === currentPlayerId() && phase() !== 'ended'"
             (pokemonClicked)="onPokemonClick($event)"

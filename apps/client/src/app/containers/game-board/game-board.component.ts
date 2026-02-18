@@ -5,6 +5,10 @@ import { PassageComponent } from '../../components/passage/passage.component';
 import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { SpotComponent } from '../../components/spot/spot.component';
 
+// Design viewport dimensions - all spot coordinates are relative to this
+const BOARD_DESIGN_WIDTH = 1000;
+const BOARD_DESIGN_HEIGHT = 500;
+
 @Component({
   selector: 'app-game-board',
   standalone: true,
@@ -46,6 +50,15 @@ export class GameBoardComponent implements OnInit {
   protected getSpotCoords(spotId: string): { x: number; y: number } | null {
     const spot = this.gameStore.spotMap()[spotId];
     return spot ? { x: spot.x, y: spot.y } : null;
+  }
+
+  // Convert pixel coordinates to percentage for responsive layout
+  protected toPercentX(x: number): number {
+    return (x / BOARD_DESIGN_WIDTH) * 100;
+  }
+
+  protected toPercentY(y: number): number {
+    return (y / BOARD_DESIGN_HEIGHT) * 100;
   }
 
   // Get Pokemon by ID - use pokemonEntityMap for O(1) lookup
