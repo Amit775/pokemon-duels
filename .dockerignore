@@ -1,0 +1,14 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+**/.git
+**/.gitignore
+**/*.md
+**/playwright-report
+**/test-results
+**/.angular
+**/coverage
+*.log
+.env*
+env.firebase.json

@@ -1,5 +1,6 @@
-import { Injectable, signal, computed, inject, OnDestroy } from '@angular/core';
+import { Injectable, signal, computed, inject, OnDestroy, Optional } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
+import { BOARD_CONFIG, DEFAULT_BOARD_CONFIG } from '../config/board.config';
 
 export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'reconnecting' | 'error';
 
@@ -14,6 +15,7 @@ type EventHandler = { eventName: string; callback: (data: unknown) => void };
 export class SignalRService implements OnDestroy {
   private connection: signalR.HubConnection | null = null;
   private pendingHandlers: EventHandler[] = [];
+  private readonly config = inject(BOARD_CONFIG, { optional: true }) ?? DEFAULT_BOARD_CONFIG;
   
   // Connection state
   private readonly _connectionState = signal<ConnectionState>('disconnected');
@@ -23,8 +25,10 @@ export class SignalRService implements OnDestroy {
   readonly error = this._error.asReadonly();
   readonly isConnected = computed(() => this._connectionState() === 'connected');
   
-  // Server URL - configurable for different environments
-  private readonly serverUrl = 'http://localhost:5100/gamehub';
+  // Server URL - from configuration
+  private get serverUrl(): string {
+    return this.config.signalRUrl;
+  }
 
   ngOnDestroy(): void {
     this.disconnect();

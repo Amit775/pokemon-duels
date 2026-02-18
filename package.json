@@ -11,11 +11,18 @@
     "docs": "nx serve docs",
     "server": "nx serve server",
     "build": "nx run-many -t build",
+    "build:client": "nx build client --configuration=production",
+    "build:server": "nx publish server",
     "test": "nx run-many -t test",
     "e2e": "nx run-many -t e2e",
     "lint": "nx run-many -t lint",
     "affected": "nx affected",
-    "graph": "nx graph"
+    "graph": "nx graph",
+    "deploy": "nx run-many -t deploy --projects=server,client",
+    "deploy:client": "nx deploy client",
+    "deploy:server": "nx deploy server",
+    "firebase:login": "firebase login",
+    "gcloud:login": "gcloud auth login"
   },
   "prettier": {
     "printWidth": 100,

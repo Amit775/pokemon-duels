@@ -52,6 +52,20 @@
         "command": "dotnet publish -c Release -o ../../dist/apps/server",
         "cwd": "apps/server"
       }
+    },
+    "docker-build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build -t gcr.io/pokemon-duels/pokemon-duel-server .",
+        "cwd": "."
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "gcloud builds submit --config cloudbuild.yaml --project pokemon-duels",
+        "cwd": "."
+      }
     }
   }
 }
