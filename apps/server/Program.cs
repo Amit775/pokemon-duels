@@ -8,12 +8,17 @@ builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<GameRoomService>();
 
-// Configure CORS for local development
+// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "http://localhost:3000")
+        policy.WithOrigins(
+                  "http://localhost:4200",
+                  "http://localhost:3000",
+                  "https://pokemon-duels.web.app",
+                  "https://pokemon-duels.firebaseapp.com"
+              )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -22,17 +27,21 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Load default board
-var boardPath = Path.Combine(app.Environment.ContentRootPath, "..", "..", "board.json");
-if (File.Exists(boardPath))
+// Load default board - check multiple locations
+var boardPaths = new[] {
+    Path.Combine(app.Environment.ContentRootPath, "board.json"),  // Production: same directory
+    Path.Combine(app.Environment.ContentRootPath, "..", "..", "board.json")  // Development: workspace root
+};
+
+foreach (var boardPath in boardPaths)
 {
-    var boardJson = await File.ReadAllTextAsync(boardPath);
-    GameHub.LoadDefaultBoard(boardJson);
-    Console.WriteLine($"Loaded board from {boardPath}");
-}
-else
-{
-    Console.WriteLine($"WARNING: Board not found at {boardPath}");
+    if (File.Exists(boardPath))
+    {
+        var boardJson = await File.ReadAllTextAsync(boardPath);
+        GameHub.LoadDefaultBoard(boardJson);
+        Console.WriteLine($"Loaded board from {boardPath}");
+        break;
+    }
 }
 
 // Configure the HTTP request pipeline

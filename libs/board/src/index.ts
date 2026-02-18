@@ -1,5 +1,8 @@
 // Board Library Public API
 
+// Config
+export * from './lib/config/board.config';
+
 // Models
 export * from './lib/models/board.models';
 

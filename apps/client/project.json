@@ -36,7 +36,13 @@
               "maximumError": "8kB"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/client/src/environments/environment.ts",
+              "with": "apps/client/src/environments/environment.prod.ts"
+            }
+          ]
         },
         "development": {
           "optimization": false,
@@ -69,6 +75,14 @@
       "outputs": ["{workspaceRoot}/apps/client/playwright-report"],
       "options": {
         "config": "apps/client/playwright.config.ts"
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "firebase deploy --only hosting --project pokemon-duels",
+        "cwd": "."
       }
     }
   }
