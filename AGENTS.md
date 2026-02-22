@@ -1,24 +1,37 @@
-<!-- nx configuration start-->
-<!-- Leave the start & end comments to automatically receive updates. -->
+# Pokemon Duel - AI Agent Instructions
 
-# General Guidelines for working with Nx
+## Quick Reference
 
-- For navigating/exploring the workspace, invoke the `nx-workspace` skill first - it has patterns for querying projects, targets, and dependencies
-- When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
-- Prefix nx commands with the workspace's package manager (e.g., `pnpm nx build`, `npm exec nx test`) - avoids using globally installed CLI
-- You have access to the Nx MCP server and its tools, use them to help the user
-- For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
-- NEVER guess CLI flags - always check nx_docs or `--help` first when unsure
+This is an Nx monorepo with Angular client, .NET server, and shared game logic.
 
-## Scaffolding & Generators
+**Run commands with:** `pnpm nx <target> <project>`
 
-- For scaffolding tasks (creating apps, libs, project structure, setup), ALWAYS invoke the `nx-generate` skill FIRST before exploring or calling MCP tools
+## Instructions
 
-## When to use nx_docs
+Read these files for detailed guidelines (in `.claude/instructions/`):
+- `general.md` - Project overview and structure
+- `nx.md` - Nx workspace guidelines
+- `angular.md` - Angular patterns (signals, zoneless)
+- `dotnet.md` - .NET/SignalR conventions
+- `testing.md` - Vitest and Playwright
+- `deployment.md` - Firebase and Cloud Run
+- `git-github.md` - Git workflow
 
-- USE for: advanced config options, unfamiliar flags, migration guides, plugin configuration, edge cases
-- DON'T USE for: basic generator syntax (`nx g @nx/react:app`), standard commands, things you already know
-- The `nx-generate` skill handles generator discovery internally - don't call nx_docs just to look up generator syntax
+## Architecture Documentation
 
+For detailed architecture decisions, read from `apps/docs/src/content/agents/`.
 
-<!-- nx configuration end-->
+## Skills
+
+Use skills from `.github/skills/` for specific workflows:
+- `nx-workspace` - Explore workspace structure
+- `nx-generate` - Scaffold new code
+- `nx-run-tasks` - Run build/test/lint tasks
+- `nx-plugins` - Add Nx plugins
+- `link-workspace-packages` - Wire up monorepo deps
+- `monitor-ci` - Watch CI pipeline status
+- `angular` - Angular patterns and conventions
+- `dotnet` - .NET/SignalR patterns
+- `firebase` - Firebase deployment
+- `playwright` - E2E testing
+- `git-github` - Git workflow and conventions
