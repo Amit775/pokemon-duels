@@ -1,9 +1,16 @@
+:host {
+  display: block;
+}
+
 .bench {
   background-color: #f5f5f5;
   border: 2px solid #ccc;
   border-radius: 8px;
-  padding: clamp(8px, 1vw, 12px);
+  padding: 6px 8px;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &--active {
     border-color: #2196f3;
@@ -21,26 +28,27 @@
 
 .bench-header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: clamp(8px, 1vw, 12px);
-  padding-bottom: clamp(4px, 0.5vw, 8px);
-  border-bottom: 1px solid #ddd;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
 .bench-title {
-  font-weight: 600;
-  font-size: clamp(11px, 1.2vw, 14px);
+  font-weight: 700;
+  font-size: 11px;
   color: #333;
+  line-height: 1;
 }
 
 .bench-indicator {
   background-color: #4caf50;
   color: #fff;
-  padding: 2px clamp(4px, 0.5vw, 8px);
-  border-radius: 12px;
-  font-size: clamp(9px, 1vw, 11px);
+  padding: 1px 5px;
+  border-radius: 8px;
+  font-size: 9px;
   font-weight: 600;
+  white-space: nowrap;
   animation: pulse 1.5s infinite;
 }
 
@@ -55,18 +63,21 @@
 
 .bench-pokemon {
   display: flex;
-  flex-direction: column;
-  gap: clamp(4px, 0.5vw, 8px);
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
 }
 
 .bench-slot {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: clamp(6px, 0.8vw, 10px);
-  padding: clamp(4px, 0.5vw, 8px);
+  justify-content: center;
+  padding: 3px;
   background-color: #fff;
   border: 2px solid #e0e0e0;
-  border-radius: 6px;
+  border-radius: 50%;
   transition: all 0.15s ease;
 
   &--selectable {
@@ -75,6 +86,7 @@
     &:hover {
       border-color: #2196f3;
       background-color: #e3f2fd;
+      transform: scale(1.1);
     }
   }
 
@@ -86,39 +98,35 @@
 }
 
 .bench-pokemon-image {
-  width: clamp(32px, 4vw, 48px);
-  height: clamp(32px, 4vw, 48px);
+  width: 36px;
+  height: 36px;
   object-fit: contain;
-  background-color: #f9f9f9;
   border-radius: 50%;
-  padding: clamp(2px, 0.3vw, 4px);
+  display: block;
 }
 
-.bench-pokemon-info {
+.bench-move-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #1976d2;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  overflow: hidden;
-}
-
-.bench-pokemon-name {
-  font-weight: 600;
-  font-size: clamp(10px, 1.1vw, 13px);
-  color: #333;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bench-pokemon-movement {
-  font-size: clamp(9px, 1vw, 11px);
-  color: #666;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .bench-empty {
   text-align: center;
-  padding: clamp(12px, 1.5vw, 20px);
+  padding: 4px 8px;
   color: #999;
   font-style: italic;
-  font-size: clamp(10px, 1vw, 12px);
+  font-size: 11px;
 }
