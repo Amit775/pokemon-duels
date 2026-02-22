@@ -5,7 +5,7 @@
   [class.bench--player-2]="playerId() === 2"
 >
   <div class="bench-header">
-    <span class="bench-title">Player {{ playerId() }} Bench</span>
+    <span class="bench-title">P{{ playerId() }}</span>
     @if (isCurrentPlayer()) {
       <span class="bench-indicator">Your Turn</span>
     }
@@ -17,6 +17,7 @@
         class="bench-slot"
         [class.bench-slot--selected]="selectedPokemonId() === p.id"
         [class.bench-slot--selectable]="isCurrentPlayer()"
+        [title]="getSpecies(p.speciesId)?.name ?? ''"
         (click)="onPokemonClick(p)"
       >
         <img 
@@ -24,13 +25,10 @@
           [src]="getSpecies(p.speciesId)?.imageUrl" 
           [alt]="getSpecies(p.speciesId)?.name"
         />
-        <div class="bench-pokemon-info">
-          <span class="bench-pokemon-name">{{ getSpecies(p.speciesId)?.name }}</span>
-          <span class="bench-pokemon-movement">Move: {{ getSpecies(p.speciesId)?.movement }}</span>
-        </div>
+        <span class="bench-move-badge">{{ getSpecies(p.speciesId)?.movement }}</span>
       </div>
     } @empty {
-      <div class="bench-empty">No Pokemon on bench</div>
+      <div class="bench-empty">No Pokemon</div>
     }
   </div>
 </div>

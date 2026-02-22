@@ -1,24 +1,23 @@
 .game-layout {
   display: flex;
-  gap: clamp(8px, 2vw, 20px);
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 12px);
   height: 100%;
-  padding: clamp(8px, 2vw, 20px);
+  padding: clamp(4px, 1vw, 12px);
   box-sizing: border-box;
   background-color: #e8e8e8;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .bench-area {
   flex-shrink: 0;
-  width: clamp(120px, 15vw, 220px);
-  display: flex;
-  flex-direction: column;
+  width: 100%;
 
-  &--left {
+  &--top {
     order: 1;
   }
 
-  &--right {
+  &--bottom {
     order: 3;
   }
 }
@@ -29,21 +28,24 @@
   flex-direction: column;
   order: 2;
   min-width: 0;
+  min-height: 0;
 }
 
 .game-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 12px;
   background-color: #fff;
   border-radius: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  gap: 6px;
 
   h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: clamp(14px, 2.5vw, 20px);
     color: #333;
   }
 }
