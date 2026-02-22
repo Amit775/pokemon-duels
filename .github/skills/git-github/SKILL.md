@@ -5,14 +5,19 @@ description: "Git workflow and GitHub conventions for this project. USE WHEN com
 
 # Git & GitHub Workflow
 
+## Golden Rule
+
+**NEVER push directly to `main`.** All changes must go through a Pull Request.
+
 ## Branch Strategy
 
-| Branch | Purpose | Auto-deploys |
-|--------|---------|--------------|
-| `main` | Development integration | No |
-| `release/*` | Production releases (e.g., `release/1.0`, `release/2.0`) | Yes (Firebase + Cloud Run) |
-| `feature/*` | New features | No |
-| `fix/*` | Bug fixes | No |
+| Branch | Purpose | Auto-deploys | Direct Push |
+|--------|---------|--------------|-------------|
+| `main` | Development integration | No | **BLOCKED** |
+| `release/*` | Production releases (e.g., `release/1.0`, `release/2.0`) | Yes (Firebase + Cloud Run) | No |
+| `feature/*` | New features | No | Yes |
+| `fix/*` | Bug fixes | No | Yes |
+| `agents/*` | AI agent config changes | No | Yes |
 
 ## Feature Development Flow
 
@@ -21,23 +26,37 @@ description: "Git workflow and GitHub conventions for this project. USE WHEN com
 git checkout main
 git pull origin main
 
-# 2. Create feature branch
+# 2. Create feature branch (NEVER work on main)
 git checkout -b feature/room-creation
 
 # 3. Make changes and commit
 git add .
-git commit -m "feat(client): add room creation UI"
+git commit -m "feature(client): add room creation UI"
 
-# 4. Push and create PR
+# 4. Push branch (NOT main!)
 git push -u origin feature/room-creation
-# Then open PR to main on GitHub
 
-# 5. After PR merge, deploy to production
-git checkout release/1.0  # or create new release branch
-git pull origin release/1.0
-git merge main
-git push origin release/1.0
+# 5. Open PR on GitHub
+#    - Title: feature(client): add room creation UI
+#    - Description: Summary of all changes
+#    - Request review
+#    - Wait for approval
+
+# 6. After PR is APPROVED and MERGED (by reviewer)
+#    Delete local branch
+git checkout main
+git pull origin main
+git branch -d feature/room-creation
 ```
+
+## Pull Request Requirements
+
+**Every PR must include:**
+
+1. **Title** - Conventional commit format: `type(scope): description`
+2. **Summary** - What changes were made and why
+3. **Testing** - How the changes were verified
+4. **Approval** - At least one reviewer must approve before merge
 
 ## Commit Convention (Conventional Commits)
 

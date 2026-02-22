@@ -1,35 +1,55 @@
 # Git & GitHub Guidelines
 
+## Golden Rule
+
+**NEVER push directly to `main`.** All changes must go through a Pull Request with approval.
+
 ## Branch Strategy
 
-| Branch | Purpose | Deploys To |
-|--------|---------|------------|
-| `main` | Development, integration | - |
-| `release/*` | Production releases (e.g., `release/1.0`) | Firebase + Cloud Run |
-| `feature/*` | New features | - |
-| `fix/*` | Bug fixes | - |
+| Branch | Purpose | Deploys To | Direct Push |
+|--------|---------|------------|-------------|
+| `main` | Development, integration | - | **BLOCKED** |
+| `release/*` | Production releases (e.g., `release/1.0`) | Firebase + Cloud Run | No |
+| `feature/*` | New features | - | Yes |
+| `fix/*` | Bug fixes | - | Yes |
+| `agents/*` | AI agent config changes | - | Yes |
 
 ## Workflow
 
 ```bash
-# Start new feature
+# 1. Start from main
 git checkout main
-git pull
+git pull origin main
+
+# 2. Create branch (NEVER work on main)
 git checkout -b feature/my-feature
 
-# Work on feature...
+# 3. Make changes and commit
 git add .
 git commit -m "feature: add new feature"
 
-# Push and create PR
+# 4. Push branch (NOT main!)
 git push -u origin feature/my-feature
-# Open PR to main
 
-# After PR merge, deploy
-git checkout release/1.0  # or create new release branch
-git merge main
-git push
+# 5. Open PR on GitHub with:
+#    - Title: type(scope): description
+#    - Summary of all changes
+#    - Request review
+#    - Wait for APPROVAL before merge
+
+# 6. After PR is approved and merged
+git checkout main
+git pull origin main
+git branch -d feature/my-feature
 ```
+
+## Pull Request Requirements
+
+Every PR must have:
+1. **Title** - Conventional commit format
+2. **Summary** - Description of all changes made
+3. **Testing** - How changes were verified
+4. **Approval** - Manual review before merge
 
 ## Commit Convention
 
