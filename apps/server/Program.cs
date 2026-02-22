@@ -8,17 +8,32 @@ builder.Services.AddOpenApi();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<GameRoomService>();
 
-// Configure CORS
+// Configure CORS - allow production + Firebase preview channel URLs for PR previews
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins(
-                  "http://localhost:4200",
-                  "http://localhost:3000",
-                  "https://pokemon-duels.web.app",
-                  "https://pokemon-duels.firebaseapp.com"
-              )
+        policy.SetIsOriginAllowed(origin =>
+              {
+                  if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                      return false;
+
+                  var host = uri.Host;
+
+                  // Development
+                  if (host == "localhost")
+                      return true;
+
+                  // Production
+                  if (host == "pokemon-duels.web.app" || host == "pokemon-duels.firebaseapp.com")
+                      return true;
+
+                  // Firebase preview channels (PR previews): pokemon-duels--pr123-xxxxx.web.app
+                  if (host.EndsWith(".web.app") && host.StartsWith("pokemon-duels--"))
+                      return true;
+
+                  return false;
+              })
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
