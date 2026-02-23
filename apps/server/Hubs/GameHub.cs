@@ -44,7 +44,7 @@ public class GameHub : Hub
         
         if (joinResult.Success)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, room.RoomId);
+            await Groups.AddToGroupAsync(Context.ConnectionId, room.RoomId.ToUpperInvariant());
             _logger.LogInformation("Player {ConnectionId} created and joined room {RoomId}", 
                 Context.ConnectionId, room.RoomId);
         }
@@ -73,6 +73,13 @@ public class GameHub : Hub
             if (result.Room?.PlayerCount == 2)
             {
                 await StartGame(roomId.ToUpperInvariant());
+                
+                // Re-fetch room info after game started so the returned state is up-to-date
+                var room = _roomService.GetRoom(roomId);
+                if (room != null)
+                {
+                    result = result with { Room = room.GetRoomInfo() };
+                }
             }
         }
         

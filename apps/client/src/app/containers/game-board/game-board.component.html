@@ -33,13 +33,13 @@
     </div>
   }
 
-  <!-- Player 1 Bench (Top) -->
+  <!-- Player 2 Bench (Top - near P2 base) -->
   <aside class="bench-area bench-area--top">
     <app-bench
-      [pokemon]="player1Bench()"
-      [playerId]="1"
+      [pokemon]="player2Bench()"
+      [playerId]="2"
       [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 1"
+      [isCurrentPlayer]="currentPlayerId() === 2"
       (pokemonSelected)="onBenchPokemonSelect($event)"
     />
   </aside>
@@ -132,13 +132,13 @@
     }
   </main>
 
-  <!-- Player 2 Bench (Bottom) -->
+  <!-- Player 1 Bench (Bottom - near P1 base) -->
   <aside class="bench-area bench-area--bottom">
     <app-bench
-      [pokemon]="player2Bench()"
-      [playerId]="2"
+      [pokemon]="player1Bench()"
+      [playerId]="1"
       [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 2"
+      [isCurrentPlayer]="currentPlayerId() === 1"
       (pokemonSelected)="onBenchPokemonSelect($event)"
     />
   </aside>

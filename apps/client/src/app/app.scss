@@ -92,8 +92,9 @@
 // Main Content Area
 .app-content {
   flex: 1;
-  overflow: auto;
-  padding: 1.5rem;
+  overflow: hidden;
+  padding: clamp(4px, 1vw, 1rem);
+  min-height: 0;
 }
 
 // Scrollbar styling

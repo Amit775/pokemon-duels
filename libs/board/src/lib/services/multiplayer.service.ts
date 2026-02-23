@@ -44,27 +44,27 @@ export type RoomState = 'idle' | 'creating' | 'joining' | 'waiting' | 'playing' 
  * Service for multiplayer game management
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MultiplayerService implements OnDestroy {
   private readonly signalR = inject(SignalRService);
-  
+
   // Room state
   private readonly _roomState = signal<RoomState>('idle');
   private readonly _roomInfo = signal<RoomInfo | null>(null);
   private readonly _localPlayerId = signal<number | null>(null);
   private readonly _error = signal<string | null>(null);
-  
+
   // Game state from server
   private readonly _gameState = signal<MultiplayerGameState | null>(null);
-  
+
   // Public readonly signals
   readonly roomState = this._roomState.asReadonly();
   readonly roomInfo = this._roomInfo.asReadonly();
   readonly localPlayerId = this._localPlayerId.asReadonly();
   readonly error = this._error.asReadonly();
   readonly gameState = this._gameState.asReadonly();
-  
+
   // Computed values for UI
   readonly roomCode = computed(() => this._roomInfo()?.roomId ?? null);
   readonly isMyTurn = computed(() => {
@@ -74,7 +74,7 @@ export class MultiplayerService implements OnDestroy {
   });
   readonly isHost = computed(() => this._localPlayerId() === 1);
   readonly opponentConnected = computed(() => (this._roomInfo()?.playerCount ?? 0) >= 2);
-  
+
   // Game state accessors
   readonly spots = computed(() => this._gameState()?.spots ?? []);
   readonly passages = computed(() => this._gameState()?.passages ?? []);
@@ -85,7 +85,7 @@ export class MultiplayerService implements OnDestroy {
   readonly phase = computed(() => this._gameState()?.phase ?? 'setup');
   readonly winnerId = computed(() => this._gameState()?.winnerId ?? null);
   readonly lastBattle = computed(() => this._gameState()?.lastBattle ?? null);
-  
+
   constructor() {
     this.setupEventHandlers();
   }
@@ -137,7 +137,7 @@ export class MultiplayerService implements OnDestroy {
       if (currentRoom) {
         this._roomInfo.set({
           ...currentRoom,
-          playerCount: currentRoom.playerCount - 1
+          playerCount: currentRoom.playerCount - 1,
         });
       }
     });
@@ -158,7 +158,7 @@ export class MultiplayerService implements OnDestroy {
       }
 
       const result = await this.signalR.invoke<JoinResult>('CreateRoom');
-      
+
       if (result.success && result.room) {
         this._roomInfo.set(result.room);
         this._localPlayerId.set(result.assignedPlayerId ?? null);
@@ -192,18 +192,19 @@ export class MultiplayerService implements OnDestroy {
       }
 
       const result = await this.signalR.invoke<JoinResult>('JoinRoom', roomCode);
-      
+
       if (result.success && result.room) {
         this._roomInfo.set(result.room);
         this._localPlayerId.set(result.assignedPlayerId ?? null);
-        
-        // Check if game already started
-        if (result.room.state === 'playing') {
+
+        // Check if game already started - don't regress from 'playing' to 'waiting'
+        // (GameStarted event may have already fired before invoke resolved)
+        if (result.room.state === 'playing' || this._roomState() === 'playing') {
           this._roomState.set('playing');
         } else {
           this._roomState.set('waiting');
         }
-        
+
         console.log('Joined room:', result.room.roomId, 'as player', result.assignedPlayerId);
         return true;
       } else {
@@ -273,20 +274,20 @@ export class MultiplayerService implements OnDestroy {
    * Get Pokemon at a specific spot
    */
   getPokemonAtSpot(spotId: string): Pokemon | undefined {
-    return this.pokemon().find(p => p.spotId === spotId);
+    return this.pokemon().find((p) => p.spotId === spotId);
   }
 
   /**
    * Get Pokemon on bench for a player
    */
   getBenchPokemon(playerId: number): Pokemon[] {
-    return this.pokemon().filter(p => p.playerId === playerId && p.spotId === null);
+    return this.pokemon().filter((p) => p.playerId === playerId && p.spotId === null);
   }
 
   /**
    * Get Pokemon on board
    */
   getPokemonOnBoard(): Pokemon[] {
-    return this.pokemon().filter(p => p.spotId !== null);
+    return this.pokemon().filter((p) => p.spotId !== null);
   }
 }
