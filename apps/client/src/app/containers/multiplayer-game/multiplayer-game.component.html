@@ -48,13 +48,13 @@
     </div>
   }
 
-  <!-- Player 1 Bench (Top) -->
-  <aside class="bench-area bench-area--top" [class.my-bench]="localPlayerId() === 1">
+  <!-- Player 2 Bench (Top - near P2 base at top of board) -->
+  <aside class="bench-area bench-area--top" [class.my-bench]="localPlayerId() === 2">
     <app-bench
-      [pokemon]="player1Bench()"
-      [playerId]="1"
+      [pokemon]="player2Bench()"
+      [playerId]="2"
       [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 1 && localPlayerId() === 1"
+      [isCurrentPlayer]="currentPlayerId() === 2 && localPlayerId() === 2"
       (pokemonSelected)="onBenchPokemonSelect($event)"
     />
   </aside>
@@ -186,13 +186,13 @@
     }
   </main>
 
-  <!-- Player 2 Bench (Bottom) -->
-  <aside class="bench-area bench-area--bottom" [class.my-bench]="localPlayerId() === 2">
+  <!-- Player 1 Bench (Bottom - near P1 base at bottom of board) -->
+  <aside class="bench-area bench-area--bottom" [class.my-bench]="localPlayerId() === 1">
     <app-bench
-      [pokemon]="player2Bench()"
-      [playerId]="2"
+      [pokemon]="player1Bench()"
+      [playerId]="1"
       [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 2 && localPlayerId() === 2"
+      [isCurrentPlayer]="currentPlayerId() === 1 && localPlayerId() === 1"
       (pokemonSelected)="onBenchPokemonSelect($event)"
     />
   </aside>
