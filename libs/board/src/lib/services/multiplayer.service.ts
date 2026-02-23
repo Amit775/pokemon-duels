@@ -1,5 +1,6 @@
-import { Injectable, signal, computed, inject, OnDestroy } from '@angular/core';
+import { Injectable, inject, OnDestroy } from '@angular/core';
 import { SignalRService } from './signalr.service';
+import { GameStore } from '../store/game.store';
 import { Spot, Passage, Pokemon } from '../models/board.models';
 import { BattleResult } from '../store/game.types';
 
@@ -46,45 +47,8 @@ export type RoomState = 'idle' | 'creating' | 'joining' | 'waiting' | 'playing' 
 @Injectable({
   providedIn: 'root',
 })
-export class MultiplayerService implements OnDestroy {
   private readonly signalR = inject(SignalRService);
-
-  // Room state
-  private readonly _roomState = signal<RoomState>('idle');
-  private readonly _roomInfo = signal<RoomInfo | null>(null);
-  private readonly _localPlayerId = signal<number | null>(null);
-  private readonly _error = signal<string | null>(null);
-
-  // Game state from server
-  private readonly _gameState = signal<MultiplayerGameState | null>(null);
-
-  // Public readonly signals
-  readonly roomState = this._roomState.asReadonly();
-  readonly roomInfo = this._roomInfo.asReadonly();
-  readonly localPlayerId = this._localPlayerId.asReadonly();
-  readonly error = this._error.asReadonly();
-  readonly gameState = this._gameState.asReadonly();
-
-  // Computed values for UI
-  readonly roomCode = computed(() => this._roomInfo()?.roomId ?? null);
-  readonly isMyTurn = computed(() => {
-    const state = this._gameState();
-    const myId = this._localPlayerId();
-    return state?.currentPlayerId === myId && state?.phase === 'playing';
-  });
-  readonly isHost = computed(() => this._localPlayerId() === 1);
-  readonly opponentConnected = computed(() => (this._roomInfo()?.playerCount ?? 0) >= 2);
-
-  // Game state accessors
-  readonly spots = computed(() => this._gameState()?.spots ?? []);
-  readonly passages = computed(() => this._gameState()?.passages ?? []);
-  readonly pokemon = computed(() => this._gameState()?.pokemon ?? []);
-  readonly currentPlayerId = computed(() => this._gameState()?.currentPlayerId ?? 1);
-  readonly selectedPokemonId = computed(() => this._gameState()?.selectedPokemonId ?? null);
-  readonly validMoveTargets = computed(() => this._gameState()?.validMoveTargets ?? []);
-  readonly phase = computed(() => this._gameState()?.phase ?? 'setup');
-  readonly winnerId = computed(() => this._gameState()?.winnerId ?? null);
-  readonly lastBattle = computed(() => this._gameState()?.lastBattle ?? null);
+  private readonly gameStore = inject(GameStore);
 
   constructor() {
     this.setupEventHandlers();
@@ -95,52 +59,30 @@ export class MultiplayerService implements OnDestroy {
   }
 
   private setupEventHandlers(): void {
-    // Player joined the room
-    this.signalR.on<RoomInfo>('PlayerJoined', (room) => {
-      console.log('Player joined:', room);
-      this._roomInfo.set(room);
-    });
-
-    // Game started
+    // Sync server events into the game store
     this.signalR.on<MultiplayerGameState>('GameStarted', (state) => {
-      console.log('Game started:', state);
-      this._gameState.set(state);
-      this._roomState.set('playing');
+      this.gameStore.initializeGame(state.spots, state.passages, state.playerCount);
+      // Additional state sync if needed
     });
-
-    // Game state updated (selection changed, etc.)
     this.signalR.on<MultiplayerGameState>('GameStateUpdated', (state) => {
-      console.log('Game state updated:', state);
-      this._gameState.set(state);
+      // Sync state into store (custom logic may be needed)
+      this.gameStore.patchState({
+        ...state,
+      });
     });
-
-    // Move was made
     this.signalR.on<MoveResult>('MoveMade', (result) => {
-      console.log('Move made:', result);
-      this._gameState.set(result.gameState);
-      if (result.won) {
-        this._roomState.set('ended');
-      }
+      this.gameStore.patchState({
+        ...result.gameState,
+        lastBattle: result.battle ?? null,
+      });
     });
-
-    // Game ended
     this.signalR.on<MultiplayerGameState>('GameEnded', (state) => {
-      console.log('Game ended:', state);
-      this._gameState.set(state);
-      this._roomState.set('ended');
+      this.gameStore.patchState({
+        ...state,
+        phase: 'ended',
+      });
     });
-
-    // Player left
-    this.signalR.on<string>('PlayerLeft', (roomId) => {
-      console.log('Player left room:', roomId);
-      const currentRoom = this._roomInfo();
-      if (currentRoom) {
-        this._roomInfo.set({
-          ...currentRoom,
-          playerCount: currentRoom.playerCount - 1,
-        });
-      }
-    });
+    // Add more event handlers as needed
   }
 
   /**
@@ -242,11 +184,7 @@ export class MultiplayerService implements OnDestroy {
    * Select a Pokemon (only works on your turn)
    */
   async selectPokemon(pokemonId: string | null): Promise<void> {
-    if (!this.isMyTurn()) {
-      console.warn('Not your turn');
-      return;
-    }
-
+    // Always dispatch to server, let store update from server event
     try {
       await this.signalR.send('SelectPokemon', pokemonId);
     } catch (err) {
@@ -258,11 +196,7 @@ export class MultiplayerService implements OnDestroy {
    * Move a Pokemon to a target spot
    */
   async movePokemon(pokemonId: string, targetSpotId: string): Promise<void> {
-    if (!this.isMyTurn()) {
-      console.warn('Not your turn');
-      return;
-    }
-
+    // Always dispatch to server, let store update from server event
     try {
       await this.signalR.send('MovePokemon', pokemonId, targetSpotId);
     } catch (err) {

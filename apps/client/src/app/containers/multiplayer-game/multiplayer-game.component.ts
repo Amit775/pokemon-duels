@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  MultiplayerService,
   getSpecies,
   Pokemon,
   Spot,
+  GameStore,
 } from '@pokemon-duel/board';
 
 // Design viewport dimensions - all spot coordinates are relative to this
@@ -31,26 +31,25 @@ import { SpotComponent } from '../../components/spot/spot.component';
   templateUrl: './multiplayer-game.component.html',
   styleUrl: './multiplayer-game.component.scss',
 })
-export class MultiplayerGameComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  protected readonly multiplayer = inject(MultiplayerService);
+  protected readonly gameStore = inject(GameStore);
 
-  // Room info
-  protected readonly roomCode = this.multiplayer.roomCode;
-  protected readonly localPlayerId = this.multiplayer.localPlayerId;
-  protected readonly isMyTurn = this.multiplayer.isMyTurn;
+  // Room info (if needed, can be injected from a separate multiplayer state service)
+  // protected readonly roomCode = ...
+  // protected readonly localPlayerId = ...
+  // protected readonly isMyTurn = ...
 
-  // Game state from server
-  protected readonly spots = this.multiplayer.spots;
-  protected readonly passages = this.multiplayer.passages;
-  protected readonly pokemon = this.multiplayer.pokemon;
-  protected readonly currentPlayerId = this.multiplayer.currentPlayerId;
-  protected readonly selectedPokemonId = this.multiplayer.selectedPokemonId;
-  protected readonly validMoveTargets = this.multiplayer.validMoveTargets;
-  protected readonly phase = this.multiplayer.phase;
-  protected readonly winnerId = this.multiplayer.winnerId;
-  protected readonly lastBattle = this.multiplayer.lastBattle;
+  // Game state from signal store
+  protected readonly spots = this.gameStore.spots;
+  protected readonly passages = this.gameStore.passages;
+  protected readonly pokemon = this.gameStore.pokemonOnBoard;
+  protected readonly currentPlayerId = this.gameStore.currentPlayerId;
+  protected readonly selectedPokemonId = this.gameStore.selectedPokemonId;
+  protected readonly validMoveTargets = this.gameStore.validMoveTargets;
+  protected readonly phase = this.gameStore.phase;
+  protected readonly winnerId = this.gameStore.winnerId;
+  protected readonly lastBattle = this.gameStore.lastBattle;
 
   // Spot map for O(1) lookups
   protected readonly spotMap = computed(() => {
@@ -135,44 +134,34 @@ export class MultiplayerGameComponent implements OnInit, OnDestroy {
   }
 
   protected async onSpotClick(spot: Spot): Promise<void> {
-    if (!this.isMyTurn()) return;
-
+    // All actions should dispatch to the store (which will sync with server via MultiplayerService)
     const selectedId = this.selectedPokemonId();
-
-    // If a Pokemon is selected and this is a valid target, move it
     if (selectedId && this.validMoveTargets().includes(spot.id)) {
-      await this.multiplayer.movePokemon(selectedId, spot.id);
+      await this.gameStore.movePokemon(selectedId, spot.id);
       return;
     }
-
-    // If clicking a spot with a Pokemon, select it (if current player's)
     const pokemonAtSpot = this.getPokemonAtSpot(spot.id);
-    if (pokemonAtSpot && pokemonAtSpot.playerId === this.localPlayerId()) {
-      await this.multiplayer.selectPokemon(pokemonAtSpot.id);
+    if (pokemonAtSpot && pokemonAtSpot.playerId === this.currentPlayerId()) {
+      await this.gameStore.selectPokemon(pokemonAtSpot.id);
     }
   }
 
   protected async onPokemonClick(pokemon: Pokemon): Promise<void> {
-    if (!this.isMyTurn()) return;
-
-    if (pokemon.playerId === this.localPlayerId() && this.phase() !== 'ended') {
-      await this.multiplayer.selectPokemon(pokemon.id);
+    if (pokemon.playerId === this.currentPlayerId() && this.phase() !== 'ended') {
+      await this.gameStore.selectPokemon(pokemon.id);
     }
   }
 
   protected async onBenchPokemonSelect(pokemon: Pokemon): Promise<void> {
-    if (!this.isMyTurn()) return;
-
-    if (pokemon.playerId === this.localPlayerId() && this.phase() !== 'ended') {
-      await this.multiplayer.selectPokemon(pokemon.id);
+    if (pokemon.playerId === this.currentPlayerId() && this.phase() !== 'ended') {
+      await this.gameStore.selectPokemon(pokemon.id);
     }
   }
 
   protected async skipTurn(): Promise<void> {
-    // Clear selection locally - server will advance turn
-    await this.multiplayer.selectPokemon(null);
-    // Note: In multiplayer, we might need a dedicated "skip turn" server action
-    // For now, deselecting and the opponent taking their turn is the flow
+    await this.gameStore.clearSelection();
+    await this.gameStore.clearBattle();
+    await this.gameStore.endTurn();
   }
 
   protected leaveGame(): void {
