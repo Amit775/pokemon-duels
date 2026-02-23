@@ -10,6 +10,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   MultiplayerService,
+  MultiplayerStore,
   getSpecies,
   Pokemon,
   Spot,
@@ -34,23 +35,26 @@ import { SpotComponent } from '../../components/spot/spot.component';
 export class MultiplayerGameComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  protected readonly multiplayer = inject(MultiplayerService);
+  private readonly multiplayer = inject(MultiplayerService);
 
-  // Room info
-  protected readonly roomCode = this.multiplayer.roomCode;
-  protected readonly localPlayerId = this.multiplayer.localPlayerId;
-  protected readonly isMyTurn = this.multiplayer.isMyTurn;
+  // Store — single source of truth for all multiplayer state
+  private readonly store = inject(MultiplayerStore);
 
-  // Game state from server
-  protected readonly spots = this.multiplayer.spots;
-  protected readonly passages = this.multiplayer.passages;
-  protected readonly pokemon = this.multiplayer.pokemon;
-  protected readonly currentPlayerId = this.multiplayer.currentPlayerId;
-  protected readonly selectedPokemonId = this.multiplayer.selectedPokemonId;
-  protected readonly validMoveTargets = this.multiplayer.validMoveTargets;
-  protected readonly phase = this.multiplayer.phase;
-  protected readonly winnerId = this.multiplayer.winnerId;
-  protected readonly lastBattle = this.multiplayer.lastBattle;
+  // Room info from store
+  protected readonly roomCode = this.store.roomCode;
+  protected readonly localPlayerId = this.store.localPlayerId;
+  protected readonly isMyTurn = this.store.isMyTurn;
+
+  // Game state from store
+  protected readonly spots = this.store.spots;
+  protected readonly passages = this.store.passages;
+  protected readonly pokemon = this.store.pokemon;
+  protected readonly currentPlayerId = this.store.currentPlayerId;
+  protected readonly selectedPokemonId = this.store.selectedPokemonId;
+  protected readonly validMoveTargets = this.store.validMoveTargets;
+  protected readonly phase = this.store.phase;
+  protected readonly winnerId = this.store.winnerId;
+  protected readonly lastBattle = this.store.lastBattle;
 
   // Spot map for O(1) lookups
   protected readonly spotMap = computed(() => {
@@ -63,15 +67,15 @@ export class MultiplayerGameComponent implements OnInit, OnDestroy {
 
   // Pokemon on board (not on bench)
   protected readonly pokemonOnBoard = computed(() =>
-    this.pokemon().filter((p) => p.spotId !== null)
+    this.pokemon().filter((p) => p.spotId !== null),
   );
 
   // Player benches
   protected readonly player1Bench = computed(() =>
-    this.pokemon().filter((p) => p.playerId === 1 && p.spotId === null)
+    this.pokemon().filter((p) => p.playerId === 1 && p.spotId === null),
   );
   protected readonly player2Bench = computed(() =>
-    this.pokemon().filter((p) => p.playerId === 2 && p.spotId === null)
+    this.pokemon().filter((p) => p.playerId === 2 && p.spotId === null),
   );
 
   // Check if local player won/lost
@@ -84,7 +88,7 @@ export class MultiplayerGameComponent implements OnInit, OnDestroy {
   constructor() {
     // Effect to navigate back to lobby if not in a room
     effect(() => {
-      const roomState = this.multiplayer.roomState();
+      const roomState = this.store.roomState();
       if (roomState === 'idle') {
         this.router.navigate(['/lobby']);
       }
@@ -171,8 +175,6 @@ export class MultiplayerGameComponent implements OnInit, OnDestroy {
   protected async skipTurn(): Promise<void> {
     // Clear selection locally - server will advance turn
     await this.multiplayer.selectPokemon(null);
-    // Note: In multiplayer, we might need a dedicated "skip turn" server action
-    // For now, deselecting and the opponent taking their turn is the flow
   }
 
   protected leaveGame(): void {

@@ -10,6 +10,8 @@ export * from './lib/models/board.models';
 export * from './lib/store/board.store';
 export * from './lib/store/game.store';
 export * from './lib/store/game.types';
+export * from './lib/store/multiplayer.store';
+export * from './lib/store/multiplayer.types';
 
 // Services
 export * from './lib/services/board.service';
