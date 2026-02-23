@@ -25,10 +25,10 @@
 
 ```bash
 # Build for production
-pnpm nx build client --configuration=production
+npx nx build client --configuration=production
 
 # Deploy to Firebase
-pnpm nx deploy client
+npx nx deploy client
 
 # Or manually
 firebase deploy --only hosting
@@ -38,7 +38,7 @@ firebase deploy --only hosting
 
 ```bash
 # Login to Firebase
-pnpm firebase:login
+npm run firebase:login
 # or: firebase login
 
 # Initialize (if needed)
@@ -66,7 +66,7 @@ ENTRYPOINT ["dotnet", "Server.dll"]
 
 ```bash
 # Deploy via Nx
-pnpm nx deploy server
+npx nx deploy server
 
 # Or via Cloud Build
 gcloud builds submit --config=cloudbuild.yaml
@@ -76,7 +76,7 @@ gcloud builds submit --config=cloudbuild.yaml
 
 ```bash
 # Login to GCP
-pnpm gcloud:login
+npm run gcloud:login
 # or: gcloud auth login
 
 # Set project

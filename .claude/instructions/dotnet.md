@@ -57,13 +57,13 @@ public class GameHub : Hub
 
 ```bash
 # Development (hot reload)
-pnpm nx serve server
+npx nx serve server
 
 # Build for production
-pnpm nx build server
+npx nx build server
 
 # Deploy to Cloud Run
-pnpm nx deploy server
+npx nx deploy server
 ```
 
 ## Configuration

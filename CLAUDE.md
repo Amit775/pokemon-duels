@@ -4,7 +4,7 @@
 
 This is an Nx monorepo with Angular client, .NET server, and shared game logic.
 
-**Run commands with:** `pnpm nx <target> <project>`
+**Run commands with:** `npx nx <target> <project>`
 
 ## Instructions
 
