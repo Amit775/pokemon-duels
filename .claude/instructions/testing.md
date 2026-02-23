@@ -8,17 +8,17 @@ Unit tests use **Vitest** with Angular testing utilities.
 
 ```bash
 # Test specific project
-pnpm nx test board
-pnpm nx test client
+npx nx test board
+npx nx test client
 
 # Test all projects
-pnpm nx run-many -t test
+npx nx run-many -t test
 
 # Watch mode
-pnpm nx test board --watch
+npx nx test board --watch
 
 # With coverage
-pnpm nx test board --coverage
+npx nx test board --coverage
 ```
 
 ### Test Structure
@@ -52,16 +52,16 @@ End-to-end tests use **Playwright** for browser automation.
 
 ```bash
 # Run e2e tests
-pnpm nx e2e client
+npx nx e2e client
 
 # With UI mode
-pnpm nx e2e client -- --ui
+npx nx e2e client -- --ui
 
 # Specific test file
-pnpm nx e2e client -- e2e/multiplayer.spec.ts
+npx nx e2e client -- e2e/multiplayer.spec.ts
 
 # Debug mode
-pnpm nx e2e client -- --debug
+npx nx e2e client -- --debug
 ```
 
 ### Test Structure

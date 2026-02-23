@@ -68,7 +68,7 @@ apps/docs/src/content/agents/
 
 ## Conventions
 
-- Use `pnpm` as package manager (check `pnpm-lock.yaml`)
-- Run tasks via Nx: `pnpm nx <target> <project>`
+- Use `npm` as package manager (`package-lock.json`)
+- Run tasks via Nx: `npx nx <target> <project>`
 - Follow conventional commits for Git messages
 - Keep components small and focused

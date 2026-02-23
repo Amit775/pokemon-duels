@@ -7,7 +7,7 @@
 
 - For navigating/exploring the workspace, invoke the `nx-workspace` skill first - it has patterns for querying projects, targets, and dependencies
 - When running tasks (for example build, lint, test, e2e, etc.), always prefer running the task through `nx` (i.e. `nx run`, `nx run-many`, `nx affected`) instead of using the underlying tooling directly
-- Prefix nx commands with the workspace's package manager: `pnpm nx <command>`
+- Run nx commands via npx: `npx nx <command>`
 - You have access to the Nx MCP server and its tools, use them to help the user
 - For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
 - NEVER guess CLI flags - always check nx_docs or `--help` first when unsure
@@ -28,27 +28,27 @@
 
 ```bash
 # Serve applications
-pnpm nx serve client      # Angular client on :4200
-pnpm nx serve server      # .NET server on :5000
-pnpm nx serve docs        # Docs site on :5173
+npx nx serve client      # Angular client on :4200
+npx nx serve server      # .NET server on :5000
+npx nx serve docs        # Docs site on :5173
 
 # Build
-pnpm nx build client --configuration=production
-pnpm nx run-many -t build
+npx nx build client --configuration=production
+npx nx run-many -t build
 
 # Test
-pnpm nx test board        # Unit tests for board library
-pnpm nx e2e client        # Playwright e2e tests
+npx nx test board        # Unit tests for board library
+npx nx e2e client        # Playwright e2e tests
 
 # Lint
-pnpm nx lint client
-pnpm nx affected -t lint  # Only affected projects
+npx nx lint client
+npx nx affected -t lint  # Only affected projects
 
 # Deploy
-pnpm nx deploy client     # Firebase Hosting
-pnpm nx deploy server     # Cloud Run
+npx nx deploy client     # Firebase Hosting
+npx nx deploy server     # Cloud Run
 ```
 
 ## Project Graph
 
-Use `pnpm nx graph` to visualize project dependencies.
+Use `npx nx graph` to visualize project dependencies.
