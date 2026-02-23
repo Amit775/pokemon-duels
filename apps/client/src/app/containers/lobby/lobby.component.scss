@@ -4,6 +4,9 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 1rem;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 // Header
@@ -123,6 +126,7 @@
   background: rgba(52, 152, 219, 0.2);
   color: #3498db;
   border: 1px solid rgba(52, 152, 219, 0.4);
+  flex-shrink: 0;
   
   &:hover:not(:disabled) {
     background: rgba(52, 152, 219, 0.3);
@@ -159,10 +163,13 @@
 .join-form {
   display: flex;
   gap: 0.75rem;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .room-input {
   flex: 1;
+  min-width: 0;
   padding: 0.75rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
@@ -172,6 +179,7 @@
   text-align: center;
   letter-spacing: 0.3rem;
   text-transform: uppercase;
+  box-sizing: border-box;
   
   &::placeholder {
     color: rgba(255, 255, 255, 0.3);
