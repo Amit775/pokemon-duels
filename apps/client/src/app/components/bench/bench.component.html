@@ -1,28 +1,33 @@
-<div 
-  class="bench" 
+<div
+  class="bench"
   [class.bench--active]="isCurrentPlayer()"
   [class.bench--player-1]="playerId() === 1"
   [class.bench--player-2]="playerId() === 2"
 >
   <div class="bench-header">
-    <span class="bench-title">P{{ playerId() }}</span>
+    <mat-chip>
+      <mat-icon matChipAvatar>person</mat-icon>
+      P{{ playerId() }}
+    </mat-chip>
     @if (isCurrentPlayer()) {
-      <span class="bench-indicator">Your Turn</span>
+      <mat-chip highlighted class="turn-chip">
+        Your Turn
+      </mat-chip>
     }
   </div>
-  
+
   <div class="bench-pokemon">
     @for (p of pokemon(); track p.id) {
-      <div 
+      <div
         class="bench-slot"
         [class.bench-slot--selected]="selectedPokemonId() === p.id"
         [class.bench-slot--selectable]="isCurrentPlayer()"
         [title]="getSpecies(p.speciesId)?.name ?? ''"
         (click)="onPokemonClick(p)"
       >
-        <img 
-          class="bench-pokemon-image" 
-          [src]="getSpecies(p.speciesId)?.imageUrl" 
+        <img
+          class="bench-pokemon-image"
+          [src]="getSpecies(p.speciesId)?.imageUrl"
           [alt]="getSpecies(p.speciesId)?.name"
         />
         <span class="bench-move-badge">{{ getSpecies(p.speciesId)?.movement }}</span>

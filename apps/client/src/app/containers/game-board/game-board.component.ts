@@ -4,15 +4,18 @@ import { BenchComponent } from '../../components/bench/bench.component';
 import { PassageComponent } from '../../components/passage/passage.component';
 import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { SpotComponent } from '../../components/spot/spot.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
-// Design viewport dimensions - all spot coordinates are relative to this
 const BOARD_DESIGN_WIDTH = 1000;
 const BOARD_DESIGN_HEIGHT = 500;
 
 @Component({
   selector: 'app-game-board',
   standalone: true,
-  imports: [BenchComponent, PokemonComponent, PassageComponent, SpotComponent],
+  imports: [BenchComponent, PokemonComponent, PassageComponent, SpotComponent, MatButtonModule, MatIconModule, MatChipsModule, MatToolbarModule],
   providers: [GameStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-board.component.html',

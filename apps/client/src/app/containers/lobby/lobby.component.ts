@@ -9,11 +9,27 @@ import {
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MultiplayerService, MultiplayerStore, SignalRService } from '@pokemon-duel/board';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-lobby',
   standalone: true,
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lobby.component.html',
   styleUrl: './lobby.component.scss',
@@ -22,14 +38,10 @@ export class LobbyComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly multiplayerService = inject(MultiplayerService);
   private readonly signalRService = inject(SignalRService);
-
-  // Store — single source of truth for all multiplayer state
   private readonly store = inject(MultiplayerStore);
 
-  // Local form state
   protected readonly joinCode = signal('');
 
-  // State from store
   protected readonly roomState = this.store.roomState;
   protected readonly roomCode = this.store.roomCode;
   protected readonly localPlayerId = this.store.localPlayerId;
@@ -37,13 +49,11 @@ export class LobbyComponent implements OnDestroy {
   protected readonly error = this.store.error;
   protected readonly connectionState = this.signalRService.connectionState;
 
-  // Computed UI states from store
   protected readonly isLoading = this.store.isLoading;
   protected readonly isWaiting = this.store.isWaiting;
   protected readonly isInRoom = this.store.isInRoom;
 
   constructor() {
-    // Auto-navigate to game when it starts
     effect(() => {
       if (this.roomState() === 'playing' && this.roomCode()) {
         this.navigateToGame();
@@ -51,9 +61,7 @@ export class LobbyComponent implements OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    // Don't leave room on destroy - we might be navigating to the game
-  }
+  ngOnDestroy(): void {}
 
   protected async createRoom(): Promise<void> {
     await this.multiplayerService.createRoom();
@@ -65,7 +73,6 @@ export class LobbyComponent implements OnDestroy {
 
     const success = await this.multiplayerService.joinRoom(code);
     if (success) {
-      // Check if game already started (we might be player 2)
       if (this.store.roomState() === 'playing') {
         this.navigateToGame();
       }

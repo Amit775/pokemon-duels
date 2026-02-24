@@ -1,22 +1,19 @@
-<div class="app-container">
-  <nav class="app-nav">
-    <div class="nav-brand">
-      <span class="brand-icon">⚔️</span>
-      <span class="brand-text">Pokemon Duel</span>
-    </div>
-    <div class="nav-links">
-      <a routerLink="/board-creator" routerLinkActive="active" class="nav-link">
-        <span class="link-icon">🎨</span>
-        <span class="link-text">Create Board</span>
-      </a>
-      <a routerLink="/lobby" routerLinkActive="active" class="nav-link">
-        <span class="link-icon">🎮</span>
-        <span class="link-text">Play</span>
-      </a>
-    </div>
-  </nav>
-  
-  <main class="app-content">
-    <router-outlet />
-  </main>
-</div>
+<mat-toolbar color="primary">
+  <mat-icon>sports_esports</mat-icon>
+  <span class="brand-text">Pokemon Duel</span>
+
+  <span class="spacer"></span>
+
+  <a mat-button routerLink="/board-creator" routerLinkActive="active-link">
+    <mat-icon>brush</mat-icon>
+    Create Board
+  </a>
+  <a mat-button routerLink="/lobby" routerLinkActive="active-link">
+    <mat-icon>videogame_asset</mat-icon>
+    Play
+  </a>
+</mat-toolbar>
+
+<main class="app-content">
+  <router-outlet />
+</main>

@@ -1,4 +1,3 @@
-// Responsive pokemon size using container query units
 $pokemon-size: min(48px, 7cqmin);
 $pokemon-border: max(2px, 0.4cqmin);
 
@@ -7,8 +6,8 @@ $pokemon-border: max(2px, 0.4cqmin);
   width: $pokemon-size;
   height: $pokemon-size;
   border-radius: 50%;
-  border: $pokemon-border solid #333;
-  background-color: #fff;
+  border: $pokemon-border solid var(--mat-sys-outline);
+  background-color: var(--mat-sys-surface-container-highest);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -24,37 +23,34 @@ $pokemon-border: max(2px, 0.4cqmin);
     z-index: 10;
   }
 
-  // Type variants - border color matches element
   &--normal {
-    border-color: #666;
-    background-color: #f5f5f5;
+    border-color: #888;
+    background-color: var(--mat-sys-surface-container);
   }
 
   &--water {
-    border-color: #2196f3;
-    background-color: #e3f2fd;
+    border-color: #42a5f5;
+    background-color: rgba(33, 150, 243, 0.15);
   }
 
   &--fire {
-    border-color: #f44336;
-    background-color: #ffebee;
+    border-color: #ef5350;
+    background-color: rgba(244, 67, 54, 0.15);
   }
 
   &--grass {
-    border-color: #4caf50;
-    background-color: #e8f5e9;
+    border-color: #66bb6a;
+    background-color: rgba(76, 175, 80, 0.15);
   }
 
-  // Player ownership indicator (outer ring)
   &--player-1 {
-    box-shadow: 0 0 0 max(2px, 0.4cqmin) #1976d2;
+    box-shadow: 0 0 0 max(2px, 0.4cqmin) #42a5f5;
   }
 
   &--player-2 {
-    box-shadow: 0 0 0 max(2px, 0.4cqmin) #d32f2f;
+    box-shadow: 0 0 0 max(2px, 0.4cqmin) #ef5350;
   }
 
-  // Selection state (overrides player indicator)
   &--selected {
     box-shadow: 0 0 0 max(3px, 0.5cqmin) rgba(255, 215, 0, 0.9), 0 0 min(12px, 2cqmin) rgba(255, 215, 0, 0.6);
     transform: translate(-50%, -50%) scale(1.1);
@@ -64,13 +60,9 @@ $pokemon-border: max(2px, 0.4cqmin);
     }
   }
 
-  // Draggable state
   &--draggable {
     cursor: grab;
-    
-    &:active {
-      cursor: grabbing;
-    }
+    &:active { cursor: grabbing; }
   }
 }
 
@@ -88,24 +80,16 @@ $pokemon-border: max(2px, 0.4cqmin);
   min-width: min(16px, 2.5cqmin);
   height: min(16px, 2.5cqmin);
   border-radius: min(8px, 1.25cqmin);
-  background-color: #333;
-  color: #fff;
+  background-color: var(--mat-sys-outline);
+  color: var(--mat-sys-on-primary);
   font-size: min(10px, 1.5cqmin);
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 max(2px, 0.3cqmin);
-  
-  .pokemon--water & {
-    background-color: #1976d2;
-  }
-  
-  .pokemon--fire & {
-    background-color: #d32f2f;
-  }
-  
-  .pokemon--grass & {
-    background-color: #388e3c;
-  }
+
+  .pokemon--water & { background-color: #1976d2; }
+  .pokemon--fire & { background-color: #d32f2f; }
+  .pokemon--grass & { background-color: #388e3c; }
 }

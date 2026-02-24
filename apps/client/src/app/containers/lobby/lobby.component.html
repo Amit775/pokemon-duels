@@ -1,123 +1,120 @@
 <div class="lobby-container">
-  <!-- Header -->
   <div class="lobby-header">
-    <h1 class="title">
-      <span class="title-icon">🎮</span>
-      Pokemon Duel
-    </h1>
-    <p class="subtitle">Challenge your friends in real-time battles!</p>
+    <h1>Pokemon Duel</h1>
+    <p>Challenge your friends in real-time battles!</p>
   </div>
 
-  <!-- Error Message -->
   @if (error()) {
     <div class="error-banner">
-      <span class="error-icon">⚠️</span>
+      <mat-icon>warning</mat-icon>
       <span>{{ error() }}</span>
     </div>
   }
 
-  <!-- Main Content -->
   @if (!isInRoom()) {
-    <!-- Not in a room - show create/join options -->
     <div class="lobby-cards">
-      <!-- Create Room Card -->
-      <div class="lobby-card create-card">
-        <div class="card-icon">🏠</div>
-        <h2 class="card-title">Create Room</h2>
-        <p class="card-description">
-          Start a new game and invite a friend to join with a room code.
-        </p>
-        <button 
-          class="btn btn-primary" 
-          [disabled]="isLoading()"
-          (click)="createRoom()">
-          @if (isLoading() && roomState() === 'creating') {
-            <span class="spinner"></span>
-            Creating...
-          } @else {
-            Create New Room
-          }
-        </button>
-      </div>
+      <mat-card appearance="outlined" class="lobby-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="card-avatar">meeting_room</mat-icon>
+          <mat-card-title>Create Room</mat-card-title>
+          <mat-card-subtitle>Start a new game</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Create a room and invite a friend to join with a room code.</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            mat-flat-button
+            [disabled]="isLoading()"
+            (click)="createRoom()">
+            @if (isLoading() && roomState() === 'creating') {
+              <mat-spinner diameter="20"></mat-spinner>
+            }
+            {{ isLoading() && roomState() === 'creating' ? 'Creating...' : 'Create New Room' }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
 
-      <!-- Join Room Card -->
-      <div class="lobby-card join-card">
-        <div class="card-icon">🚪</div>
-        <h2 class="card-title">Join Room</h2>
-        <p class="card-description">
-          Enter a room code to join a friend's game.
-        </p>
-        <div class="join-form">
-          <input 
-            type="text" 
-            class="room-input"
-            placeholder="Enter room code"
-            [value]="joinCode()"
-            (input)="updateJoinCode($event)"
-            maxlength="4"
-            [disabled]="isLoading()">
-          <button 
-            class="btn btn-secondary" 
+      <mat-card appearance="outlined" class="lobby-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="card-avatar">login</mat-icon>
+          <mat-card-title>Join Room</mat-card-title>
+          <mat-card-subtitle>Enter a room code</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Enter a room code to join a friend's game.</p>
+          <mat-form-field appearance="outline" class="room-code-field">
+            <mat-label>Room Code</mat-label>
+            <input
+              matInput
+              placeholder="ABCD"
+              [value]="joinCode()"
+              (input)="updateJoinCode($event)"
+              maxlength="4"
+              [disabled]="isLoading()"
+              style="text-transform: uppercase; letter-spacing: 0.3rem; text-align: center;">
+            <mat-icon matPrefix>tag</mat-icon>
+          </mat-form-field>
+        </mat-card-content>
+        <mat-card-actions>
+          <button
+            mat-flat-button
             [disabled]="isLoading() || !joinCode()"
             (click)="joinRoom()">
             @if (isLoading() && roomState() === 'joining') {
-              <span class="spinner"></span>
-              Joining...
-            } @else {
-              Join
+              <mat-spinner diameter="20"></mat-spinner>
             }
+            {{ isLoading() && roomState() === 'joining' ? 'Joining...' : 'Join' }}
           </button>
-        </div>
-      </div>
+        </mat-card-actions>
+      </mat-card>
     </div>
   } @else {
-    <!-- In a room - show waiting state -->
     <div class="waiting-room">
-      <div class="waiting-card">
+      <mat-card appearance="outlined" class="waiting-card">
         @if (isWaiting()) {
-          <!-- Waiting for opponent -->
-          <div class="waiting-icon">
-            <div class="pulse-ring"></div>
-            <span>⏳</span>
-          </div>
-          <h2 class="waiting-title">Waiting for Opponent</h2>
-          
-          <div class="room-code-display">
-            <span class="code-label">Room Code:</span>
-            <div class="code-box">
-              <span class="code-text">{{ roomCode() }}</span>
-              <button class="copy-btn" (click)="copyRoomCode()" title="Copy code">
-                📋
-              </button>
-            </div>
-          </div>
-          
-          <p class="waiting-hint">
-            Share this code with your friend to start the battle!
-          </p>
+          <mat-card-content class="waiting-content">
+            <mat-spinner diameter="48"></mat-spinner>
+            <h2>Waiting for Opponent</h2>
 
-          <div class="player-indicator">
-            <span class="player-badge">You are Player {{ localPlayerId() }}</span>
-          </div>
+            <div class="room-code-display">
+              <span class="code-label">Room Code</span>
+              <div class="code-box">
+                <span class="code-text">{{ roomCode() }}</span>
+                <button mat-icon-button (click)="copyRoomCode()" aria-label="Copy code">
+                  <mat-icon>content_copy</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <p class="waiting-hint">Share this code with your friend to start the battle!</p>
+
+            <mat-chip highlighted>
+              <mat-icon matChipAvatar>person</mat-icon>
+              You are Player {{ localPlayerId() }}
+            </mat-chip>
+          </mat-card-content>
         } @else {
-          <!-- Game is ready -->
-          <div class="ready-icon">✅</div>
-          <h2 class="ready-title">Opponent Connected!</h2>
-          <p class="ready-text">Both players are ready. Let the battle begin!</p>
-          
-          <button class="btn btn-success btn-large" (click)="navigateToGame()">
-            Start Battle!
-          </button>
+          <mat-card-content class="ready-content">
+            <mat-icon class="ready-icon">check_circle</mat-icon>
+            <h2>Opponent Connected!</h2>
+            <p>Both players are ready. Let the battle begin!</p>
+
+            <button mat-flat-button class="start-btn" (click)="navigateToGame()">
+              Start Battle!
+            </button>
+          </mat-card-content>
         }
-        
-        <button class="btn btn-outline leave-btn" (click)="leaveRoom()">
-          Leave Room
-        </button>
-      </div>
+
+        <mat-card-actions>
+          <button mat-button (click)="leaveRoom()">
+            Leave Room
+          </button>
+        </mat-card-actions>
+      </mat-card>
     </div>
   }
 
-  <!-- Connection Status -->
   <div class="connection-status" [class.connected]="connectionState() === 'connected'">
     <span class="status-dot"></span>
     <span class="status-text">

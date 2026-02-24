@@ -23,11 +23,14 @@ import { BenchComponent } from '../../components/bench/bench.component';
 import { PassageComponent } from '../../components/passage/passage.component';
 import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { SpotComponent } from '../../components/spot/spot.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-multiplayer-game',
   standalone: true,
-  imports: [BenchComponent, PokemonComponent, PassageComponent, SpotComponent],
+  imports: [BenchComponent, PokemonComponent, PassageComponent, SpotComponent, MatButtonModule, MatIconModule, MatChipsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './multiplayer-game.component.html',
   styleUrl: './multiplayer-game.component.scss',
