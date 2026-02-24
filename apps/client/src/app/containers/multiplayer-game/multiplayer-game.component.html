@@ -1,44 +1,37 @@
 <div class="game-layout">
-  <!-- Win Overlay -->
   @if (phase() === 'ended' && winnerId()) {
     <div class="win-overlay">
-      <div class="win-modal">
+      <div class="win-modal" [class.victory]="localPlayerWon()" [class.defeat]="!localPlayerWon()">
         @if (localPlayerWon()) {
-          <h2 class="win-title victory">🏆 Victory! 🏆</h2>
+          <mat-icon class="result-icon victory-icon">emoji_events</mat-icon>
+          <h2>Victory!</h2>
           <p class="win-message">Congratulations! You won the battle!</p>
         } @else {
-          <h2 class="win-title defeat">💔 Defeat 💔</h2>
+          <mat-icon class="result-icon defeat-icon">heart_broken</mat-icon>
+          <h2>Defeat</h2>
           <p class="win-message">Your opponent captured your flag!</p>
         }
-        <button class="btn btn--primary" (click)="backToLobby()">Back to Lobby</button>
+        <button mat-flat-button (click)="backToLobby()">Back to Lobby</button>
       </div>
     </div>
   }
 
-  <!-- Battle Result Toast -->
   @if (lastBattle(); as battle) {
     <div class="battle-toast">
-      <div class="battle-header">⚔️ Battle!</div>
+      <div class="battle-header">
+        <mat-icon>swords</mat-icon>
+        Battle!
+      </div>
       <div class="battle-rolls">
         <div class="battle-roll">
-          <span class="battle-pokemon">{{
-            getSpeciesName(getPokemonById(battle.attackerId)?.speciesId ?? '')
-          }}</span>
-          <span class="battle-dice"
-            >🎲 {{ battle.attackerRoll
-            }}{{ battle.attackerBonus > 0 ? ' +' + battle.attackerBonus : '' }}</span
-          >
+          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.attackerId)?.speciesId ?? '') }}</span>
+          <span class="battle-dice">{{ battle.attackerRoll }}{{ battle.attackerBonus > 0 ? ' +' + battle.attackerBonus : '' }}</span>
           <span class="battle-total">= {{ battle.attackerRoll + battle.attackerBonus }}</span>
         </div>
         <div class="battle-vs">VS</div>
         <div class="battle-roll">
-          <span class="battle-pokemon">{{
-            getSpeciesName(getPokemonById(battle.defenderId)?.speciesId ?? '')
-          }}</span>
-          <span class="battle-dice"
-            >🎲 {{ battle.defenderRoll
-            }}{{ battle.defenderBonus > 0 ? ' +' + battle.defenderBonus : '' }}</span
-          >
+          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.defenderId)?.speciesId ?? '') }}</span>
+          <span class="battle-dice">{{ battle.defenderRoll }}{{ battle.defenderBonus > 0 ? ' +' + battle.defenderBonus : '' }}</span>
           <span class="battle-total">= {{ battle.defenderRoll + battle.defenderBonus }}</span>
         </div>
       </div>
@@ -48,7 +41,6 @@
     </div>
   }
 
-  <!-- Player 2 Bench (Top - near P2 base at top of board) -->
   <aside class="bench-area bench-area--top" [class.my-bench]="localPlayerId() === 2">
     <app-bench
       [pokemon]="player2Bench()"
@@ -59,9 +51,8 @@
     />
   </aside>
 
-  <!-- Main Board Area -->
   <main class="board-area">
-    <header class="game-header">
+    <div class="game-header">
       <div class="header-left">
         <h2>Pokemon Duel</h2>
         <span class="room-code">Room: {{ roomCode() }}</span>
@@ -69,37 +60,38 @@
 
       <div class="turn-indicator">
         @if (isMyTurn()) {
-          <span class="your-turn-badge">
-            <span class="pulse"></span>
+          <mat-chip highlighted class="your-turn-chip">
             Your Turn!
-          </span>
+          </mat-chip>
         } @else {
-          <span class="waiting-badge"> Opponent's Turn </span>
+          <mat-chip class="opponent-turn-chip">
+            Opponent's Turn
+          </mat-chip>
         }
-        <span
-          class="turn-player"
+        <mat-chip
           [class.turn-player--1]="currentPlayerId() === 1"
           [class.turn-player--2]="currentPlayerId() === 2"
         >
           Player {{ currentPlayerId() }}
-        </span>
+        </mat-chip>
       </div>
 
       <div class="player-info">
         <span class="you-are">You are:</span>
-        <span
-          class="player-badge"
+        <mat-chip
           [class.player-badge--1]="localPlayerId() === 1"
           [class.player-badge--2]="localPlayerId() === 2"
         >
           Player {{ localPlayerId() }}
-        </span>
-        <button class="btn btn--danger btn--small" (click)="leaveGame()">Leave</button>
+        </mat-chip>
+        <button mat-button color="warn" (click)="leaveGame()">
+          <mat-icon>exit_to_app</mat-icon>
+          Leave
+        </button>
       </div>
-    </header>
+    </div>
 
     <div class="board-canvas">
-      <!-- Passages -->
       @for (passage of passages(); track passage.id) {
         @if (getSpotCoords(passage.fromSpotId); as fromCoords) {
           @if (getSpotCoords(passage.toSpotId); as toCoords) {
@@ -126,7 +118,6 @@
         }
       }
 
-      <!-- Valid move target indicators -->
       @if (isMyTurn()) {
         @for (spot of spots(); track spot.id) {
           @if (isValidTarget(spot.id)) {
@@ -138,14 +129,15 @@
               (click)="onSpotClick(spot)"
             >
               @if (isEnemyOccupied(spot.id)) {
-                <span class="battle-icon">⚔️</span>
+                <span class="battle-icon">
+                  <mat-icon>swords</mat-icon>
+                </span>
               }
             </div>
           }
         }
       }
 
-      <!-- Spots -->
       @for (spot of spots(); track spot.id) {
         <app-spot
           [spot]="spot"
@@ -156,7 +148,6 @@
         />
       }
 
-      <!-- Pokemon on board -->
       @for (pokemon of pokemonOnBoard(); track pokemon.id) {
         @if (getSpotCoords(pokemon.spotId!); as coords) {
           <app-pokemon
@@ -175,18 +166,19 @@
 
     @if (isMyTurn() && selectedPokemonId() && phase() !== 'ended') {
       <div class="selection-info">
+        <mat-icon>info</mat-icon>
         <span>Pokemon selected! Click a highlighted spot to move. Red targets = battle!</span>
       </div>
     }
 
     @if (!isMyTurn() && phase() === 'playing') {
       <div class="waiting-info">
-        <span>⏳ Waiting for opponent to make their move...</span>
+        <mat-icon>hourglass_empty</mat-icon>
+        <span>Waiting for opponent to make their move...</span>
       </div>
     }
   </main>
 
-  <!-- Player 1 Bench (Bottom - near P1 base at bottom of board) -->
   <aside class="bench-area bench-area--bottom" [class.my-bench]="localPlayerId() === 1">
     <app-bench
       [pokemon]="player1Bench()"

@@ -2,15 +2,14 @@
   display: contents;
 }
 
-// Passage type colors (UI-friendly shades)
-$color-normal: #3d3d3d;
-$color-normal-hover: #1a1a1a;
-$color-water: #2196f3;
-$color-water-hover: #1976d2;
-$color-fire: #f44336;
-$color-fire-hover: #d32f2f;
-$color-grass: #4caf50;
-$color-grass-hover: #388e3c;
+$color-normal: #9e9e9e;
+$color-normal-hover: #bdbdbd;
+$color-water: #42a5f5;
+$color-water-hover: #64b5f6;
+$color-fire: #ef5350;
+$color-fire-hover: #e57373;
+$color-grass: #66bb6a;
+$color-grass-hover: #81c784;
 
 .passage-svg {
   position: absolute;
@@ -35,45 +34,30 @@ $color-grass-hover: #388e3c;
     stroke-width: 5;
   }
 
-  // Type variants
   &.passage--normal {
     stroke: $color-normal;
-
-    &:hover {
-      stroke: $color-normal-hover;
-    }
+    &:hover { stroke: $color-normal-hover; }
   }
 
   &.passage--water {
     stroke: $color-water;
-
-    &:hover {
-      stroke: $color-water-hover;
-    }
+    &:hover { stroke: $color-water-hover; }
   }
 
   &.passage--fire {
     stroke: $color-fire;
-
-    &:hover {
-      stroke: $color-fire-hover;
-    }
+    &:hover { stroke: $color-fire-hover; }
   }
 
   &.passage--grass {
     stroke: $color-grass;
-
-    &:hover {
-      stroke: $color-grass-hover;
-    }
+    &:hover { stroke: $color-grass-hover; }
   }
 
   &.passage--selected {
     stroke-width: 4;
-    filter: drop-shadow(0 0 4px rgba(33, 150, 243, 0.5));
+    filter: drop-shadow(0 0 4px color-mix(in srgb, var(--mat-sys-primary) 50%, transparent));
 
-    &:hover {
-      stroke-width: 5;
-    }
+    &:hover { stroke-width: 5; }
   }
 }

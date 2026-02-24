@@ -1,5 +1,3 @@
-// Responsive spot size using container query units
-// Falls back to pixel values when not inside a container
 $spot-size: min(40px, 6cqmin);
 $spot-border-width: max(2px, 0.4cqmin);
 
@@ -8,8 +6,8 @@ $spot-border-width: max(2px, 0.4cqmin);
   width: $spot-size;
   height: $spot-size;
   border-radius: 50%;
-  border: $spot-border-width solid #333;
-  background-color: #f0f0f0;
+  border: $spot-border-width solid var(--mat-sys-outline);
+  background-color: var(--mat-sys-surface-container-high);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -20,55 +18,35 @@ $spot-border-width: max(2px, 0.4cqmin);
 
   &:hover {
     transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
-  // Type variants
   &--normal {
-    background-color: #e0e0e0;
-    border-color: #666;
+    background-color: var(--mat-sys-surface-container);
+    border-color: var(--mat-sys-outline);
   }
 
   &--entry {
-    background-color: #fff;
+    background-color: var(--mat-sys-surface-container-highest);
     border-color: #ef5350;
     border-width: 2px;
   }
 
   &--flag {
-    background-color: #fff8e1;
+    background-color: rgba(249, 168, 37, 0.15);
     border-color: #f9a825;
   }
 
-  // Player variants (border styles)
-  &--player-1 {
-    border-style: solid;
-    border-color: #1976d2;
-  }
+  &--player-1 { border-style: solid; border-color: #42a5f5; }
+  &--player-2 { border-style: dashed; border-color: #ef5350; }
+  &--player-3 { border-style: dotted; border-color: #66bb6a; border-width: 4px; }
+  &--player-4 { border-style: double; border-color: #ab47bc; border-width: 5px; }
 
-  &--player-2 {
-    border-style: dashed;
-    border-color: #d32f2f;
-  }
-
-  &--player-3 {
-    border-style: dotted;
-    border-color: #388e3c;
-    border-width: 4px;
-  }
-
-  &--player-4 {
-    border-style: double;
-    border-color: #7b1fa2;
-    border-width: 5px;
-  }
-
-  // Selection state
   &--selected {
-    box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.5);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--mat-sys-primary) 50%, transparent);
 
     &:hover {
-      box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.7);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--mat-sys-primary) 70%, transparent);
     }
   }
 }
@@ -76,7 +54,7 @@ $spot-border-width: max(2px, 0.4cqmin);
 .spot-name {
   font-size: min(10px, 1.5cqmin);
   font-weight: 600;
-  color: #333;
+  color: var(--mat-sys-on-surface);
   text-align: center;
   max-width: 90%;
   overflow: hidden;
@@ -90,22 +68,16 @@ $spot-border-width: max(2px, 0.4cqmin);
   justify-content: center;
   position: relative;
 
-  svg {
-    display: block;
+  svg { display: block; }
+
+  &--pokeball svg {
+    width: min(28px, 4.5cqmin);
+    height: min(28px, 4.5cqmin);
   }
 
-  &--pokeball {
-    svg {
-      width: min(28px, 4.5cqmin);
-      height: min(28px, 4.5cqmin);
-    }
-  }
-
-  &--flag {
-    svg {
-      width: min(22px, 3.5cqmin);
-      height: min(22px, 3.5cqmin);
-    }
+  &--flag svg {
+    width: min(22px, 3.5cqmin);
+    height: min(22px, 3.5cqmin);
   }
 }
 
@@ -116,8 +88,8 @@ $spot-border-width: max(2px, 0.4cqmin);
   width: min(14px, 2cqmin);
   height: min(14px, 2cqmin);
   border-radius: 50%;
-  background-color: #333;
-  color: #fff;
+  background-color: var(--mat-sys-outline);
+  color: var(--mat-sys-on-primary);
   font-size: min(9px, 1.3cqmin);
   font-weight: 700;
   display: flex;
@@ -125,19 +97,8 @@ $spot-border-width: max(2px, 0.4cqmin);
   justify-content: center;
   line-height: 1;
 
-  .spot--player-1 & {
-    background-color: #1976d2;
-  }
-
-  .spot--player-2 & {
-    background-color: #d32f2f;
-  }
-
-  .spot--player-3 & {
-    background-color: #388e3c;
-  }
-
-  .spot--player-4 & {
-    background-color: #7b1fa2;
-  }
+  .spot--player-1 & { background-color: #42a5f5; }
+  .spot--player-2 & { background-color: #ef5350; }
+  .spot--player-3 & { background-color: #66bb6a; }
+  .spot--player-4 & { background-color: #ab47bc; }
 }

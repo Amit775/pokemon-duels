@@ -1,365 +1,167 @@
-// Lobby Component Styles
-
 .lobby-container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 24px 16px;
   height: 100%;
   overflow: auto;
   box-sizing: border-box;
 }
 
-// Header
 .lobby-header {
   text-align: center;
-  margin-bottom: 2rem;
-}
+  margin-bottom: 32px;
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  
-  .title-icon {
-    font-size: 2rem;
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+
+  p {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 1.1rem;
+    margin: 0;
   }
 }
 
-.subtitle {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 1.1rem;
-}
-
-// Error Banner
 .error-banner {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  background: rgba(231, 76, 60, 0.2);
-  border: 1px solid rgba(231, 76, 60, 0.4);
-  border-radius: 8px;
-  color: #e74c3c;
-  
-  .error-icon {
-    font-size: 1.25rem;
-  }
+  gap: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+  border-radius: 12px;
 }
 
-// Cards Layout
 .lobby-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 24px;
 }
 
 .lobby-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 2rem;
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  .card-avatar {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  mat-card-content p {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  mat-card-actions {
+    padding: 16px;
   }
 }
 
-.card-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.room-code-field {
+  width: 100%;
 }
 
-.card-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 0.75rem;
-}
-
-.card-description {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-  line-height: 1.5;
-}
-
-// Buttons
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-  color: white;
-  
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #5dade2 0%, #3498db 100%);
-    transform: translateY(-1px);
-  }
-}
-
-.btn-secondary {
-  background: rgba(52, 152, 219, 0.2);
-  color: #3498db;
-  border: 1px solid rgba(52, 152, 219, 0.4);
-  flex-shrink: 0;
-  
-  &:hover:not(:disabled) {
-    background: rgba(52, 152, 219, 0.3);
-  }
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #27ae60 0%, #219a52 100%);
-  color: white;
-  
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-    transform: translateY(-1px);
-  }
-}
-
-.btn-outline {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  
-  &:hover:not(:disabled) {
-    color: white;
-    border-color: rgba(255, 255, 255, 0.4);
-  }
-}
-
-.btn-large {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-}
-
-// Join Form
-.join-form {
-  display: flex;
-  gap: 0.75rem;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.room-input {
-  flex: 1;
-  min-width: 0;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.2);
-  color: white;
-  font-size: 1.25rem;
-  text-align: center;
-  letter-spacing: 0.3rem;
-  text-transform: uppercase;
-  box-sizing: border-box;
-  
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-    letter-spacing: normal;
-    font-size: 0.9rem;
-  }
-  
-  &:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-  }
-  
-  &:disabled {
-    opacity: 0.5;
-  }
-}
-
-// Waiting Room
+// Waiting room
 .waiting-room {
   display: flex;
   justify-content: center;
 }
 
 .waiting-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 3rem;
-  text-align: center;
   max-width: 450px;
   width: 100%;
 }
 
-.waiting-icon {
-  position: relative;
-  font-size: 3rem;
-  margin-bottom: 1.5rem;
-  display: inline-block;
-  
-  .pulse-ring {
-    position: absolute;
-    inset: -10px;
-    border: 2px solid rgba(52, 152, 219, 0.4);
-    border-radius: 50%;
-    animation: pulse 2s ease-out infinite;
-  }
-}
+.waiting-content, .ready-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding: 16px 0;
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+  h2 {
+    margin: 0;
   }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-.waiting-title, .ready-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 1.5rem;
 }
 
 .room-code-display {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .code-label {
-  display: block;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--mat-sys-on-surface-variant);
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
 }
 
 .code-box {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  background: rgba(0, 0, 0, 0.3);
-  border: 2px dashed rgba(52, 152, 219, 0.5);
-  border-radius: 8px;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--mat-sys-surface-container-high);
+  border: 2px dashed var(--mat-sys-outline-variant);
+  border-radius: 12px;
 }
 
 .code-text {
   font-size: 2rem;
   font-weight: 700;
-  color: #3498db;
+  color: var(--mat-sys-primary);
   letter-spacing: 0.5rem;
   font-family: monospace;
 }
 
-.copy-btn {
-  background: transparent;
-  border: none;
-  font-size: 1.25rem;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-  
-  &:hover {
-    opacity: 1;
-  }
-}
-
 .waiting-hint {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--mat-sys-on-surface-variant);
   font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-}
-
-.player-indicator {
-  margin-bottom: 1.5rem;
-}
-
-.player-badge {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: rgba(155, 89, 182, 0.2);
-  border: 1px solid rgba(155, 89, 182, 0.4);
-  border-radius: 20px;
-  color: #9b59b6;
-  font-weight: 500;
-  font-size: 0.9rem;
+  margin: 0;
 }
 
 .ready-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--mat-sys-primary);
 }
 
-.ready-text {
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 2rem;
+.ready-content p {
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0;
 }
 
-.leave-btn {
-  margin-top: 1.5rem;
+.start-btn {
+  margin-top: 8px;
 }
 
-// Spinner
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-// Connection Status
+// Connection status
 .connection-status {
   position: fixed;
-  bottom: 1rem;
-  right: 1rem;
+  bottom: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.6);
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--mat-sys-surface-container);
   border-radius: 20px;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
-  
+  color: var(--mat-sys-on-surface-variant);
+
   &.connected {
     .status-dot {
-      background: #27ae60;
+      background: #4caf50;
     }
     .status-text {
-      color: #2ecc71;
+      color: #4caf50;
     }
   }
 }
@@ -368,5 +170,5 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--mat-sys-outline);
 }
