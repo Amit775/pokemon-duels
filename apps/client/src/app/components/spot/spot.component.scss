@@ -37,7 +37,7 @@ $spot-border-width: max(2px, 0.4cqmin);
     border-color: #f9a825;
   }
 
-  &--player-1 { border-style: solid; border-color: #42a5f5; }
+  &--player-1 { border-style: dashed; border-color: #42a5f5; }
   &--player-2 { border-style: dashed; border-color: #ef5350; }
   &--player-3 { border-style: dotted; border-color: #66bb6a; border-width: 4px; }
   &--player-4 { border-style: double; border-color: #ab47bc; border-width: 5px; }

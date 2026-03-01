@@ -10,8 +10,11 @@
     </div>
   }
 
-  @if (lastBattle(); as battle) {
+  @if (showBattle() && lastBattle(); as battle) {
     <div class="battle-toast">
+      <button class="battle-close" (click)="dismissBattle()">
+        <mat-icon>close</mat-icon>
+      </button>
       <div class="battle-header">
         <mat-icon>swords</mat-icon>
         Battle!
@@ -34,16 +37,6 @@
       </div>
     </div>
   }
-
-  <aside class="bench-area bench-area--top">
-    <app-bench
-      [pokemon]="player2Bench()"
-      [playerId]="2"
-      [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 2"
-      (pokemonSelected)="onBenchPokemonSelect($event)"
-    />
-  </aside>
 
   <main class="board-area">
     <div class="game-header">
@@ -70,6 +63,61 @@
     </div>
 
     <div class="board-canvas">
+      <!-- Bench areas and connectors -->
+      @if (benchAreas(); as ba) {
+        <svg class="bench-overlay">
+          <!-- P1 bench area (bottom) -->
+          <rect
+            class="bench-area bench-area--player-1"
+            [attr.x]="ba.p1.x + '%'"
+            [attr.y]="ba.p1.y + '%'"
+            [attr.width]="ba.p1.w + '%'"
+            [attr.height]="ba.p1.h + '%'"
+            rx="8" ry="8"
+          />
+          <!-- P2 bench area (top) -->
+          <rect
+            class="bench-area bench-area--player-2"
+            [attr.x]="ba.p2.x + '%'"
+            [attr.y]="ba.p2.y + '%'"
+            [attr.width]="ba.p2.w + '%'"
+            [attr.height]="ba.p2.h + '%'"
+            rx="8" ry="8"
+          />
+          <!-- Connectors from P1 bench to entry points -->
+          @for (c of ba.p1Connectors; track $index) {
+            <line
+              class="bench-connector bench-connector--player-1"
+              [attr.x1]="c.x1 + '%'" [attr.y1]="c.y1 + '%'"
+              [attr.x2]="c.x2 + '%'" [attr.y2]="c.y2 + '%'"
+            />
+          }
+          <!-- Connectors from P2 bench to entry points -->
+          @for (c of ba.p2Connectors; track $index) {
+            <line
+              class="bench-connector bench-connector--player-2"
+              [attr.x1]="c.x1 + '%'" [attr.y1]="c.y1 + '%'"
+              [attr.x2]="c.x2 + '%'" [attr.y2]="c.y2 + '%'"
+            />
+          }
+        </svg>
+      }
+
+      <!-- P2 bench slots (top) -->
+      @for (slot of player2BenchSlots(); track slot.index) {
+        <div
+          class="bench-spot bench-spot--player-2"
+          [class.bench-spot--filled]="slot.pokemon"
+          [class.bench-spot--empty]="!slot.pokemon"
+          [class.bench-spot--selected]="slot.pokemon && selectedPokemonId() === slot.pokemon.id"
+          [class.bench-spot--selectable]="slot.pokemon && currentPlayerId() === 2"
+          [style.left.%]="slot.xPercent"
+          [style.top.%]="slot.yPercent"
+          (click)="slot.pokemon && onBenchPokemonSelect(slot.pokemon)"
+        ></div>
+      }
+
+      <!-- Passages -->
       @for (passage of passages(); track passage.id) {
         @if (getSpotCoords(passage.fromSpotId); as fromCoords) {
           @if (getSpotCoords(passage.toSpotId); as toCoords) {
@@ -78,19 +126,20 @@
               [fromSpot]="{ id: passage.fromSpotId, x: fromCoords.x, y: fromCoords.y, name: '', metadata: { type: 'normal' } }"
               [toSpot]="{ id: passage.toSpotId, x: toCoords.x, y: toCoords.y, name: '', metadata: { type: 'normal' } }"
               [xPercent]="toPercentX"
-              [yPercent]="toPercentY"
+              [yPercent]="boardToPercentY"
             />
           }
         }
       }
 
+      <!-- Valid move target indicators -->
       @for (spot of spots(); track spot.id) {
         @if (isValidTarget(spot.id)) {
           <div
             class="valid-target-indicator"
             [class.valid-target-indicator--battle]="isEnemyOccupied(spot.id)"
             [style.left.%]="toPercentX(spot.x)"
-            [style.top.%]="toPercentY(spot.y)"
+            [style.top.%]="boardToPercentY(spot.y)"
             (click)="onSpotClick(spot)"
           >
             @if (isEnemyOccupied(spot.id)) {
@@ -102,16 +151,18 @@
         }
       }
 
+      <!-- Board spots -->
       @for (spot of spots(); track spot.id) {
         <app-spot
           [spot]="spot"
           [selected]="false"
           [xPercent]="toPercentX(spot.x)"
-          [yPercent]="toPercentY(spot.y)"
+          [yPercent]="boardToPercentY(spot.y)"
           (spotClicked)="onSpotClick($event)"
         />
       }
 
+      <!-- Pokemon on board -->
       @for (pokemon of pokemonOnBoard(); track pokemon.id) {
         @if (getSpotCoords(pokemon.spotId!); as coords) {
           <app-pokemon
@@ -119,10 +170,56 @@
             [x]="coords.x"
             [y]="coords.y"
             [xPercent]="toPercentX(coords.x)"
-            [yPercent]="toPercentY(coords.y)"
+            [yPercent]="boardToPercentY(coords.y)"
             [selected]="selectedPokemonId() === pokemon.id"
             [draggable]="pokemon.playerId === currentPlayerId() && phase() !== 'ended'"
             (pokemonClicked)="onPokemonClick($event)"
+          />
+        }
+      }
+
+      <!-- Pokemon on P2 bench -->
+      @for (slot of player2BenchSlots(); track slot.index) {
+        @if (slot.pokemon; as p) {
+          <app-pokemon
+            [pokemon]="p"
+            [x]="0"
+            [y]="0"
+            [xPercent]="slot.xPercent"
+            [yPercent]="slot.yPercent"
+            [selected]="selectedPokemonId() === p.id"
+            [draggable]="currentPlayerId() === 2 && phase() !== 'ended'"
+            (pokemonClicked)="onBenchPokemonSelect($event)"
+          />
+        }
+      }
+
+      <!-- P1 bench slots (bottom) -->
+      @for (slot of player1BenchSlots(); track slot.index) {
+        <div
+          class="bench-spot bench-spot--player-1"
+          [class.bench-spot--filled]="slot.pokemon"
+          [class.bench-spot--empty]="!slot.pokemon"
+          [class.bench-spot--selected]="slot.pokemon && selectedPokemonId() === slot.pokemon.id"
+          [class.bench-spot--selectable]="slot.pokemon && currentPlayerId() === 1"
+          [style.left.%]="slot.xPercent"
+          [style.top.%]="slot.yPercent"
+          (click)="slot.pokemon && onBenchPokemonSelect(slot.pokemon)"
+        ></div>
+      }
+
+      <!-- Pokemon on P1 bench -->
+      @for (slot of player1BenchSlots(); track slot.index) {
+        @if (slot.pokemon; as p) {
+          <app-pokemon
+            [pokemon]="p"
+            [x]="0"
+            [y]="0"
+            [xPercent]="slot.xPercent"
+            [yPercent]="slot.yPercent"
+            [selected]="selectedPokemonId() === p.id"
+            [draggable]="currentPlayerId() === 1 && phase() !== 'ended'"
+            (pokemonClicked)="onBenchPokemonSelect($event)"
           />
         }
       }
@@ -135,14 +232,4 @@
       </div>
     }
   </main>
-
-  <aside class="bench-area bench-area--bottom">
-    <app-bench
-      [pokemon]="player1Bench()"
-      [playerId]="1"
-      [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 1"
-      (pokemonSelected)="onBenchPokemonSelect($event)"
-    />
-  </aside>
 </div>

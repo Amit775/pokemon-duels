@@ -31,7 +31,7 @@ public class GameRoom
     private static readonly Dictionary<string, int> SpeciesMovement = new()
     {
         { "snorlax", 1 },
-        { "venusaur", 2 },
+        { "venusaur", 1 },
         { "blastoise", 2 },
         { "charizard", 3 }
     };

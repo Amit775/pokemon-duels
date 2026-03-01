@@ -16,6 +16,7 @@ $pokemon-border: max(2px, 0.4cqmin);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   user-select: none;
   overflow: hidden;
+  z-index: 2;
 
   &:hover {
     transform: translate(-50%, -50%) scale(1.15);
@@ -23,32 +24,30 @@ $pokemon-border: max(2px, 0.4cqmin);
     z-index: 10;
   }
 
+  // Type-based backgrounds
   &--normal {
-    border-color: #888;
     background-color: var(--mat-sys-surface-container);
   }
 
   &--water {
-    border-color: #42a5f5;
     background-color: rgba(33, 150, 243, 0.15);
   }
 
   &--fire {
-    border-color: #ef5350;
     background-color: rgba(244, 67, 54, 0.15);
   }
 
   &--grass {
-    border-color: #66bb6a;
     background-color: rgba(76, 175, 80, 0.15);
   }
 
+  // Player-based border color
   &--player-1 {
-    box-shadow: 0 0 0 max(2px, 0.4cqmin) #42a5f5;
+    border-color: #42a5f5;
   }
 
   &--player-2 {
-    box-shadow: 0 0 0 max(2px, 0.4cqmin) #ef5350;
+    border-color: #ef5350;
   }
 
   &--selected {
