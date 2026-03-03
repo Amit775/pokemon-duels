@@ -22,6 +22,7 @@ export type BenchSlot = {
   yPercent: number;
   pokemon: Pokemon | null;
   playerId: number;
+  spot: Spot;
 };
 
 @Component({
@@ -116,12 +117,20 @@ export class GameBoardComponent implements OnInit {
     const pokemon = this.gameStore.benchPokemon().filter((p) => p.playerId === playerId);
     const slots: BenchSlot[] = [];
     for (let i = 0; i < BENCH_SIZE; i++) {
+      const x = BENCH_START_X + i * BENCH_SLOT_SPACING;
       slots.push({
         index: i,
-        xPercent: this.toPercentX(BENCH_START_X + i * BENCH_SLOT_SPACING),
+        xPercent: this.toPercentX(x),
         yPercent: (y / CANVAS_DESIGN_HEIGHT) * 100,
         pokemon: pokemon[i] ?? null,
         playerId,
+        spot: {
+          id: `bench-${playerId}-${i}`,
+          name: '',
+          x,
+          y,
+          metadata: { type: 'bench', playerId },
+        },
       });
     }
     return slots;

@@ -16,7 +16,8 @@
 export type SpotMetadata =
   | { type: 'normal' }
   | { type: 'entry'; playerId: number }
-  | { type: 'flag'; playerId: number };
+  | { type: 'flag'; playerId: number }
+  | { type: 'bench'; playerId: number };
 
 /**
  * Extract the type string from SpotMetadata
@@ -109,6 +110,13 @@ export function isFlagSpot(metadata: SpotMetadata): metadata is { type: 'flag'; 
  */
 export function isNormalSpot(metadata: SpotMetadata): metadata is { type: 'normal' } {
   return metadata.type === 'normal';
+}
+
+/**
+ * Check if spot metadata is of type 'bench'
+ */
+export function isBenchSpot(metadata: SpotMetadata): metadata is { type: 'bench'; playerId: number } {
+  return metadata.type === 'bench';
 }
 
 // ============================================================================

@@ -196,9 +196,11 @@ public class GameRoom
         }
     }
 
-    private List<string> FindReachableSpots(string fromSpotId, int movement, 
+    private List<string> FindReachableSpots(string fromSpotId, int movement,
         HashSet<string> ownOccupied, HashSet<string> enemyOccupied)
     {
+        if (movement <= 0) return new List<string>();
+
         var reachable = new HashSet<string>();
         var visited = new HashSet<string> { fromSpotId };
         var queue = new Queue<(string spotId, int remaining)>();
@@ -344,7 +346,7 @@ public class GameRoom
         var defenderType = SpeciesTypes.GetValueOrDefault(defender.SpeciesId, "normal");
         
         var attackerBonus = GetTypeBonus(attackerType, defenderType);
-        var defenderBonus = defenderOnFlag && defenderType == "normal" ? 2 : 0;
+        var defenderBonus = defenderOnFlag && defenderType == "normal" ? 1 : 0;
 
         var attackerTotal = attackerRoll + attackerBonus;
         var defenderTotal = defenderRoll + defenderBonus;
@@ -368,9 +370,9 @@ public class GameRoom
     {
         return (attackerType, defenderType) switch
         {
-            ("fire", "grass") => 2,
-            ("grass", "water") => 2,
-            ("water", "fire") => 2,
+            ("fire", "grass") => 1,
+            ("grass", "water") => 1,
+            ("water", "fire") => 1,
             _ => 0
         };
     }

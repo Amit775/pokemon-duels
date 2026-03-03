@@ -59,8 +59,6 @@
   gap: 4px;
 }
 
-$spot-size: min(40px, 6cqmin);
-
 .board-canvas {
   flex: 1;
   position: relative;
@@ -114,50 +112,6 @@ $spot-size: min(40px, 6cqmin);
   }
 }
 
-// Bench spots rendered inside the board canvas
-.bench-spot {
-  position: absolute;
-  width: $spot-size;
-  height: $spot-size;
-  border-radius: 50%;
-  border: max(2px, 0.4cqmin) solid var(--mat-sys-outline);
-  background-color: var(--mat-sys-surface-container-high);
-  transform: translate(-50%, -50%);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  z-index: 1;
-
-  &--empty {
-    border-style: dashed;
-    opacity: 0.35;
-  }
-
-  &--player-1 {
-    border-color: #42a5f5;
-    border-style: dashed;
-  }
-
-  &--player-2 {
-    border-color: #ef5350;
-    border-style: dashed;
-  }
-
-  &--selectable {
-    cursor: pointer;
-
-    &:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  &--selected {
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--mat-sys-primary) 50%, transparent);
-
-    &:hover {
-      box-shadow: 0 0 0 4px color-mix(in srgb, var(--mat-sys-primary) 70%, transparent);
-    }
-  }
-}
 
 .valid-target-indicator {
   position: absolute;
