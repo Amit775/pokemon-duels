@@ -6,6 +6,15 @@
  */
 
 // ============================================================================
+// Element Types
+// ============================================================================
+
+/**
+ * Pokemon element type - matches passage types for movement mechanics
+ */
+export type PokemonType = 'normal' | 'water' | 'fire' | 'grass';
+
+// ============================================================================
 // Spot Types
 // ============================================================================
 
@@ -39,6 +48,8 @@ export type Spot = {
   y: number;
   /** Type-specific metadata */
   metadata: SpotMetadata;
+  /** Elemental type bonus — Pokemon matching this type get +1 in battle here */
+  bonusType?: PokemonType;
 };
 
 // ============================================================================
@@ -112,13 +123,6 @@ export function isNormalSpot(metadata: SpotMetadata): metadata is { type: 'norma
   return metadata.type === 'normal';
 }
 
-/**
- * Check if spot metadata is of type 'bench'
- */
-export function isBenchSpot(metadata: SpotMetadata): metadata is { type: 'bench'; playerId: number } {
-  return metadata.type === 'bench';
-}
-
 // ============================================================================
 // Factory Functions
 // ============================================================================
@@ -182,11 +186,6 @@ export type SelectionState = {
 // ============================================================================
 // Pokemon Types
 // ============================================================================
-
-/**
- * Pokemon element type - matches passage types for movement mechanics
- */
-export type PokemonType = 'normal' | 'water' | 'fire' | 'grass';
 
 /**
  * Pokemon species definition - template for creating instances

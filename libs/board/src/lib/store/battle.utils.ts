@@ -1,4 +1,4 @@
-import { Pokemon, PokemonType, getSpecies } from '../models/board.models';
+import { Pokemon, PokemonType, Spot, getSpecies } from '../models/board.models';
 import { BattleResult } from './game.types';
 
 /**
@@ -16,6 +16,13 @@ export function getTypeAdvantageBonus(
 }
 
 /**
+ * Calculate spot type bonus — +1 if Pokemon's type matches the spot's bonusType
+ */
+export function getSpotTypeBonus(pokemonType: PokemonType, spot: Spot): number {
+  return spot.bonusType != null && pokemonType === spot.bonusType ? 1 : 0;
+}
+
+/**
  * Roll a dice (1-6)
  */
 export function rollDice(): number {
@@ -26,34 +33,27 @@ export function rollDice(): number {
  * Execute a battle between two Pokemon
  * @param attacker - The attacking Pokemon
  * @param defender - The defending Pokemon
- * @param defenderOnFlagSpot - true if defender is on a flag spot (normal types get +1)
+ * @param spot - The spot where the battle takes place
  */
 export function executeBattle(
   attacker: Pokemon,
   defender: Pokemon,
-  defenderOnFlagSpot: boolean,
+  spot: Spot,
 ): BattleResult {
   const attackerSpecies = getSpecies(attacker.speciesId);
   const defenderSpecies = getSpecies(defender.speciesId);
 
+  const attackerType = attackerSpecies?.type ?? 'normal';
+  const defenderType = defenderSpecies?.type ?? 'normal';
+
   const attackerRoll = rollDice();
   const defenderRoll = rollDice();
 
-  const attackerBonus = getTypeAdvantageBonus(
-    attackerSpecies?.type ?? 'normal',
-    defenderSpecies?.type ?? 'normal',
-  );
+  const attackerBonus =
+    getTypeAdvantageBonus(attackerType, defenderType) + getSpotTypeBonus(attackerType, spot);
 
-  // Defender gets type advantage + flag spot bonus for normal types
-  let defenderBonus = getTypeAdvantageBonus(
-    defenderSpecies?.type ?? 'normal',
-    attackerSpecies?.type ?? 'normal',
-  );
-
-  // Normal-type Pokemon get +1 when defending on Flag spot
-  if (defenderOnFlagSpot && defenderSpecies?.type === 'normal') {
-    defenderBonus += 1;
-  }
+  const defenderBonus =
+    getTypeAdvantageBonus(defenderType, attackerType) + getSpotTypeBonus(defenderType, spot);
 
   const attackerTotal = attackerRoll + attackerBonus;
   const defenderTotal = defenderRoll + defenderBonus;

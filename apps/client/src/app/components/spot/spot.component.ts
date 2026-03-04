@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
-import { Spot, isEntrySpot, isFlagSpot, isBenchSpot } from '@pokemon-duel/board';
+import { Spot } from '@pokemon-duel/board';
 
 @Component({
   selector: 'app-spot',
@@ -23,10 +23,15 @@ export class SpotComponent {
   protected spotType = computed(() => this.spot().metadata.type);
   protected playerId = computed(() => {
     const metadata = this.spot().metadata;
-    if (isEntrySpot(metadata) || isFlagSpot(metadata) || isBenchSpot(metadata)) {
-      return metadata.playerId;
+    return 'playerId' in metadata ? metadata.playerId : null;
+  });
+  protected spotClasses = computed(() => {
+    const classes = [`spot--${this.spotType()}`];
+    const pid = this.playerId();
+    if (pid !== null) {
+      classes.push(`spot--player-${pid}`);
     }
-    return null;
+    return classes.join(' ');
   });
 
   // Position with units - use percentage if provided, otherwise pixels

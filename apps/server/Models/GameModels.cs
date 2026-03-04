@@ -16,6 +16,7 @@ public record Spot
     public required double X { get; init; }
     public required double Y { get; init; }
     public required SpotMetadata Metadata { get; init; }
+    public string? BonusType { get; init; }
 }
 
 /// <summary>

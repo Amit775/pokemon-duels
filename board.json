@@ -35,6 +35,7 @@
         "type": "flag",
         "playerId": 1
       },
+      "bonusType": "normal",
       "id": "1770378079876-ww5bpqc",
       "x": 500,
       "y": 450
@@ -128,6 +129,7 @@
         "type": "flag",
         "playerId": 2
       },
+      "bonusType": "normal",
       "id": "1770378102970-97q5wdf",
       "x": 500,
       "y": 50

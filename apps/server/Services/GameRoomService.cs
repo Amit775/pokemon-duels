@@ -269,8 +269,7 @@ public class GameRoom
             {
                 // Battle!
                 var targetSpot = Spots.FirstOrDefault(s => s.Id == targetSpotId);
-                var defenderOnFlag = targetSpot?.Metadata.Type == "flag";
-                battleResult = ExecuteBattle(pokemon, defender, defenderOnFlag);
+                battleResult = ExecuteBattle(pokemon, defender, targetSpot);
                 LastBattle = battleResult;
 
                 if (battleResult.WinnerId == pokemonId)
@@ -336,17 +335,19 @@ public class GameRoom
         }
     }
 
-    private BattleResult ExecuteBattle(Pokemon attacker, Pokemon defender, bool defenderOnFlag)
+    private BattleResult ExecuteBattle(Pokemon attacker, Pokemon defender, Spot? spot)
     {
         var random = new Random();
         var attackerRoll = random.Next(1, 7);
         var defenderRoll = random.Next(1, 7);
-        
+
         var attackerType = SpeciesTypes.GetValueOrDefault(attacker.SpeciesId, "normal");
         var defenderType = SpeciesTypes.GetValueOrDefault(defender.SpeciesId, "normal");
-        
-        var attackerBonus = GetTypeBonus(attackerType, defenderType);
-        var defenderBonus = defenderOnFlag && defenderType == "normal" ? 1 : 0;
+
+        var attackerBonus = GetTypeAdvantageBonus(attackerType, defenderType)
+                          + GetSpotTypeBonus(attackerType, spot);
+        var defenderBonus = GetTypeAdvantageBonus(defenderType, attackerType)
+                          + GetSpotTypeBonus(defenderType, spot);
 
         var attackerTotal = attackerRoll + attackerBonus;
         var defenderTotal = defenderRoll + defenderBonus;
@@ -366,7 +367,7 @@ public class GameRoom
         };
     }
 
-    private int GetTypeBonus(string attackerType, string defenderType)
+    private static int GetTypeAdvantageBonus(string attackerType, string defenderType)
     {
         return (attackerType, defenderType) switch
         {
@@ -375,6 +376,11 @@ public class GameRoom
             ("water", "fire") => 1,
             _ => 0
         };
+    }
+
+    private static int GetSpotTypeBonus(string pokemonType, Spot? spot)
+    {
+        return spot?.BonusType != null && pokemonType == spot.BonusType ? 1 : 0;
     }
 
     public GameState GetState()
