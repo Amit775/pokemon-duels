@@ -266,12 +266,10 @@ export const GameStore = signalStore(
       let battleResult: BattleResult | undefined;
 
       if (defender) {
-        // Check if defender is on a flag spot (normal types get bonus)
         const targetSpot = store.spotMap()[targetSpotId];
-        const defenderOnFlagSpot = targetSpot?.metadata.type === 'flag';
 
         // Execute battle
-        battleResult = executeBattle(pokemon, defender, defenderOnFlagSpot);
+        battleResult = executeBattle(pokemon, defender, targetSpot);
         patchState(store, { lastBattle: battleResult });
 
         if (battleResult.winnerId === pokemon.id) {

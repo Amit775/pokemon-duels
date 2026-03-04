@@ -196,9 +196,11 @@ public class GameRoom
         }
     }
 
-    private List<string> FindReachableSpots(string fromSpotId, int movement, 
+    private List<string> FindReachableSpots(string fromSpotId, int movement,
         HashSet<string> ownOccupied, HashSet<string> enemyOccupied)
     {
+        if (movement <= 0) return new List<string>();
+
         var reachable = new HashSet<string>();
         var visited = new HashSet<string> { fromSpotId };
         var queue = new Queue<(string spotId, int remaining)>();
@@ -267,8 +269,7 @@ public class GameRoom
             {
                 // Battle!
                 var targetSpot = Spots.FirstOrDefault(s => s.Id == targetSpotId);
-                var defenderOnFlag = targetSpot?.Metadata.Type == "flag";
-                battleResult = ExecuteBattle(pokemon, defender, defenderOnFlag);
+                battleResult = ExecuteBattle(pokemon, defender, targetSpot);
                 LastBattle = battleResult;
 
                 if (battleResult.WinnerId == pokemonId)
@@ -334,17 +335,19 @@ public class GameRoom
         }
     }
 
-    private BattleResult ExecuteBattle(Pokemon attacker, Pokemon defender, bool defenderOnFlag)
+    private BattleResult ExecuteBattle(Pokemon attacker, Pokemon defender, Spot? spot)
     {
         var random = new Random();
         var attackerRoll = random.Next(1, 7);
         var defenderRoll = random.Next(1, 7);
-        
+
         var attackerType = SpeciesTypes.GetValueOrDefault(attacker.SpeciesId, "normal");
         var defenderType = SpeciesTypes.GetValueOrDefault(defender.SpeciesId, "normal");
-        
-        var attackerBonus = GetTypeBonus(attackerType, defenderType);
-        var defenderBonus = defenderOnFlag && defenderType == "normal" ? 2 : 0;
+
+        var attackerBonus = GetTypeAdvantageBonus(attackerType, defenderType)
+                          + GetSpotTypeBonus(attackerType, spot);
+        var defenderBonus = GetTypeAdvantageBonus(defenderType, attackerType)
+                          + GetSpotTypeBonus(defenderType, spot);
 
         var attackerTotal = attackerRoll + attackerBonus;
         var defenderTotal = defenderRoll + defenderBonus;
@@ -364,15 +367,20 @@ public class GameRoom
         };
     }
 
-    private int GetTypeBonus(string attackerType, string defenderType)
+    private static int GetTypeAdvantageBonus(string attackerType, string defenderType)
     {
         return (attackerType, defenderType) switch
         {
-            ("fire", "grass") => 2,
-            ("grass", "water") => 2,
-            ("water", "fire") => 2,
+            ("fire", "grass") => 1,
+            ("grass", "water") => 1,
+            ("water", "fire") => 1,
             _ => 0
         };
+    }
+
+    private static int GetSpotTypeBonus(string pokemonType, Spot? spot)
+    {
+        return spot?.BonusType != null && pokemonType == spot.BonusType ? 1 : 0;
     }
 
     public GameState GetState()

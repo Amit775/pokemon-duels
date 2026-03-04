@@ -105,16 +105,13 @@
 
       <!-- P2 bench slots (top) -->
       @for (slot of player2BenchSlots(); track slot.index) {
-        <div
-          class="bench-spot bench-spot--player-2"
-          [class.bench-spot--filled]="slot.pokemon"
-          [class.bench-spot--empty]="!slot.pokemon"
-          [class.bench-spot--selected]="slot.pokemon && selectedPokemonId() === slot.pokemon.id"
-          [class.bench-spot--selectable]="slot.pokemon && currentPlayerId() === 2"
-          [style.left.%]="slot.xPercent"
-          [style.top.%]="slot.yPercent"
-          (click)="slot.pokemon && onBenchPokemonSelect(slot.pokemon)"
-        ></div>
+        <app-spot
+          [spot]="slot.spot"
+          [selected]="!!slot.pokemon && selectedPokemonId() === slot.pokemon!.id"
+          [xPercent]="slot.xPercent"
+          [yPercent]="slot.yPercent"
+          (spotClicked)="slot.pokemon && onBenchPokemonSelect(slot.pokemon!)"
+        />
       }
 
       <!-- Passages -->
@@ -196,16 +193,13 @@
 
       <!-- P1 bench slots (bottom) -->
       @for (slot of player1BenchSlots(); track slot.index) {
-        <div
-          class="bench-spot bench-spot--player-1"
-          [class.bench-spot--filled]="slot.pokemon"
-          [class.bench-spot--empty]="!slot.pokemon"
-          [class.bench-spot--selected]="slot.pokemon && selectedPokemonId() === slot.pokemon.id"
-          [class.bench-spot--selectable]="slot.pokemon && currentPlayerId() === 1"
-          [style.left.%]="slot.xPercent"
-          [style.top.%]="slot.yPercent"
-          (click)="slot.pokemon && onBenchPokemonSelect(slot.pokemon)"
-        ></div>
+        <app-spot
+          [spot]="slot.spot"
+          [selected]="!!slot.pokemon && selectedPokemonId() === slot.pokemon!.id"
+          [xPercent]="slot.xPercent"
+          [yPercent]="slot.yPercent"
+          (spotClicked)="slot.pokemon && onBenchPokemonSelect(slot.pokemon!)"
+        />
       }
 
       <!-- Pokemon on P1 bench -->

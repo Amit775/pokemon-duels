@@ -1,12 +1,6 @@
 <div
   class="spot"
-  [class.spot--normal]="spotType() === 'normal'"
-  [class.spot--entry]="spotType() === 'entry'"
-  [class.spot--flag]="spotType() === 'flag'"
-  [class.spot--player-1]="playerId() === 1"
-  [class.spot--player-2]="playerId() === 2"
-  [class.spot--player-3]="playerId() === 3"
-  [class.spot--player-4]="playerId() === 4"
+  [class]="spotClasses()"
   [class.spot--selected]="selected()"
   [style.left]="positionLeft()"
   [style.top]="positionTop()"

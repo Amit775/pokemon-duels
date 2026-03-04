@@ -6,6 +6,15 @@
  */
 
 // ============================================================================
+// Element Types
+// ============================================================================
+
+/**
+ * Pokemon element type - matches passage types for movement mechanics
+ */
+export type PokemonType = 'normal' | 'water' | 'fire' | 'grass';
+
+// ============================================================================
 // Spot Types
 // ============================================================================
 
@@ -16,7 +25,8 @@
 export type SpotMetadata =
   | { type: 'normal' }
   | { type: 'entry'; playerId: number }
-  | { type: 'flag'; playerId: number };
+  | { type: 'flag'; playerId: number }
+  | { type: 'bench'; playerId: number };
 
 /**
  * Extract the type string from SpotMetadata
@@ -38,6 +48,8 @@ export type Spot = {
   y: number;
   /** Type-specific metadata */
   metadata: SpotMetadata;
+  /** Elemental type bonus — Pokemon matching this type get +1 in battle here */
+  bonusType?: PokemonType;
 };
 
 // ============================================================================
@@ -174,11 +186,6 @@ export type SelectionState = {
 // ============================================================================
 // Pokemon Types
 // ============================================================================
-
-/**
- * Pokemon element type - matches passage types for movement mechanics
- */
-export type PokemonType = 'normal' | 'water' | 'fire' | 'grass';
 
 /**
  * Pokemon species definition - template for creating instances
