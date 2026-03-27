@@ -10,14 +10,6 @@ out/
 bin/
 obj/
 
-# Nx
-.nx/
-.nx/cache
-.nx/workspace-data
-
-# Angular
-.angular/
-
 # IDE
 .idea/
 *.suo
@@ -25,6 +17,8 @@ obj/
 *.userosscache
 *.sln.docstates
 .vs/
+.angular/
+.nx/
 
 # OS
 .DS_Store
