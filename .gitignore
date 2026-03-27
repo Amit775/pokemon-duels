@@ -41,6 +41,10 @@ env.firebase.json
 coverage/
 *.lcov
 
+# Claude
+.claude/worktrees
+.claude/settings.local.json
+
 # Misc
 *.swp
 *.swo
