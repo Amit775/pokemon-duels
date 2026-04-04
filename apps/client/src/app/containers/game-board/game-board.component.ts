@@ -13,8 +13,8 @@ const BENCH_MARGIN = 60;
 const CANVAS_DESIGN_HEIGHT = BOARD_DESIGN_HEIGHT + BENCH_MARGIN * 2;
 
 const BENCH_SIZE = 6;
-const BENCH_SLOT_SPACING = 80;
-const BENCH_START_X = (BOARD_DESIGN_WIDTH - (BENCH_SIZE - 1) * BENCH_SLOT_SPACING) / 2;
+const BENCH_SLOT_SPACING = 120; // slots span x=200..800, matching the board's left/right entry spots
+const BENCH_START_X = 200; // aligns leftmost slot with left entry spot (x=200)
 
 export type BenchSlot = {
   index: number;
@@ -51,33 +51,42 @@ export class GameBoardComponent implements OnInit {
 
   // Bench area dimensions (percentages for SVG rendering)
   protected readonly benchAreas = computed(() => {
-    const benchWidth = (BENCH_SIZE - 1) * BENCH_SLOT_SPACING + 60; // slots + padding
-    const benchStartX = BENCH_START_X - 30; // left padding
+    const allSpots = this.spots();
+    const p1Entries = allSpots.filter(
+      (s) => s.metadata.type === 'entry' && 'playerId' in s.metadata && s.metadata.playerId === 1,
+    );
+    const p2Entries = allSpots.filter(
+      (s) => s.metadata.type === 'entry' && 'playerId' in s.metadata && s.metadata.playerId === 2,
+    );
+
+    const benchWidth = (BENCH_SIZE - 1) * BENCH_SLOT_SPACING + 60; // slots + 30px padding each side
+    const benchStartX = BENCH_START_X - 30;
     const x = (benchStartX / BOARD_DESIGN_WIDTH) * 100;
     const w = (benchWidth / BOARD_DESIGN_WIDTH) * 100;
     const h = (BENCH_MARGIN / CANVAS_DESIGN_HEIGHT) * 100;
 
-    // P1 entry points at y=450 → percentY = (450+60)/620
-    const p1EntryY = this.boardToPercentY(450);
-    const p2EntryY = this.boardToPercentY(50);
-    // Entry X positions: 200 and 800
-    const entryLeftX = this.toPercentX(200);
-    const entryRightX = this.toPercentX(800);
+    // Bridge connects from the bench area edge to the entry spot on the board
+    const p1BenchTopY = 100 - h;
+    const p2BenchBottomY = h;
 
     return {
       // P1 bench area (bottom)
       p1: { x, y: 100 - h, w, h },
       // P2 bench area (top)
       p2: { x, y: 0, w, h },
-      // Connector lines from bench edges to entry points
-      p1Connectors: [
-        { x1: entryLeftX, y1: 100 - h, x2: entryLeftX, y2: p1EntryY },
-        { x1: entryRightX, y1: 100 - h, x2: entryRightX, y2: p1EntryY },
-      ],
-      p2Connectors: [
-        { x1: entryLeftX, y1: h, x2: entryLeftX, y2: p2EntryY },
-        { x1: entryRightX, y1: h, x2: entryRightX, y2: p2EntryY },
-      ],
+      // One bridge per entry spot, anchored at matching X coordinate
+      p1Connectors: p1Entries.map((entry) => ({
+        x1: this.toPercentX(entry.x),
+        y1: p1BenchTopY,
+        x2: this.toPercentX(entry.x),
+        y2: this.boardToPercentY(entry.y),
+      })),
+      p2Connectors: p2Entries.map((entry) => ({
+        x1: this.toPercentX(entry.x),
+        y1: p2BenchBottomY,
+        x2: this.toPercentX(entry.x),
+        y2: this.boardToPercentY(entry.y),
+      })),
     };
   });
 

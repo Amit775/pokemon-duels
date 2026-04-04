@@ -85,23 +85,24 @@
 }
 
 .bench-area {
-  fill: none;
   stroke-width: 1.5;
   stroke-dasharray: 6 3;
 
   &--player-1 {
+    fill: rgba(66, 165, 245, 0.06);
     stroke: #42a5f5;
   }
 
   &--player-2 {
+    fill: rgba(239, 83, 80, 0.06);
     stroke: #ef5350;
   }
 }
 
 .bench-connector {
-  stroke-width: 1.5;
-  stroke-dasharray: 4 3;
-  opacity: 0.5;
+  stroke-width: 2.5;
+  stroke-dasharray: 5 3;
+  opacity: 0.85;
 
   &--player-1 {
     stroke: #42a5f5;

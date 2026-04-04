@@ -66,15 +66,16 @@
       <!-- Bench areas and connectors -->
       @if (benchAreas(); as ba) {
         <svg class="bench-overlay">
-          <!-- P1 bench area (bottom) -->
-          <rect
-            class="bench-area bench-area--player-1"
-            [attr.x]="ba.p1.x + '%'"
-            [attr.y]="ba.p1.y + '%'"
-            [attr.width]="ba.p1.w + '%'"
-            [attr.height]="ba.p1.h + '%'"
-            rx="8" ry="8"
-          />
+          <defs>
+            <!-- Arrowheads pointing toward the board entry spot (P1 = up, P2 = down) -->
+            <marker id="bridge-arrow-p1" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#42a5f5" opacity="0.9"/>
+            </marker>
+            <marker id="bridge-arrow-p2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#ef5350" opacity="0.9"/>
+            </marker>
+          </defs>
+
           <!-- P2 bench area (top) -->
           <rect
             class="bench-area bench-area--player-2"
@@ -84,20 +85,32 @@
             [attr.height]="ba.p2.h + '%'"
             rx="8" ry="8"
           />
-          <!-- Connectors from P1 bench to entry points -->
+          <!-- P1 bench area (bottom) -->
+          <rect
+            class="bench-area bench-area--player-1"
+            [attr.x]="ba.p1.x + '%'"
+            [attr.y]="ba.p1.y + '%'"
+            [attr.width]="ba.p1.w + '%'"
+            [attr.height]="ba.p1.h + '%'"
+            rx="8" ry="8"
+          />
+
+          <!-- Bridges from P1 bench edges to entry spots -->
           @for (c of ba.p1Connectors; track $index) {
             <line
               class="bench-connector bench-connector--player-1"
               [attr.x1]="c.x1 + '%'" [attr.y1]="c.y1 + '%'"
               [attr.x2]="c.x2 + '%'" [attr.y2]="c.y2 + '%'"
+              marker-end="url(#bridge-arrow-p1)"
             />
           }
-          <!-- Connectors from P2 bench to entry points -->
+          <!-- Bridges from P2 bench edges to entry spots -->
           @for (c of ba.p2Connectors; track $index) {
             <line
               class="bench-connector bench-connector--player-2"
               [attr.x1]="c.x1 + '%'" [attr.y1]="c.y1 + '%'"
               [attr.x2]="c.x2 + '%'" [attr.y2]="c.y2 + '%'"
+              marker-end="url(#bridge-arrow-p2)"
             />
           }
         </svg>
