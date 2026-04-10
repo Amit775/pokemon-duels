@@ -76,7 +76,7 @@ export class GameBoardComponent {
       );
   });
 
-  private readonly allPokemon = computed(() => [
+  protected readonly allPokemon = computed(() => [
     ...this.pokemonOnBoard(),
     ...this.player1Bench(),
     ...this.player2Bench(),
