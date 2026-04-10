@@ -1,103 +1,35 @@
-# Testing Guidelines
+# Testing Rules
 
-## Unit Testing (Vitest)
+## Unit Tests (Vitest)
 
-Unit tests use **Vitest** with Angular testing utilities.
+- Test files: `*.spec.ts` alongside source files
+- Test runner: Vitest with Angular `TestBed`
+- Run via Nx: `npx nx test <project>` (never `vitest` directly)
+- Use `describe` + `it` structure
+- Use `TestBed.configureTestingModule` for Angular component tests
+- Use `fixture.componentRef.setInput()` to set signal inputs in tests
 
-### Running Tests
+## E2E Tests (Playwright)
 
-```bash
-# Test specific project
-npx nx test board
-npx nx test client
+- Test files: `apps/client/e2e/*.spec.ts`
+- Run via Nx: `npx nx e2e client` (never `playwright` directly)
+- Use `data-testid` attributes for stable selectors
+- Prefer `getByRole` over CSS selectors
+- Assert visibility with `toBeVisible()`, not existence
 
-# Test all projects
-npx nx run-many -t test
+## Selector Priority
 
-# Watch mode
-npx nx test board --watch
+| Priority | Selector | Example |
+|----------|----------|---------|
+| 1st | `data-testid` | `page.getByTestId('game-board')` |
+| 2nd | Accessible role | `page.getByRole('button', { name: 'Create' })` |
+| 3rd | Label/placeholder | `page.getByLabel('Room ID')` |
+| Avoid | CSS selectors | `page.locator('.game-board')` |
 
-# With coverage
-npx nx test board --coverage
-```
+## Coverage
 
-### Test Structure
+- New features must include unit tests
+- UI interactions must have e2e coverage
+- Pure logic (board library) must have full unit coverage
 
-```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
-import { TestBed } from '@angular/core/testing';
-
-describe('SpotComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [SpotComponent],
-    }).compileComponents();
-  });
-
-  it('should display spot name', () => {
-    const fixture = TestBed.createComponent(SpotComponent);
-    fixture.componentRef.setInput('spot', { id: 1, name: 'Test' });
-    fixture.detectChanges();
-    
-    expect(fixture.nativeElement.textContent).toContain('Test');
-  });
-});
-```
-
-## E2E Testing (Playwright)
-
-End-to-end tests use **Playwright** for browser automation.
-
-### Running E2E Tests
-
-```bash
-# Run e2e tests
-npx nx e2e client
-
-# With UI mode
-npx nx e2e client -- --ui
-
-# Specific test file
-npx nx e2e client -- e2e/multiplayer.spec.ts
-
-# Debug mode
-npx nx e2e client -- --debug
-```
-
-### Test Structure
-
-```typescript
-import { test, expect } from '@playwright/test';
-
-test.describe('Game Board', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-  });
-
-  test('should display board', async ({ page }) => {
-    await expect(page.getByTestId('game-board')).toBeVisible();
-  });
-
-  test('should create room', async ({ page }) => {
-    await page.getByRole('button', { name: 'Create Room' }).click();
-    await expect(page.getByTestId('room-id')).toBeVisible();
-  });
-});
-```
-
-### Playwright Config
-
-Located at `apps/client/playwright.config.ts`:
-- Tests in `apps/client/e2e/`
-- Reports in `apps/client/playwright-report/`
-- Auto-starts dev server on `:4200`
-
-### Best Practices
-
-| Practice | Description |
-|----------|-------------|
-| `data-testid` | Use for stable selectors |
-| `getByRole` | Prefer accessible queries |
-| `toBeVisible` | Assert visibility, not existence |
-| Page Objects | Extract reusable page interactions |
-| `test.describe` | Group related tests |
+For running test commands, invoke the `playwright` or `nx-run-tasks` skill.
