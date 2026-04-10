@@ -5,7 +5,9 @@
 
 ## Goal
 
-Enforce a worktree-first, PR-always development workflow through agent instruction files and skills — no manual steps, no exceptions.
+Two goals:
+1. Enforce a worktree-first, PR-always development workflow through agent instruction files and skills — no manual steps, no exceptions.
+2. Full rewrite of all agent files (instructions + skills) to best-practice standard — clear instruction/skill split, no duplication, no circular references.
 
 ## Decisions
 
@@ -96,3 +98,65 @@ Force push to feature branches remains allowed (needed for rebasing during devel
 - Add worktree convention: "Every task starts with a worktree in `.worktrees/`"
 - Fix command prefix consistency: `npx nx` throughout
 - Add note to invoke `git-github` skill for all git/PR work
+
+---
+
+## Full Agent File Rewrite
+
+### The Core Problem
+
+All existing skills end with "For complete patterns, read `.claude/instructions/X.md`" — backwards. Skills must be self-contained. Instructions must not contain procedures.
+
+### Instruction vs Skill: The Distinction
+
+| | Instructions (`.claude/instructions/`) | Skills (`.github/skills/`) |
+|---|---|---|
+| **When loaded** | Always — every conversation | On demand — when invoked |
+| **Purpose** | Rules, conventions, constraints | Step-by-step procedures |
+| **Content** | "What to do / what not to do" | "How to execute it" |
+| **Length** | Short and stable | As long as needed |
+| **Cross-references** | Reference skills for procedures | Self-contained, no back-references |
+
+### Files to Rewrite
+
+**Instruction files** — strip to rules only, remove all procedures:
+
+| File | Keep | Remove |
+|------|------|--------|
+| `general.md` | Project structure, tech stack, documentation requirements | Any procedural steps |
+| `nx.md` | "Always use npx nx", "never guess flags", Nx conventions | Common commands list → skill |
+| `angular.md` | Signal inputs/outputs rule, control flow rule, file naming, component structure principles | Running commands → skill |
+| `dotnet.md` | Project structure table, key SignalR patterns table | Running commands → skill |
+| `testing.md` | What to test, test file conventions | Running test commands → skill |
+| `deployment.md` | What deploys where, branch strategy | Deploy commands → skill |
+| `git-github.md` | Golden rule, branch naming, commit types, PR requirements | Full workflow procedure → skill |
+
+**Skill files** — make fully self-contained, procedural, no back-references:
+
+| Skill | Rewrite focus |
+|-------|--------------|
+| `git-github` | Full worktree → implement → PR procedure (primary rewrite) |
+| `angular` | Step-by-step component creation procedure; remove "read instructions" footer |
+| `dotnet` | Step-by-step hub/service creation; remove "read instructions" footer |
+| `nx-workspace` | Already good — light cleanup only |
+| `nx-generate` | Already good — light cleanup only |
+| `nx-run-tasks` | Check for back-references, fix if present |
+| `nx-plugins` | Check for back-references, fix if present |
+| `firebase` | Self-contained deploy procedure |
+| `monitor-ci` | Self-contained CI monitoring procedure |
+| `link-workspace-packages` | Self-contained wiring procedure |
+| `playwright` | Self-contained E2E test procedure |
+
+### Quality Bar for Every Rewritten File
+
+**Instructions must pass:**
+- [ ] Contains only rules and conventions (no step-by-step)
+- [ ] No `pnpm nx` — always `npx nx`
+- [ ] No "see skill X for how to do this" circularity
+- [ ] Under ~80 lines (if longer, something procedural snuck in)
+
+**Skills must pass:**
+- [ ] Can be followed without reading any instruction file
+- [ ] Has clear `description:` trigger conditions in frontmatter
+- [ ] No "For complete patterns, read `.claude/instructions/X.md`" footer
+- [ ] Commands use `npx nx` consistently
