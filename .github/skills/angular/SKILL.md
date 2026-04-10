@@ -264,18 +264,14 @@ formName = linkedSignal(() => this.data().name);
 
 ```bash
 # Serve client
-pnpm nx serve client
+npx nx serve client
 
 # Build for production
-pnpm nx build client --configuration=production
+npx nx build client --configuration=production
 
 # Run tests
-pnpm nx test client
+npx nx test client
 
 # Generate component (use nx-generate skill)
-pnpm nx g @nx/angular:component my-component --project=client
+npx nx g @nx/angular:component my-component --project=client
 ```
-
-## Detailed Reference
-
-For complete patterns, read `.claude/instructions/angular.md` or `apps/docs/src/content/agents/patterns/angular.md`.
