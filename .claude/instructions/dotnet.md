@@ -1,89 +1,50 @@
-# .NET Server Guidelines
+# .NET Server Rules
 
-The server is built with **.NET 10** and **SignalR** for real-time communication.
+The server uses **.NET 10** with **SignalR** for real-time game communication.
 
 ## Project Structure
 
 ```
 apps/server/
 ├── Program.cs              # Entry point, DI configuration
-├── Hubs/
-│   └── GameHub.cs          # SignalR hub for game events
-├── Services/
-│   └── GameRoomService.cs  # Room management logic
-├── Models/
-│   └── GameModels.cs       # Shared DTOs and models
-└── Properties/
-    └── launchSettings.json # Dev server config
+├── Hubs/GameHub.cs         # SignalR hub
+├── Services/               # Business logic services
+├── Models/                 # DTOs and models
+└── appsettings.json        # Configuration
 ```
 
-## SignalR Hub Pattern
+## Conventions
+
+- Hub methods are `async Task` or `async Task<T>` — never `void`
+- Use `Context.ConnectionId` to identify clients
+- Use `Groups` for room-based routing — never broadcast to all unless truly global
+- Use `Clients.Caller` for response to the calling client
+- Use `Clients.Group(roomId)` to broadcast to a room
+- Always override `OnDisconnectedAsync` to clean up room state
+- Services use `ConcurrentDictionary` for thread-safe shared state
+- Models use C# `record` types for immutability
+- CORS is configured in `Program.cs` — do not add it in other places
+
+## SignalR Client Targeting
+
+| Target | Use for |
+|--------|---------|
+| `Clients.Caller` | Response to the calling client |
+| `Clients.Client(id)` | Specific connection |
+| `Clients.Group(roomId)` | All clients in a room |
+| `Clients.GroupExcept(roomId, id)` | Room except the caller |
+| `Clients.All` | All connected clients (avoid unless necessary) |
+
+## Model Convention
+
+Use `record` types with `required` and `init`:
 
 ```csharp
-public class GameHub : Hub
+public record GameRoom
 {
-    private readonly GameRoomService _roomService;
-    private readonly ILogger<GameHub> _logger;
-
-    public GameHub(GameRoomService roomService, ILogger<GameHub> logger)
-    {
-        _roomService = roomService;
-        _logger = logger;
-    }
-
-    // Client-callable methods
-    public async Task<JoinResult> CreateRoom() { ... }
-    public async Task<JoinResult> JoinRoom(string roomId) { ... }
-    
-    // Broadcast to room
-    await Clients.Group(roomId).SendAsync("GameStateChanged", state);
-    
-    // Handle disconnection
-    public override async Task OnDisconnectedAsync(Exception? exception) { ... }
+    public required string RoomId { get; init; }
+    public List<Player> Players { get; init; } = [];
 }
 ```
 
-## Key Patterns
-
-| Pattern | Description |
-|---------|-------------|
-| `Hub<T>` | Strongly-typed hub interface |
-| `Groups` | Room-based message routing |
-| `Clients.Caller` | Send to calling client |
-| `Clients.Group(id)` | Broadcast to room |
-| `Context.ConnectionId` | Unique client identifier |
-
-## Running the Server
-
-```bash
-# Development (hot reload)
-npx nx serve server
-
-# Build for production
-npx nx build server
-
-# Deploy to Cloud Run
-npx nx deploy server
-```
-
-## Configuration
-
-- `appsettings.json` - Production config
-- `appsettings.Development.json` - Dev overrides
-- CORS configured for client origin
-
-## Client Integration
-
-The Angular client connects via `@microsoft/signalr`:
-
-```typescript
-const connection = new HubConnectionBuilder()
-  .withUrl('https://server-url/gamehub')
-  .withAutomaticReconnect()
-  .build();
-
-await connection.start();
-await connection.invoke('JoinRoom', roomId);
-
-connection.on('GameStateChanged', (state) => { ... });
-```
+For implementation patterns and commands, invoke the `dotnet` skill.
