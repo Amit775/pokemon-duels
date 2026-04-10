@@ -19,6 +19,11 @@ export const routes: Routes = [
       import('./containers/lobby/lobby.component').then((m) => m.LobbyComponent),
   },
   {
+    path: 'local',
+    loadComponent: () =>
+      import('./game/local-game/local-game.component').then((m) => m.LocalGameComponent),
+  },
+  {
     path: 'play/:roomId',
     loadComponent: () =>
       import('./containers/multiplayer-game/multiplayer-game.component').then(
