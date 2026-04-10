@@ -49,3 +49,6 @@ coverage/
 *.swp
 *.swo
 *~
+
+# Worktrees
+.worktrees/
