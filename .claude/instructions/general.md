@@ -2,8 +2,6 @@
 
 ## Workspace Structure
 
-This is an Nx monorepo with the following projects:
-
 | Project | Type | Description |
 |---------|------|-------------|
 | `client` | Angular app | Browser-based game client |
@@ -32,23 +30,6 @@ This is an Nx monorepo with the following projects:
 
 **Every task must be documented.** When completing work, update or create documentation in `apps/docs/src/content/agents/`.
 
-### Documentation Structure
-
-```
-apps/docs/src/content/agents/
-├── index.md                 # Overview and navigation
-├── architecture/            # System design docs
-│   ├── system-overview.md
-│   ├── realtime-multiplayer.md
-│   └── database-strategy.md
-├── patterns/                # Coding conventions
-│   └── angular.md
-├── features/                # Feature-specific docs
-│   └── (created as features are built)
-└── decisions/               # Architecture Decision Records
-    └── (created when making significant choices)
-```
-
 ### When to Update vs. Create
 
 | Situation | Action |
@@ -61,14 +42,14 @@ apps/docs/src/content/agents/
 
 ### What to Document
 
-- **Architecture** - System design, component interactions
-- **Patterns** - Recurring solutions, conventions
-- **Features** - What it does, how it works, API contracts
-- **Decisions** - Why we chose X over Y, trade-offs
+- **Architecture** — System design, component interactions
+- **Patterns** — Recurring solutions, conventions
+- **Features** — What it does, how it works, API contracts
+- **Decisions** — Why we chose X over Y, trade-offs
 
 ## Conventions
 
-- Use `npm` as package manager (`package-lock.json`)
+- Package manager: `npm` (`package-lock.json`)
 - Run tasks via Nx: `npx nx <target> <project>`
 - Follow conventional commits for Git messages
 - Keep components small and focused
