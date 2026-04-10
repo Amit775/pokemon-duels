@@ -60,12 +60,12 @@
       [validMoveTargets]="validMoveTargets()"
       [currentPlayerId]="currentPlayerId()"
       [phase]="phase()"
-      [lastBattle]="lastBattle()"
+      [lastBattle]="displayBattle()"
       [isInteractive]="isMyTurn()"
       (spotClicked)="onSpotClicked($event)"
       (pokemonClicked)="onPokemonClicked($event)"
       (benchPokemonSelected)="onBenchPokemonSelected($event)"
-      (dismissBattle)="skipTurn()"
+      (dismissBattle)="displayBattle.set(null)"
     />
 
     @if (isMyTurn() && selectedPokemonId() && phase() !== 'ended') {
