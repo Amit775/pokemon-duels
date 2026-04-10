@@ -1,200 +1,157 @@
 ---
 name: git-github
-description: "Git workflow and GitHub conventions for this project. USE WHEN committing code, creating branches, making PRs, or following git workflows. EXAMPLES: 'commit message', 'create branch', 'PR workflow', 'conventional commits'."
+description: "Full task workflow for this project. INVOKE AT THE START OF EVERY TASK before writing any code. Covers worktree setup, implementation commits, PR creation, and cleanup. USE WHEN: starting any coding task, committing work, opening PRs, or following git conventions. EXAMPLES: 'start working on X', 'create a branch', 'open a PR', 'commit my changes'."
 ---
 
-# Git & GitHub Workflow
+# Git Task Workflow
 
-## Golden Rule
+Invoke this skill at the start of every task, before writing any code.
 
-**NEVER push directly to `main`.** All changes must go through a Pull Request.
+## Step 1: Set Up Worktree
 
-## Branch Strategy
+Invoke the `using-git-worktrees` superpowers skill to create an isolated workspace.
 
-| Branch | Purpose | Auto-deploys | Direct Push |
-|--------|---------|--------------|-------------|
-| `main` | Development integration | No | **BLOCKED** |
-| `release/*` | Production releases (e.g., `release/1.0`, `release/2.0`) | Yes (Firebase + Cloud Run) | No |
-| `feature/*` | New features | No | Yes |
-| `fix/*` | Bug fixes | No | Yes |
-| `agents/*` | AI agent config changes | No | Yes |
-
-## Feature Development Flow
+- Worktree directory: `.worktrees/` at the project root
+- Safety check: verify `.worktrees/` is gitignored before creating
 
 ```bash
-# 1. Start from main
-git checkout main
-git pull origin main
+# Verify ignored
+git check-ignore -q .worktrees && echo "ignored ✓"
 
-# 2. Create feature branch (NEVER work on main)
-git checkout -b feature/room-creation
+# Create worktree with new branch
+git worktree add .worktrees/<branch-name> -b <branch-name>
 
-# 3. Make changes and commit
-git add .
-git commit -m "feature(client): add room creation UI"
-
-# 4. Push branch (NOT main!)
-git push -u origin feature/room-creation
-
-# 5. Open PR on GitHub
-#    - Title: feature(client): add room creation UI
-#    - Description: Summary of all changes
-#    - Request review
-#    - Wait for approval
-
-# 6. After PR is APPROVED and MERGED (by reviewer)
-#    Delete local branch
-git checkout main
-git pull origin main
-git branch -d feature/room-creation
+# Install dependencies
+cd .worktrees/<branch-name> && npm install
 ```
 
-## Pull Request Requirements
+Branch naming:
 
-**Every PR must include:**
+| Task type | Prefix | Example |
+|-----------|--------|---------|
+| New feature | `feature/` | `feature/lobby-ui` |
+| Bug fix | `fix/` | `fix/disconnect-handling` |
+| Documentation | `docs/` | `docs/architecture-update` |
+| Agent config | `agents/` | `agents/angular-skill-update` |
 
-1. **Title** - Conventional commit format: `type(scope): description`
-2. **Summary** - What changes were made and why
-3. **Testing** - How the changes were verified
-4. **Approval** - At least one reviewer must approve before merge
+## Step 2: Implement in the Worktree
 
-## Commit Convention (Conventional Commits)
+All work happens inside `.worktrees/<branch-name>/`. Commit frequently:
 
-Format:
+```bash
+# Stage specific files (never `git add -A` or `git add .`)
+git add path/to/changed/file.ts
+
+# Commit with conventional format
+git commit -m "feature(client): add lobby component"
 ```
-<type>(<scope>): <description>
 
-[optional body]
-
-[optional footer]
-```
-
-### Types
+Commit format: `<type>(<scope>): <description>`
 
 | Type | Use for |
 |------|---------|
 | `feature` | New feature |
 | `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting (no code change) |
-| `refactor` | Code restructuring |
-| `test` | Adding/updating tests |
-| `infra` | Build, tooling, CI/CD, deps |
-| `perf` | Performance improvement || `agents` | AI agent instructions, skills, workflows |
-### Scopes (optional)
-
-| Scope | Project |
-|-------|---------|
-| `client` | Angular app |
-| `server` | .NET server |
-| `board` | Board library |
 | `docs` | Documentation |
-| `deps` | Dependencies |
+| `style` | Formatting only |
+| `refactor` | Code restructure |
+| `test` | Tests |
+| `infra` | Build, CI/CD, deps |
+| `perf` | Performance |
+| `agents` | AI agent instructions/skills |
 
-### Examples
+Scopes: `client`, `server`, `board`, `docs`, `deps`, `ci`
+
+Examples:
+```bash
+git commit -m "feature(client): add multiplayer lobby component"
+git commit -m "fix(server): handle player disconnect during game"
+git commit -m "test(board): add pathfinding unit tests"
+git commit -m "infra(ci): add e2e tests to pipeline"
+git commit -m "agents(skills): update angular skill"
+```
+
+## Step 3: Verify Before Completing
+
+Invoke the `verification-before-completion` superpowers skill.
+
+Run checks on affected projects:
 
 ```bash
-# Feature
-git commit -m "feature(client): add multiplayer lobby component"
+# Lint and test
+npx nx affected -t lint test
 
-# Bug fix
-git commit -m "fix(server): handle player disconnect during game"
-
-# Documentation
-git commit -m "docs(agents): update architecture overview"
-
-# Tests
-git commit -m "test(board): add pathfinding unit tests"
-
-# Infrastructure / Dependencies
-git commit -m "infra(deps): update Angular to v21.1"
-git commit -m "infra(ci): add e2e tests to pipeline"
-
-# AI Agents
-git commit -m "agents(skills): add angular skill"
-git commit -m "agents(docs): restructure architecture docs"
-
-# Breaking change (use ! or footer)
-git commit -m "feature(server)!: change room ID format"
-# or
-git commit -m "feature(server): change room ID format
-
-BREAKING CHANGE: Room IDs are now 8 characters instead of 6"
+# Build (catches type errors)
+npx nx affected -t build
 ```
 
-## Pull Request Workflow
+All checks must pass before pushing.
 
-### PR Title
-Same format as commits:
-```
-feature(client): add room joining flow
-```
+## Step 4: Push Branch and Open PR
 
-### PR Description
-```markdown
+```bash
+# Push branch
+git push -u origin <branch-name>
+
+# Open PR
+gh pr create \
+  --title "feature(client): add lobby component" \
+  --body "$(cat <<'EOF'
 ## Summary
-Add ability for players to join existing rooms by entering a room code.
+Brief description of what changed and why.
 
 ## Changes
-- Added room code input in lobby
-- Connected to server JoinRoom hub method
-- Added error handling for invalid codes
+- Added X
+- Fixed Y
+- Updated Z
 
 ## Testing
-- [ ] Unit tests pass
-- [ ] E2E tests pass
-- [ ] Manual testing: created room, joined from another browser
+- [ ] Unit tests pass (`npx nx affected -t test`)
+- [ ] Build passes (`npx nx affected -t build`)
+- [ ] Manual testing: describe what you tested
 
 ## Screenshots
 (attach if UI changes)
+EOF
+)"
 ```
 
-### Review Process
-1. Open PR from feature branch to `main`
-2. CI runs: lint, test, build
-3. Request review
-4. Address feedback
-5. Merge when approved
-6. Delete feature branch
+PR title must follow the commit convention: `type(scope): description`.
 
-## Useful Commands
+## Step 5: Clean Up After Merge
+
+Invoke the `finishing-a-development-branch` superpowers skill.
 
 ```bash
-# Check current branch and status
-git status
+# Return to main
+git checkout main
+git pull origin main
 
-# View commit history
-git log --oneline -10
+# Remove the worktree
+git worktree remove .worktrees/<branch-name>
 
-# Amend last commit
-git commit --amend -m "fix(client): corrected message"
-
-# Interactive rebase (squash commits)
-git rebase -i HEAD~3
-
-# Stash changes
-git stash
-git stash pop
-
-# Undo last commit (keep changes)
-git reset --soft HEAD~1
-
-# View diff
-git diff
-git diff --staged
+# Delete local branch
+git branch -d <branch-name>
 ```
 
-## CI/CD
+## CI
 
-CI runs automatically on PR:
+CI runs automatically on every PR:
 ```bash
-pnpm nx affected -t lint
-pnpm nx affected -t test
-pnpm nx affected -t build
+npx nx affected -t lint
+npx nx affected -t test
+npx nx affected -t build
 ```
 
-Deploy triggers automatically when pushing to `release/*` branches.
+Deploy triggers on push to `release/*` branches only.
 
-## Detailed Reference
+## Quick Reference
 
-For complete workflow, read `.claude/instructions/git-github.md`.
+| Action | Command |
+|--------|---------|
+| Create worktree | `git worktree add .worktrees/<name> -b <branch>` |
+| List worktrees | `git worktree list` |
+| Remove worktree | `git worktree remove .worktrees/<name>` |
+| Push branch | `git push -u origin <branch>` |
+| Create PR | `gh pr create --title "..." --body "..."` |
+| View PR | `gh pr view` |
