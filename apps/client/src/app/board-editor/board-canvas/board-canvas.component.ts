@@ -8,8 +8,8 @@ import {
   createPassage,
   snapPointToGrid,
 } from '@pokemon-duel/board';
-import { SpotComponent } from '../spot/spot.component';
-import { PassageComponent } from '../passage/passage.component';
+import { SpotComponent } from '../../game/spot/spot.component';
+import { PassageComponent } from '../../game/passage/passage.component';
 
 const DEFAULT_CELL_SIZE = 50;
 

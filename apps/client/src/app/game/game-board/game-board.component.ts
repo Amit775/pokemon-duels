@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
 import { Spot, Passage, Pokemon, BattleResult } from '@pokemon-duel/board';
-import { SpotComponent } from '../../components/spot/spot.component';
-import { PassageComponent } from '../../components/passage/passage.component';
-import { PokemonComponent } from '../../components/pokemon/pokemon.component';
+import { SpotComponent } from '../spot/spot.component';
+import { PassageComponent } from '../passage/passage.component';
+import { PokemonComponent } from '../pokemon/pokemon.component';
 import { MatIconModule } from '@angular/material/icon';
 import { BattleToastComponent } from './battle-toast/battle-toast.component';
 

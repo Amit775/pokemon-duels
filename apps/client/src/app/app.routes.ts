@@ -7,16 +7,9 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'board-creator',
-    loadComponent: () =>
-      import('./containers/board-creator/board-creator.component').then(
-        (m) => m.BoardCreatorComponent,
-      ),
-  },
-  {
     path: 'lobby',
     loadComponent: () =>
-      import('./containers/lobby/lobby.component').then((m) => m.LobbyComponent),
+      import('./lobby/lobby/lobby.component').then((m) => m.LobbyComponent),
   },
   {
     path: 'local',
@@ -26,9 +19,15 @@ export const routes: Routes = [
   {
     path: 'play/:roomId',
     loadComponent: () =>
-      import('./containers/multiplayer-game/multiplayer-game.component').then(
+      import('./game/multiplayer-game/multiplayer-game.component').then(
         (m) => m.MultiplayerGameComponent,
       ),
   },
+  {
+    path: 'board-creator',
+    loadComponent: () =>
+      import('./board-editor/board-creator/board-creator.component').then(
+        (m) => m.BoardCreatorComponent,
+      ),
+  },
 ];
-

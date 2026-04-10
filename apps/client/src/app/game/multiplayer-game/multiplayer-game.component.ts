@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MultiplayerService, MultiplayerStore, Pokemon, Spot } from '@pokemon-duel/board';
-import { GameBoardComponent } from '../../game/game-board/game-board.component';
+import { GameBoardComponent } from '../game-board/game-board.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
