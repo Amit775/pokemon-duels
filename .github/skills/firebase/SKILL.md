@@ -40,10 +40,10 @@ The Angular client deploys to **Firebase Hosting**.
 
 ```bash
 # Build for production first
-pnpm nx build client --configuration=production
+npx nx build client --configuration=production
 
 # Deploy via Nx target
-pnpm nx deploy client
+npx nx deploy client
 
 # Or deploy directly with Firebase CLI
 firebase deploy --only hosting
@@ -55,7 +55,7 @@ firebase deploy --only hosting
 # Login to Firebase (browser auth)
 firebase login
 # or use npm script:
-pnpm firebase:login
+npm run firebase:login
 
 # Check current project
 firebase projects:list
@@ -82,7 +82,7 @@ firebase use <correct-project-id>
 ### Build artifacts not found
 Ensure build completed successfully:
 ```bash
-pnpm nx build client --configuration=production
+npx nx build client --configuration=production
 ls dist/apps/client/browser  # Should have index.html
 ```
 
@@ -109,7 +109,3 @@ The token is stored in Cloud Build secrets.
 | `headers` | Cache headers for static assets |
 | `redirects` | URL redirects |
 | `cleanUrls` | Remove .html extension from URLs |
-
-## Detailed Reference
-
-For deployment workflow, read `.claude/instructions/deployment.md`.
