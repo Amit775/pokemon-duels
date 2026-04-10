@@ -1,110 +1,81 @@
-# Angular Development Guidelines
+# Angular Development Rules
 
 This project uses **Angular 21+** with modern patterns. Follow these conventions strictly.
 
 ## Signal-Based Inputs/Outputs (Required)
 
-**Always use signal-based inputs and outputs**, not decorators.
+**Always** use signal-based inputs and outputs. **Never** use decorators.
 
 ```typescript
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
-
-@Component({
-  selector: 'app-spot',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div (click)="spotClicked.emit(spot())">
-      {{ spot().name }}
-    </div>
-  `
-})
-export class SpotComponent {
-  // Required input
-  spot = input.required<Spot>();
-  
-  // Optional input with default
-  selected = input(false);
-  
-  // Output signal
-  spotClicked = output<Spot>();
-}
+// ✅ Required
+spot = input.required<Spot>();
+selected = input(false);
+spotClicked = output<Spot>();
 ```
 
-**❌ Never use decorators:**
 ```typescript
-// DO NOT USE
+// ❌ Never use
 @Input() spot!: Spot;
 @Output() spotClicked = new EventEmitter<Spot>();
+constructor(private service: DataService) {}
 ```
 
-## Control Flow (@if, @for, @switch)
+Use `inject()` for dependency injection, never constructor injection.
 
-**Always use built-in control flow**, not structural directives.
+## Control Flow (Required)
+
+**Always** use built-in control flow. **Never** use structural directives.
 
 ```html
-<!-- ✅ Correct -->
-@if (spot(); as s) {
-  <div>{{ s.name }}</div>
-}
-
-@for (spot of spots(); track spot.id) {
-  <app-spot [spot]="spot" />
-} @empty {
-  <p>No spots</p>
-}
-
-@switch (type()) {
-  @case ('start') { <span>Start</span> }
-  @default { <span>Normal</span> }
-}
+<!-- ✅ Required -->
+@if (condition) { ... } @else { ... }
+@for (item of items(); track item.id) { ... } @empty { ... }
+@switch (type()) { @case ('x') { ... } @default { ... } }
 ```
 
-**❌ Never use structural directives:**
 ```html
-<!-- DO NOT USE -->
-<div *ngIf="spot">{{ spot.name }}</div>
-<div *ngFor="let spot of spots">
+<!-- ❌ Never use -->
+<div *ngIf="...">
+<div *ngFor="let item of items">
 ```
 
 ## Component Structure
 
-```typescript
-@Component({
-  selector: 'app-example',
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './example.html',
-  styleUrl: './example.scss'
-})
-export class ExampleComponent {
-  // 1. Inputs (signals)
-  data = input.required<Data>();
-  
-  // 2. Outputs (signals)
-  dataChanged = output<Data>();
-  
-  // 3. Injected services (use inject())
-  private readonly store = inject(ExampleStore);
-  
-  // 4. Computed signals
-  derivedValue = computed(() => this.data().value * 2);
-  
-  // 5. Methods
-  handleClick() { ... }
-}
-```
+- `ChangeDetectionStrategy.OnPush` — always
+- `standalone: true` — always
+- Separate files: `example.ts`, `example.html`, `example.scss`
+- Injection: `private readonly x = inject(X)` at class level
+- Order: inputs → outputs → injected services → computed signals → methods
 
-## Key Patterns
+## Component Design
 
-| Pattern | Use |
-|---------|-----|
-| `inject()` | Service injection (not constructor) |
-| `computed()` | Derived state from signals |
-| `effect()` | Side effects from signal changes |
-| `linkedSignal()` | Two-way binding with signals |
+- One component = one purpose. Split if it does multiple things.
+- Keep templates under ~50 lines. Extract child components if larger.
+- Business logic belongs in services, not components.
+
+## State Management
+
+Use **@ngrx/signals** (`signalStore`, `withState`, `withMethods`, `withComputed`) for component and feature state.
+
+## Key APIs
+
+| API | Purpose |
+|-----|---------|
+| `input()` / `input.required()` | Component inputs |
+| `output()` | Component outputs |
+| `computed()` | Derived state |
+| `linkedSignal()` | Two-way binding |
 | `resource()` | Async data fetching |
+| `inject()` | Dependency injection |
+
+## Avoid `effect()`
+
+`effect()` is a last resort. Prefer:
+- `computed()` for derived state
+- `resource()` for async data
+- `linkedSignal()` for form sync
+
+`effect()` is appropriate only for: logging/analytics, third-party library integration, DOM manipulation outside Angular's control.
 
 ## File Naming
 
@@ -113,6 +84,4 @@ export class ExampleComponent {
 - Models: `example.model.ts`
 - Stores: `example.store.ts`
 
-## Detailed Guide
-
-See [004-angular-development-guide.md](apps/docs/src/content/agents/004-angular-development-guide.md) for complete patterns.
+For implementation patterns, invoke the `angular` skill.
