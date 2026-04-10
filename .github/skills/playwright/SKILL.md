@@ -23,22 +23,22 @@ apps/client/
 
 ```bash
 # Run all e2e tests
-pnpm nx e2e client
+npx nx e2e client
 
 # Run with UI mode (interactive)
-pnpm nx e2e client -- --ui
+npx nx e2e client -- --ui
 
 # Run specific test file
-pnpm nx e2e client -- e2e/multiplayer.spec.ts
+npx nx e2e client -- e2e/multiplayer.spec.ts
 
 # Run specific test by name
-pnpm nx e2e client -- -g "should create room"
+npx nx e2e client -- -g "should create room"
 
 # Debug mode (opens browser with inspector)
-pnpm nx e2e client -- --debug
+npx nx e2e client -- --debug
 
 # Generate test from recording
-pnpm nx e2e client -- --codegen
+npx nx e2e client -- --codegen
 ```
 
 ## Test Structure
@@ -178,7 +178,3 @@ export default defineConfig({
   },
 });
 ```
-
-## Detailed Reference
-
-For testing guidelines, read `.claude/instructions/testing.md`.
