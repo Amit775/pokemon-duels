@@ -22,13 +22,13 @@ apps/server/
 
 ```bash
 # Development with hot reload
-pnpm nx serve server
+npx nx serve server
 
 # Build
-pnpm nx build server
+npx nx build server
 
 # Deploy to Cloud Run
-pnpm nx deploy server
+npx nx deploy server
 ```
 
 ## SignalR Hub Pattern
@@ -152,7 +152,3 @@ public record JoinResult
 ```
 
 CORS is configured in `Program.cs` to allow the Angular client origin.
-
-## Detailed Reference
-
-For more patterns, read `.claude/instructions/dotnet.md`.
