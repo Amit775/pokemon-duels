@@ -1,0 +1,135 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 1vw, 8px);
+  height: 100%;
+  box-sizing: border-box;
+  background: var(--mat-sys-surface);
+  overflow: hidden;
+  padding: clamp(4px, 1vw, 8px);
+}
+
+.board-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  order: 2;
+  min-width: 0;
+  min-height: 0;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--mat-sys-surface-container);
+  border-radius: 12px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.turn-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.turn-label {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 13px;
+}
+
+.turn-player {
+  &--1 {
+    --mat-chip-label-text-color: #42a5f5;
+  }
+  &--2 {
+    --mat-chip-label-text-color: #ef5350;
+  }
+}
+
+.game-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.selection-info {
+  margin-top: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: color-mix(in srgb, var(--mat-sys-primary) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--mat-sys-primary) 30%, transparent);
+  color: var(--mat-sys-primary);
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Win overlay
+.win-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.win-modal {
+  padding: 40px 60px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  h2 {
+    font-size: 36px;
+    margin: 16px 0 8px;
+  }
+}
+
+.trophy-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #fdd835;
+}
+
+@keyframes pop-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.win-message {
+  font-size: 20px;
+  margin: 0 0 24px;
+  opacity: 0.8;
+}
