@@ -4,8 +4,8 @@ import {
   computed,
   effect,
   inject,
+  linkedSignal,
   OnInit,
-  OnDestroy,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MultiplayerService, MultiplayerStore, Pokemon, Spot } from '@pokemon-duel/board';
@@ -22,7 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './multiplayer-game.component.html',
   styleUrl: './multiplayer-game.component.scss',
 })
-export class MultiplayerGameComponent implements OnInit, OnDestroy {
+export class MultiplayerGameComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly multiplayer = inject(MultiplayerService);
@@ -56,13 +56,14 @@ export class MultiplayerGameComponent implements OnInit, OnDestroy {
     return winner !== null && winner === local;
   });
 
-  constructor() {
-    effect(() => {
-      if (this.store.roomState() === 'idle') {
-        this.router.navigate(['/lobby']);
-      }
-    });
-  }
+  // Tracks lastBattle from the store but can be dismissed locally without a network call
+  protected readonly displayBattle = linkedSignal(() => this.store.lastBattle());
+
+  private readonly roomStateEffect = effect(() => {
+    if (this.store.roomState() === 'idle') {
+      this.router.navigate(['/lobby']);
+    }
+  });
 
   ngOnInit(): void {
     const roomId = this.route.snapshot.paramMap.get('roomId');
@@ -70,8 +71,6 @@ export class MultiplayerGameComponent implements OnInit, OnDestroy {
       this.multiplayer.joinRoom(roomId);
     }
   }
-
-  ngOnDestroy(): void {}
 
   protected async onSpotClicked(spot: Spot): Promise<void> {
     if (!this.isMyTurn()) return;
