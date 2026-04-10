@@ -16,57 +16,17 @@
     </div>
   }
 
-  @if (lastBattle(); as battle) {
-    <div class="battle-toast">
-      <div class="battle-header">
-        <mat-icon>swords</mat-icon>
-        Battle!
-      </div>
-      <div class="battle-rolls">
-        <div class="battle-roll">
-          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.attackerId)?.speciesId ?? '') }}</span>
-          <span class="battle-dice">{{ battle.attackerRoll }}{{ battle.attackerBonus > 0 ? ' +' + battle.attackerBonus : '' }}</span>
-          <span class="battle-total">= {{ battle.attackerRoll + battle.attackerBonus }}</span>
-        </div>
-        <div class="battle-vs">VS</div>
-        <div class="battle-roll">
-          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.defenderId)?.speciesId ?? '') }}</span>
-          <span class="battle-dice">{{ battle.defenderRoll }}{{ battle.defenderBonus > 0 ? ' +' + battle.defenderBonus : '' }}</span>
-          <span class="battle-total">= {{ battle.defenderRoll + battle.defenderBonus }}</span>
-        </div>
-      </div>
-      <div class="battle-result">
-        {{ getSpeciesName(getPokemonById(battle.winnerId)?.speciesId ?? '') }} wins!
-      </div>
-    </div>
-  }
-
-  <aside class="bench-area bench-area--top" [class.my-bench]="localPlayerId() === 2">
-    <app-bench
-      [pokemon]="player2Bench()"
-      [playerId]="2"
-      [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 2 && localPlayerId() === 2"
-      (pokemonSelected)="onBenchPokemonSelect($event)"
-    />
-  </aside>
-
   <main class="board-area">
     <div class="game-header">
       <div class="header-left">
         <h2>Pokemon Duel</h2>
         <span class="room-code">Room: {{ roomCode() }}</span>
       </div>
-
       <div class="turn-indicator">
         @if (isMyTurn()) {
-          <mat-chip highlighted class="your-turn-chip">
-            Your Turn!
-          </mat-chip>
+          <mat-chip highlighted class="your-turn-chip">Your Turn!</mat-chip>
         } @else {
-          <mat-chip class="opponent-turn-chip">
-            Opponent's Turn
-          </mat-chip>
+          <mat-chip class="opponent-turn-chip">Opponent's Turn</mat-chip>
         }
         <mat-chip
           [class.turn-player--1]="currentPlayerId() === 1"
@@ -75,7 +35,6 @@
           Player {{ currentPlayerId() }}
         </mat-chip>
       </div>
-
       <div class="player-info">
         <span class="you-are">You are:</span>
         <mat-chip
@@ -91,78 +50,23 @@
       </div>
     </div>
 
-    <div class="board-canvas">
-      @for (passage of passages(); track passage.id) {
-        @if (getSpotCoords(passage.fromSpotId); as fromCoords) {
-          @if (getSpotCoords(passage.toSpotId); as toCoords) {
-            <app-passage
-              [passage]="passage"
-              [fromSpot]="{
-                id: passage.fromSpotId,
-                x: fromCoords.x,
-                y: fromCoords.y,
-                name: '',
-                metadata: { type: 'normal' },
-              }"
-              [toSpot]="{
-                id: passage.toSpotId,
-                x: toCoords.x,
-                y: toCoords.y,
-                name: '',
-                metadata: { type: 'normal' },
-              }"
-              [xPercent]="toPercentX"
-              [yPercent]="toPercentY"
-            />
-          }
-        }
-      }
-
-      @if (isMyTurn()) {
-        @for (spot of spots(); track spot.id) {
-          @if (isValidTarget(spot.id)) {
-            <div
-              class="valid-target-indicator"
-              [class.valid-target-indicator--battle]="isEnemyOccupied(spot.id)"
-              [style.left.%]="toPercentX(spot.x)"
-              [style.top.%]="toPercentY(spot.y)"
-              (click)="onSpotClick(spot)"
-            >
-              @if (isEnemyOccupied(spot.id)) {
-                <span class="battle-icon">
-                  <mat-icon>swords</mat-icon>
-                </span>
-              }
-            </div>
-          }
-        }
-      }
-
-      @for (spot of spots(); track spot.id) {
-        <app-spot
-          [spot]="spot"
-          [selected]="false"
-          [xPercent]="toPercentX(spot.x)"
-          [yPercent]="toPercentY(spot.y)"
-          (spotClicked)="onSpotClick($event)"
-        />
-      }
-
-      @for (pokemon of pokemonOnBoard(); track pokemon.id) {
-        @if (getSpotCoords(pokemon.spotId!); as coords) {
-          <app-pokemon
-            [pokemon]="pokemon"
-            [x]="coords.x"
-            [y]="coords.y"
-            [xPercent]="toPercentX(coords.x)"
-            [yPercent]="toPercentY(coords.y)"
-            [selected]="selectedPokemonId() === pokemon.id"
-            [draggable]="pokemon.playerId === localPlayerId() && isMyTurn() && phase() !== 'ended'"
-            (pokemonClicked)="onPokemonClick($event)"
-          />
-        }
-      }
-    </div>
+    <app-game-board
+      [spots]="spots()"
+      [passages]="passages()"
+      [pokemonOnBoard]="pokemonOnBoard()"
+      [player1Bench]="player1Bench()"
+      [player2Bench]="player2Bench()"
+      [selectedPokemonId]="selectedPokemonId()"
+      [validMoveTargets]="validMoveTargets()"
+      [currentPlayerId]="currentPlayerId()"
+      [phase]="phase()"
+      [lastBattle]="lastBattle()"
+      [isInteractive]="isMyTurn()"
+      (spotClicked)="onSpotClicked($event)"
+      (pokemonClicked)="onPokemonClicked($event)"
+      (benchPokemonSelected)="onBenchPokemonSelected($event)"
+      (dismissBattle)="skipTurn()"
+    />
 
     @if (isMyTurn() && selectedPokemonId() && phase() !== 'ended') {
       <div class="selection-info">
@@ -178,14 +82,4 @@
       </div>
     }
   </main>
-
-  <aside class="bench-area bench-area--bottom" [class.my-bench]="localPlayerId() === 1">
-    <app-bench
-      [pokemon]="player1Bench()"
-      [playerId]="1"
-      [selectedPokemonId]="selectedPokemonId()"
-      [isCurrentPlayer]="currentPlayerId() === 1 && localPlayerId() === 1"
-      (pokemonSelected)="onBenchPokemonSelect($event)"
-    />
-  </aside>
 </div>
