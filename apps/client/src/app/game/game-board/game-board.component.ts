@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
-import { Spot, Passage, Pokemon, BattleResult, getSpecies } from '@pokemon-duel/board';
+import { Spot, Passage, Pokemon, BattleResult } from '@pokemon-duel/board';
 import { SpotComponent } from '../../components/spot/spot.component';
 import { PassageComponent } from '../../components/passage/passage.component';
 import { PokemonComponent } from '../../components/pokemon/pokemon.component';
 import { MatIconModule } from '@angular/material/icon';
+import { BattleToastComponent } from './battle-toast/battle-toast.component';
 
 const BOARD_DESIGN_WIDTH = 1000;
 const BOARD_DESIGN_HEIGHT = 500;
@@ -25,7 +26,7 @@ type BenchSlot = {
 @Component({
   selector: 'app-game-board',
   standalone: true,
-  imports: [SpotComponent, PassageComponent, PokemonComponent, MatIconModule],
+  imports: [SpotComponent, PassageComponent, PokemonComponent, MatIconModule, BattleToastComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-board.component.html',
   styleUrl: './game-board.component.scss',
@@ -75,7 +76,7 @@ export class GameBoardComponent {
       );
   });
 
-  private readonly allPokemon = computed(() => [
+  protected readonly allPokemon = computed(() => [
     ...this.pokemonOnBoard(),
     ...this.player1Bench(),
     ...this.player2Bench(),
@@ -151,15 +152,7 @@ export class GameBoardComponent {
     return this.pokemonOnBoard().find((p) => p.spotId === spotId);
   }
 
-  protected getPokemonById(id: string): Pokemon | undefined {
-    return this.allPokemon().find((p) => p.id === id);
-  }
-
-  protected getSpeciesName(speciesId: string): string {
-    return getSpecies(speciesId)?.name ?? 'Unknown';
-  }
-
-  isValidTarget(spotId: string): boolean {
+  protected isValidTarget(spotId: string): boolean {
     return this.validMoveTargets().includes(spotId);
   }
 

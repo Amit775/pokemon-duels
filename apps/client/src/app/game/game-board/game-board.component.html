@@ -41,10 +41,10 @@
   @for (slot of player2BenchSlots(); track slot.index) {
     <app-spot
       [spot]="slot.spot"
-      [selected]="!!slot.pokemon && selectedPokemonId() === slot.pokemon!.id"
+      [selected]="!!slot.pokemon && selectedPokemonId() === slot.pokemon.id"
       [xPercent]="slot.xPercent"
       [yPercent]="slot.yPercent"
-      (spotClicked)="slot.pokemon && benchPokemonSelected.emit(slot.pokemon!)"
+      (spotClicked)="slot.pokemon && benchPokemonSelected.emit(slot.pokemon)"
     />
   }
 
@@ -115,10 +115,10 @@
   @for (slot of player1BenchSlots(); track slot.index) {
     <app-spot
       [spot]="slot.spot"
-      [selected]="!!slot.pokemon && selectedPokemonId() === slot.pokemon!.id"
+      [selected]="!!slot.pokemon && selectedPokemonId() === slot.pokemon.id"
       [xPercent]="slot.xPercent"
       [yPercent]="slot.yPercent"
-      (spotClicked)="slot.pokemon && benchPokemonSelected.emit(slot.pokemon!)"
+      (spotClicked)="slot.pokemon && benchPokemonSelected.emit(slot.pokemon)"
     />
   }
 
@@ -136,30 +136,10 @@
   }
 
   @if (lastBattle(); as battle) {
-    <div class="battle-toast">
-      <button class="battle-close" (click)="dismissBattle.emit()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <div class="battle-header">
-        <mat-icon>swords</mat-icon>
-        Battle!
-      </div>
-      <div class="battle-rolls">
-        <div class="battle-roll">
-          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.attackerId)?.speciesId ?? '') }}</span>
-          <span class="battle-dice">{{ battle.attackerRoll }}{{ battle.attackerBonus > 0 ? ' +' + battle.attackerBonus : '' }}</span>
-          <span class="battle-total">= {{ battle.attackerRoll + battle.attackerBonus }}</span>
-        </div>
-        <div class="battle-vs">VS</div>
-        <div class="battle-roll">
-          <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle.defenderId)?.speciesId ?? '') }}</span>
-          <span class="battle-dice">{{ battle.defenderRoll }}{{ battle.defenderBonus > 0 ? ' +' + battle.defenderBonus : '' }}</span>
-          <span class="battle-total">= {{ battle.defenderRoll + battle.defenderBonus }}</span>
-        </div>
-      </div>
-      <div class="battle-result">
-        {{ getSpeciesName(getPokemonById(battle.winnerId)?.speciesId ?? '') }} wins!
-      </div>
-    </div>
+    <app-battle-toast
+      [battle]="battle"
+      [pokemon]="allPokemon()"
+      (dismiss)="dismissBattle.emit()"
+    />
   }
 </div>

@@ -1,0 +1,25 @@
+<div class="battle-toast">
+  <button class="battle-close" (click)="dismiss.emit()">
+    <mat-icon>close</mat-icon>
+  </button>
+  <div class="battle-header">
+    <mat-icon>swords</mat-icon>
+    Battle!
+  </div>
+  <div class="battle-rolls">
+    <div class="battle-roll">
+      <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle().attackerId)?.speciesId ?? '') }}</span>
+      <span class="battle-dice">{{ battle().attackerRoll }}{{ battle().attackerBonus > 0 ? ' +' + battle().attackerBonus : '' }}</span>
+      <span class="battle-total">= {{ battle().attackerRoll + battle().attackerBonus }}</span>
+    </div>
+    <div class="battle-vs">VS</div>
+    <div class="battle-roll">
+      <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle().defenderId)?.speciesId ?? '') }}</span>
+      <span class="battle-dice">{{ battle().defenderRoll }}{{ battle().defenderBonus > 0 ? ' +' + battle().defenderBonus : '' }}</span>
+      <span class="battle-total">= {{ battle().defenderRoll + battle().defenderBonus }}</span>
+    </div>
+  </div>
+  <div class="battle-result">
+    {{ getSpeciesName(getPokemonById(battle().winnerId)?.speciesId ?? '') }} wins!
+  </div>
+</div>
