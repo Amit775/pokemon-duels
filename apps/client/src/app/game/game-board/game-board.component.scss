@@ -1,0 +1,209 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.board-canvas {
+  flex: 1;
+  position: relative;
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 12px;
+  overflow: hidden;
+  container-type: size;
+  container-name: board;
+  aspect-ratio: 2 / 1;
+  width: 100%;
+  max-height: 100%;
+  min-height: 0;
+}
+
+.bench-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bench-area {
+  fill: none;
+  stroke-width: 1.5;
+
+  &--player-1 {
+    stroke: #42a5f5;
+    fill: rgba(66, 165, 245, 0.06);
+  }
+
+  &--player-2 {
+    stroke: #ef5350;
+    fill: rgba(239, 83, 80, 0.06);
+  }
+}
+
+.bench-connector {
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  opacity: 0.7;
+
+  &--player-1 {
+    stroke: #42a5f5;
+  }
+
+  &--player-2 {
+    stroke: #ef5350;
+  }
+}
+
+.valid-target-indicator {
+  position: absolute;
+  width: min(56px, 8cqmin);
+  height: min(56px, 8cqmin);
+  border-radius: 50%;
+  border: max(2px, 0.3cqmin) dashed #4caf50;
+  background-color: rgba(76, 175, 80, 0.2);
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  animation: pulse-target 1s infinite;
+  z-index: 5;
+
+  &:hover {
+    background-color: rgba(76, 175, 80, 0.4);
+    border-color: #2e7d32;
+  }
+
+  &--battle {
+    border-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.2);
+
+    &:hover {
+      background-color: rgba(244, 67, 54, 0.4);
+      border-color: #d32f2f;
+    }
+  }
+}
+
+@keyframes pulse-target {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.8; }
+}
+
+.battle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  mat-icon {
+    font-size: min(24px, 4cqmin);
+    width: min(24px, 4cqmin);
+    height: min(24px, 4cqmin);
+    color: #f44336;
+  }
+}
+
+// Battle toast
+.battle-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--mat-sys-surface-container-high);
+  border-radius: 16px;
+  padding: 16px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--mat-sys-outline-variant);
+  z-index: 900;
+  min-width: 300px;
+  animation: slide-down 0.3s ease;
+}
+
+@keyframes slide-down {
+  from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+.battle-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--mat-sys-on-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+
+  &:hover {
+    background: var(--mat-sys-surface-container-highest);
+  }
+}
+
+.battle-header {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mat-sys-error);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.battle-rolls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.battle-roll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.battle-pokemon {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.battle-dice {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--mat-sys-primary);
+}
+
+.battle-total {
+  font-size: 14px;
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 600;
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.battle-vs {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mat-sys-error);
+}
+
+.battle-result {
+  text-align: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--mat-sys-primary);
+}
