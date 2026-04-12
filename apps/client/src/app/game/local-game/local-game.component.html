@@ -1,11 +1,11 @@
 <div class="game-layout">
   @if (phase() === 'ended' && winnerId()) {
-    <div class="win-overlay">
+    <div class="win-overlay" data-testid="win-overlay">
       <div class="win-modal">
         <mat-icon class="trophy-icon">emoji_events</mat-icon>
         <h2>Victory!</h2>
         <p class="win-message">Player {{ winnerId() }} wins!</p>
-        <button mat-flat-button (click)="resetGame()">Play Again</button>
+        <button mat-flat-button data-testid="play-again-btn" (click)="resetGame()">Play Again</button>
       </div>
     </div>
   }
@@ -13,7 +13,7 @@
   <main class="board-area">
     <div class="game-header">
       <h2>Pokemon Duel</h2>
-      <div class="turn-indicator">
+      <div class="turn-indicator" data-testid="turn-indicator">
         <span class="turn-label">Current Turn:</span>
         <mat-chip
           [class.turn-player--1]="currentPlayerId() === 1"
@@ -23,11 +23,11 @@
         </mat-chip>
       </div>
       <div class="game-actions">
-        <button mat-button (click)="skipTurn()" [disabled]="phase() === 'ended'">
+        <button mat-button data-testid="skip-turn-btn" (click)="skipTurn()" [disabled]="phase() === 'ended'">
           <mat-icon>skip_next</mat-icon>
           Skip Turn
         </button>
-        <button mat-button color="warn" (click)="resetGame()">
+        <button mat-button color="warn" data-testid="reset-game-btn" (click)="resetGame()">
           <mat-icon>restart_alt</mat-icon>
           Reset
         </button>
