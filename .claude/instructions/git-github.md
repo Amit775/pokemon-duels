@@ -33,7 +33,7 @@ Format: `<type>(<scope>): <description>`
 | `perf` | Performance improvement |
 | `agents` | AI agent instructions, skills, workflows |
 
-Scopes: `client`, `server`, `board`, `docs`, `deps`, `ci`
+Scopes: `client`, `server`, `board`, `deps`, `ci`
 
 ## PR Requirements
 
