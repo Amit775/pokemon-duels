@@ -25,6 +25,7 @@
         <mat-card-actions>
           <button
             mat-flat-button
+            data-testid="create-room-btn"
             [disabled]="isLoading()"
             (click)="createRoom()">
             @if (isLoading() && roomState() === 'creating') {
@@ -47,6 +48,7 @@
             <mat-label>Room Code</mat-label>
             <input
               matInput
+              data-testid="room-code-input"
               placeholder="ABCD"
               [value]="joinCode()"
               (input)="updateJoinCode($event)"
@@ -59,6 +61,7 @@
         <mat-card-actions>
           <button
             mat-flat-button
+            data-testid="join-room-btn"
             [disabled]="isLoading() || !joinCode()"
             (click)="joinRoom()">
             @if (isLoading() && roomState() === 'joining') {
@@ -80,7 +83,7 @@
             <div class="room-code-display">
               <span class="code-label">Room Code</span>
               <div class="code-box">
-                <span class="code-text">{{ roomCode() }}</span>
+                <span class="code-text" data-testid="room-code">{{ roomCode() }}</span>
                 <button mat-icon-button (click)="copyRoomCode()" aria-label="Copy code">
                   <mat-icon>content_copy</mat-icon>
                 </button>
@@ -107,7 +110,7 @@
         }
 
         <mat-card-actions>
-          <button mat-button (click)="leaveRoom()">
+          <button mat-button data-testid="leave-room-btn" (click)="leaveRoom()">
             Leave Room
           </button>
         </mat-card-actions>

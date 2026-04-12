@@ -1,6 +1,6 @@
 <div class="game-layout">
   @if (phase() === 'ended' && winnerId()) {
-    <div class="win-overlay">
+    <div class="win-overlay" data-testid="win-overlay">
       <div class="win-modal" [class.victory]="localPlayerWon()" [class.defeat]="!localPlayerWon()">
         @if (localPlayerWon()) {
           <mat-icon class="result-icon victory-icon">emoji_events</mat-icon>
@@ -11,7 +11,7 @@
           <h2>Defeat</h2>
           <p class="win-message">Your opponent captured your flag!</p>
         }
-        <button mat-flat-button (click)="backToLobby()">Back to Lobby</button>
+        <button mat-flat-button data-testid="back-to-lobby-btn" (click)="backToLobby()">Back to Lobby</button>
       </div>
     </div>
   }
@@ -43,7 +43,7 @@
         >
           Player {{ localPlayerId() }}
         </mat-chip>
-        <button mat-button color="warn" (click)="leaveGame()">
+        <button mat-button color="warn" data-testid="leave-game-btn" (click)="leaveGame()">
           <mat-icon>exit_to_app</mat-icon>
           Leave
         </button>
