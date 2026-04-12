@@ -67,7 +67,15 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
-        "tsConfig": "apps/client/tsconfig.spec.json"
+        "tsConfig": "apps/client/tsconfig.spec.json",
+        "coverage": true,
+        "coverageExclude": [
+          "src/main.ts",
+          "src/app/app.config.ts",
+          "src/app/app.routes.ts",
+          "src/environments/**",
+          "src/**/*.spec.ts"
+        ]
       }
     },
     "e2e": {
