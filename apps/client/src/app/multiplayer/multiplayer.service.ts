@@ -22,26 +22,22 @@ export class MultiplayerService {
   private setupEventHandlers(): void {
     // Player joined the room
     this.signalR.on<RoomInfo>('PlayerJoined', (room) => {
-      console.log('Player joined:', room);
       this.store.setRoomInfo(room);
     });
 
     // Game started
     this.signalR.on<MultiplayerGameState>('GameStarted', (state) => {
-      console.log('Game started:', state);
       this.store.setGameState(state);
       this.store.setRoomState('playing');
     });
 
     // Game state updated (selection changed, etc.)
     this.signalR.on<MultiplayerGameState>('GameStateUpdated', (state) => {
-      console.log('Game state updated:', state);
       this.store.setGameState(state);
     });
 
     // Move was made
     this.signalR.on<MoveResult>('MoveMade', (result) => {
-      console.log('Move made:', result);
       this.store.setGameState(result.gameState);
       if (result.won) {
         this.store.setRoomState('ended');
@@ -50,14 +46,12 @@ export class MultiplayerService {
 
     // Game ended
     this.signalR.on<MultiplayerGameState>('GameEnded', (state) => {
-      console.log('Game ended:', state);
       this.store.setGameState(state);
       this.store.setRoomState('ended');
     });
 
     // Player left
-    this.signalR.on<string>('PlayerLeft', (roomId) => {
-      console.log('Player left room:', roomId);
+    this.signalR.on<string>('PlayerLeft', (_roomId) => {
       this.store.playerLeft();
     });
   }
@@ -65,7 +59,7 @@ export class MultiplayerService {
   /**
    * Create a new game room
    */
-  async createRoom(): Promise<boolean> {
+  public async createRoom(): Promise<boolean> {
     try {
       this.store.setError(null);
       this.store.setRoomState('creating');
@@ -81,7 +75,6 @@ export class MultiplayerService {
         this.store.setRoomInfo(result.room);
         this.store.setLocalPlayerId(result.assignedPlayerId ?? null);
         this.store.setRoomState('waiting');
-        console.log('Room created:', result.room.roomId);
         return true;
       } else {
         throw new Error(result.error ?? 'Failed to create room');
@@ -98,7 +91,7 @@ export class MultiplayerService {
   /**
    * Join an existing room by code
    */
-  async joinRoom(roomCode: string): Promise<boolean> {
+  public async joinRoom(roomCode: string): Promise<boolean> {
     try {
       this.store.setError(null);
       this.store.setRoomState('joining');
@@ -122,7 +115,6 @@ export class MultiplayerService {
           this.store.setRoomState('waiting');
         }
 
-        console.log('Joined room:', result.room.roomId, 'as player', result.assignedPlayerId);
         return true;
       } else {
         throw new Error(result.error ?? 'Failed to join room');
@@ -139,7 +131,7 @@ export class MultiplayerService {
   /**
    * Leave the current room
    */
-  async leaveRoom(): Promise<void> {
+  public async leaveRoom(): Promise<void> {
     try {
       if (this.store.roomInfo()) {
         await this.signalR.invoke('LeaveRoom');
@@ -154,9 +146,8 @@ export class MultiplayerService {
   /**
    * Select a Pokemon (only works on your turn)
    */
-  async selectPokemon(pokemonId: string | null): Promise<void> {
+  public async selectPokemon(pokemonId: string | null): Promise<void> {
     if (!this.store.isMyTurn()) {
-      console.warn('Not your turn');
       return;
     }
 
@@ -170,9 +161,8 @@ export class MultiplayerService {
   /**
    * Move a Pokemon to a target spot
    */
-  async movePokemon(pokemonId: string, targetSpotId: string): Promise<void> {
+  public async movePokemon(pokemonId: string, targetSpotId: string): Promise<void> {
     if (!this.store.isMyTurn()) {
-      console.warn('Not your turn');
       return;
     }
 

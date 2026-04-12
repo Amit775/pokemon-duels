@@ -9,42 +9,38 @@ import { Pokemon, PokemonSpecies, getSpecies } from '@pokemon-duel/board';
   styleUrl: './pokemon.component.scss',
 })
 export class PokemonComponent {
-  // Inputs
-  pokemon = input.required<Pokemon>();
-  x = input(0);
-  y = input(0);
+  public pokemon = input.required<Pokemon>();
+  public x = input(0);
+  public y = input(0);
   // Percentage-based positioning for responsive layout
-  xPercent = input<number | null>(null);
-  yPercent = input<number | null>(null);
-  selected = input(false);
-  draggable = input(false);
+  public xPercent = input<number | null>(null);
+  public yPercent = input<number | null>(null);
+  public selected = input(false);
+  public draggable = input(false);
 
-  // Outputs
-  pokemonClicked = output<Pokemon>();
+  public pokemonClicked = output<Pokemon>();
 
-  // Computed
-  protected species = computed<PokemonSpecies | undefined>(() => 
-    getSpecies(this.pokemon().speciesId)
+  protected readonly species = computed<PokemonSpecies | undefined>(() =>
+    getSpecies(this.pokemon().speciesId),
   );
 
-  protected imageUrl = computed(() => this.species()?.imageUrl ?? '');
-  protected name = computed(() => this.species()?.name ?? 'Unknown');
-  protected movement = computed(() => this.species()?.movement ?? 0);
-  protected type = computed(() => this.species()?.type ?? 'normal');
-  protected playerId = computed(() => this.pokemon().playerId);
+  protected readonly imageUrl = computed(() => this.species()?.imageUrl ?? '');
+  protected readonly name = computed(() => this.species()?.name ?? 'Unknown');
+  protected readonly movement = computed(() => this.species()?.movement ?? 0);
+  protected readonly type = computed(() => this.species()?.type ?? 'normal');
+  protected readonly playerId = computed(() => this.pokemon().playerId);
 
   // Position with units - use percentage if provided, otherwise pixels
-  protected positionLeft = computed(() => {
+  protected readonly positionLeft = computed(() => {
     const percent = this.xPercent();
     return percent !== null ? `${percent}%` : `${this.x()}px`;
   });
 
-  protected positionTop = computed(() => {
+  protected readonly positionTop = computed(() => {
     const percent = this.yPercent();
     return percent !== null ? `${percent}%` : `${this.y()}px`;
   });
 
-  // Methods
   protected onClick(): void {
     this.pokemonClicked.emit(this.pokemon());
   }

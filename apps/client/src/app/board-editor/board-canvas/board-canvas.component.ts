@@ -46,7 +46,7 @@ export class BoardCanvasComponent {
   // Event Handlers
   // ==========================================================================
 
-  onCanvasClick(event: MouseEvent): void {
+  protected onCanvasClick(event: MouseEvent): void {
     // Only handle clicks directly on the canvas, not on child elements
     if (event.target !== event.currentTarget) return;
 
@@ -57,7 +57,7 @@ export class BoardCanvasComponent {
     }
   }
 
-  onSpotClicked(spot: Spot): void {
+  protected onSpotClicked(spot: Spot): void {
     const mode = this.store.editingMode();
 
     switch (mode) {
@@ -75,7 +75,7 @@ export class BoardCanvasComponent {
     }
   }
 
-  onPassageClicked(passage: Passage): void {
+  protected onPassageClicked(passage: Passage): void {
     const mode = this.store.editingMode();
 
     switch (mode) {

@@ -28,7 +28,7 @@ export class BoardControlsComponent {
   // Mode Selection
   // ==========================================================================
 
-  setMode(mode: EditingMode): void {
+  protected setMode(mode: EditingMode): void {
     this.store.setEditingMode(mode);
   }
 
@@ -36,15 +36,15 @@ export class BoardControlsComponent {
   // Type Selection
   // ==========================================================================
 
-  setSpotType(type: SpotType): void {
+  protected setSpotType(type: SpotType): void {
     this.store.setNewSpotType(type);
   }
 
-  setSpotPlayerId(playerId: number): void {
+  protected setSpotPlayerId(playerId: number): void {
     this.store.setNewSpotPlayerId(playerId);
   }
 
-  setPassageType(type: PassageType): void {
+  protected setPassageType(type: PassageType): void {
     this.store.setNewPassageType(type);
   }
 
@@ -52,7 +52,7 @@ export class BoardControlsComponent {
   // Selected Item Type Changes
   // ==========================================================================
 
-  updateSelectedSpotType(type: SpotType): void {
+  protected updateSelectedSpotType(type: SpotType): void {
     const selectedSpot = this.store.selectedSpot();
     if (selectedSpot) {
       let metadata:
@@ -70,7 +70,7 @@ export class BoardControlsComponent {
     }
   }
 
-  updateSelectedSpotPlayerId(playerId: number): void {
+  protected updateSelectedSpotPlayerId(playerId: number): void {
     const selectedSpot = this.store.selectedSpot();
     if (
       selectedSpot &&
@@ -81,7 +81,7 @@ export class BoardControlsComponent {
     }
   }
 
-  updateSelectedPassageType(type: PassageType): void {
+  protected updateSelectedPassageType(type: PassageType): void {
     const selectedPassage = this.store.selectedPassage();
     if (selectedPassage) {
       this.store.updatePassage(selectedPassage.id, { passageType: type });
@@ -92,7 +92,7 @@ export class BoardControlsComponent {
   // Grid Toggle
   // ==========================================================================
 
-  toggleGridSnap(): void {
+  protected toggleGridSnap(): void {
     this.store.toggleGridSnap();
   }
 
@@ -100,7 +100,7 @@ export class BoardControlsComponent {
   // Persistence
   // ==========================================================================
 
-  saveBoard(): void {
+  protected saveBoard(): void {
     const board = createBoard({
       id: this.boardService.generateId(),
       name: 'Board',
@@ -110,7 +110,7 @@ export class BoardControlsComponent {
     this.boardService.saveBoard(board);
   }
 
-  loadBoard(): void {
+  protected loadBoard(): void {
     const board = this.boardService.loadBoard();
     if (board) {
       this.store.reset();
@@ -123,7 +123,7 @@ export class BoardControlsComponent {
     }
   }
 
-  clearBoard(): void {
+  protected clearBoard(): void {
     this.store.reset();
   }
 
@@ -131,7 +131,7 @@ export class BoardControlsComponent {
   // Export/Import
   // ==========================================================================
 
-  exportBoard(): void {
+  protected exportBoard(): void {
     const board = createBoard({
       id: this.boardService.generateId(),
       name: 'Board',
@@ -150,7 +150,7 @@ export class BoardControlsComponent {
     URL.revokeObjectURL(url);
   }
 
-  onImportFile(event: Event): void {
+  protected onImportFile(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
