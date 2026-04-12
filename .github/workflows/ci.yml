@@ -23,6 +23,11 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
       - run: npm ci
       - uses: nrwl/nx-set-shas@v4
 
