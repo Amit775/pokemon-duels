@@ -50,8 +50,7 @@
     "@microsoft/signalr": "^10.0.0",
     "@ngrx/signals": "^21.0.1",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "^0.16.0"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@analogjs/vitest-angular": "^2.2.3",
