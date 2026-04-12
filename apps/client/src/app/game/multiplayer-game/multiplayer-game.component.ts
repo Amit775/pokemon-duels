@@ -8,7 +8,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MultiplayerService, MultiplayerStore, Pokemon, Spot } from '@pokemon-duel/board';
+import { Pokemon, Spot } from '@pokemon-duel/board';
+import { MultiplayerService } from '../../multiplayer/multiplayer.service';
+import { MultiplayerStore } from '../../multiplayer/multiplayer.store';
 import { GameBoardComponent } from '../game-board/game-board.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
