@@ -3,11 +3,9 @@ import {
   inject,
   signal,
   ChangeDetectionStrategy,
-  OnDestroy,
   effect,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { MultiplayerService } from '../../multiplayer/multiplayer.service';
 import { MultiplayerStore } from '../../multiplayer/multiplayer.store';
 import { SignalRService } from '../../multiplayer/signalr.service';
@@ -23,7 +21,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-lobby',
   standalone: true,
   imports: [
-    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatInputModule,
@@ -36,7 +33,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   templateUrl: './lobby.component.html',
   styleUrl: './lobby.component.scss',
 })
-export class LobbyComponent implements OnDestroy {
+export class LobbyComponent {
   private readonly router = inject(Router);
   private readonly multiplayerService = inject(MultiplayerService);
   private readonly signalRService = inject(SignalRService);
@@ -62,8 +59,6 @@ export class LobbyComponent implements OnDestroy {
       }
     });
   }
-
-  ngOnDestroy(): void {}
 
   protected async createRoom(): Promise<void> {
     await this.multiplayerService.createRoom();
