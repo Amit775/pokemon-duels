@@ -60,7 +60,7 @@ Commit format: `<type>(<scope>): <description>`
 | `perf` | Performance |
 | `agents` | AI agent instructions/skills |
 
-Scopes: `client`, `server`, `board`, `docs`, `deps`, `ci`
+Scopes: `client`, `server`, `board`, `deps`, `ci`
 
 Examples:
 ```bash

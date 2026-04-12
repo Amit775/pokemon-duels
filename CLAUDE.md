@@ -24,10 +24,6 @@ Read these files for detailed guidelines:
 @.claude/instructions/deployment.md
 @.claude/instructions/git-github.md
 
-## Architecture Documentation
-
-For detailed architecture decisions, read from `apps/docs/src/content/agents/`.
-
 ## Skills
 
 Use skills from `.github/skills/` for specific workflows:

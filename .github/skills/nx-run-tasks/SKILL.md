@@ -28,7 +28,6 @@ npx nx run <project>:<task>
 # Examples
 npx nx serve client       # Angular dev server on :4200
 npx nx serve server       # .NET server on :5000
-npx nx serve docs         # Docs site on :5173
 npx nx test board         # Unit tests for board library
 npx nx test client        # Unit tests for Angular client
 npx nx e2e client         # Playwright e2e tests
@@ -42,7 +41,7 @@ npx nx deploy server      # Cloud Run
 ```bash
 npx nx run-many -t build test lint
 npx nx run-many -t test -p client board      # specific projects
-npx nx run-many -t lint --exclude docs       # exclude a project
+npx nx run-many -t lint --exclude server     # exclude a project
 ```
 
 ## Run Only Affected Projects
