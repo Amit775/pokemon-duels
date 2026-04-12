@@ -85,6 +85,13 @@
         "config": "apps/client/playwright.config.ts"
       }
     },
+    "coverage-check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vitest run --coverage --config apps/client/vitest.config.ts",
+        "cwd": "."
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "dependsOn": ["build"],

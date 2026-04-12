@@ -6,9 +6,9 @@
   "tags": ["scope:shared", "type:feature"],
   "targets": {
     "test": {
-      "executor": "@nx/vite:test",
+      "executor": "@nx/vitest:test",
       "options": {
-        "root": "libs/board"
+        "configFile": "libs/board/vite.config.ts"
       }
     },
     "lint": {
