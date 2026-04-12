@@ -1,4 +1,4 @@
-import { Injectable, inject, OnDestroy } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { SignalRService } from './signalr.service';
 import { MultiplayerStore } from './multiplayer.store';
 import { RoomInfo, JoinResult, MultiplayerGameState, MoveResult } from './multiplayer.types';
@@ -11,16 +11,12 @@ import { RoomInfo, JoinResult, MultiplayerGameState, MoveResult } from './multip
 @Injectable({
   providedIn: 'root',
 })
-export class MultiplayerService implements OnDestroy {
+export class MultiplayerService {
   private readonly signalR = inject(SignalRService);
   private readonly store = inject(MultiplayerStore);
 
   constructor() {
     this.setupEventHandlers();
-  }
-
-  ngOnDestroy(): void {
-    this.leaveRoom();
   }
 
   private setupEventHandlers(): void {

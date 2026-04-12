@@ -107,12 +107,7 @@ export class MultiplayerGameComponent implements OnInit {
     await this.multiplayer.selectPokemon(null);
   }
 
-  protected leaveGame(): void {
-    this.multiplayer.leaveRoom();
-    this.router.navigate(['/lobby']);
-  }
-
-  protected backToLobby(): void {
+  protected returnToLobby(): void {
     this.multiplayer.leaveRoom();
     this.router.navigate(['/lobby']);
   }
