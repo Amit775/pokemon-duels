@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { BOARD_CONFIG } from '@pokemon-duel/board';
+import { BOARD_CONFIG } from './multiplayer/server.config';
 import { environment } from '../environments/environment';
 
 import { routes } from './app.routes';

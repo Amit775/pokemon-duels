@@ -8,7 +8,9 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MultiplayerService, MultiplayerStore, SignalRService } from '@pokemon-duel/board';
+import { MultiplayerService } from '../../multiplayer/multiplayer.service';
+import { MultiplayerStore } from '../../multiplayer/multiplayer.store';
+import { SignalRService } from '../../multiplayer/signalr.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
