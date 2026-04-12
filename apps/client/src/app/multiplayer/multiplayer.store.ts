@@ -80,11 +80,12 @@ export const MultiplayerStore = signalStore(
     playerLeft(): void {
       const currentRoom = store.roomInfo();
       if (currentRoom) {
+        const newCount = currentRoom.playerCount - 1;
         patchState(store, {
-          roomInfo: {
-            ...currentRoom,
-            playerCount: currentRoom.playerCount - 1,
-          },
+          roomInfo: { ...currentRoom, playerCount: newCount },
+          // Drop back to idle so the roomStateEffect in MultiplayerGameComponent
+          // redirects to lobby when the opponent disconnects mid-game.
+          roomState: 'idle',
         });
       }
     },
