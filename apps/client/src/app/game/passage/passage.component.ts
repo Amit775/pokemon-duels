@@ -9,19 +9,16 @@ import { Spot, Passage } from '@pokemon-duel/board';
   styleUrl: './passage.component.scss',
 })
 export class PassageComponent {
-  // Inputs
-  passage = input.required<Passage>();
-  fromSpot = input.required<Spot>();
-  toSpot = input.required<Spot>();
-  selected = input(false);
+  public passage = input.required<Passage>();
+  public fromSpot = input.required<Spot>();
+  public toSpot = input.required<Spot>();
+  public selected = input(false);
   // Percentage converters for responsive layout
-  xPercent = input<((x: number) => number) | null>(null);
-  yPercent = input<((y: number) => number) | null>(null);
+  public xPercent = input<((x: number) => number) | null>(null);
+  public yPercent = input<((y: number) => number) | null>(null);
 
-  // Outputs
-  passageClicked = output<Passage>();
+  public passageClicked = output<Passage>();
 
-  // Methods
   protected onClick(): void {
     this.passageClicked.emit(this.passage());
   }

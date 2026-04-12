@@ -32,22 +32,22 @@ type BenchSlot = {
   styleUrl: './game-board.component.scss',
 })
 export class GameBoardComponent {
-  spots = input.required<Spot[]>();
-  passages = input.required<Passage[]>();
-  pokemonOnBoard = input.required<Pokemon[]>();
-  player1Bench = input.required<Pokemon[]>();
-  player2Bench = input.required<Pokemon[]>();
-  selectedPokemonId = input<string | null>(null);
-  validMoveTargets = input<string[]>([]);
-  currentPlayerId = input.required<number>();
-  phase = input.required<'setup' | 'playing' | 'ended'>();
-  lastBattle = input<BattleResult | null>(null);
-  isInteractive = input(true);
+  public spots = input.required<Spot[]>();
+  public passages = input.required<Passage[]>();
+  public pokemonOnBoard = input.required<Pokemon[]>();
+  public player1Bench = input.required<Pokemon[]>();
+  public player2Bench = input.required<Pokemon[]>();
+  public selectedPokemonId = input<string | null>(null);
+  public validMoveTargets = input<string[]>([]);
+  public currentPlayerId = input.required<number>();
+  public phase = input.required<'setup' | 'playing' | 'ended'>();
+  public lastBattle = input<BattleResult | null>(null);
+  public isInteractive = input(true);
 
-  spotClicked = output<Spot>();
-  pokemonClicked = output<Pokemon>();
-  benchPokemonSelected = output<Pokemon>();
-  dismissBattle = output<void>();
+  public spotClicked = output<Spot>();
+  public pokemonClicked = output<Pokemon>();
+  public benchPokemonSelected = output<Pokemon>();
+  public dismissBattle = output<void>();
 
   protected readonly toPercentX = (x: number): number => (x / BOARD_DESIGN_WIDTH) * 100;
   protected readonly boardToPercentY = (y: number): number =>

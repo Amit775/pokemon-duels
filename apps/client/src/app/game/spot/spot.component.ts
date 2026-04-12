@@ -9,23 +9,20 @@ import { Spot } from '@pokemon-duel/board';
   styleUrl: './spot.component.scss',
 })
 export class SpotComponent {
-  // Inputs
-  spot = input.required<Spot>();
-  selected = input(false);
+  public spot = input.required<Spot>();
+  public selected = input(false);
   // Percentage-based positioning for responsive layout
-  xPercent = input<number | null>(null);
-  yPercent = input<number | null>(null);
+  public xPercent = input<number | null>(null);
+  public yPercent = input<number | null>(null);
 
-  // Outputs
-  spotClicked = output<Spot>();
+  public spotClicked = output<Spot>();
 
-  // Computed
-  protected spotType = computed(() => this.spot().metadata.type);
-  protected playerId = computed(() => {
+  protected readonly spotType = computed(() => this.spot().metadata.type);
+  protected readonly playerId = computed(() => {
     const metadata = this.spot().metadata;
     return 'playerId' in metadata ? metadata.playerId : null;
   });
-  protected spotClasses = computed(() => {
+  protected readonly spotClasses = computed(() => {
     const classes = [`spot--${this.spotType()}`];
     const pid = this.playerId();
     if (pid !== null) {
@@ -35,17 +32,16 @@ export class SpotComponent {
   });
 
   // Position with units - use percentage if provided, otherwise pixels
-  protected positionLeft = computed(() => {
+  protected readonly positionLeft = computed(() => {
     const percent = this.xPercent();
     return percent !== null ? `${percent}%` : `${this.spot().x}px`;
   });
 
-  protected positionTop = computed(() => {
+  protected readonly positionTop = computed(() => {
     const percent = this.yPercent();
     return percent !== null ? `${percent}%` : `${this.spot().y}px`;
   });
 
-  // Methods
   protected onClick(): void {
     this.spotClicked.emit(this.spot());
   }

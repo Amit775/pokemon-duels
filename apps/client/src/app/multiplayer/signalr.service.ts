@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject, OnDestroy, Optional } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BOARD_CONFIG, DEFAULT_BOARD_CONFIG } from './server.config';
 
@@ -17,7 +17,7 @@ type EventHandler = { eventName: string; callback: (data: unknown) => void };
 @Injectable({
   providedIn: 'root',
 })
-export class SignalRService implements OnDestroy {
+export class SignalRService {
   private connection: signalR.HubConnection | null = null;
   private pendingHandlers: EventHandler[] = [];
   private readonly config = inject(BOARD_CONFIG, { optional: true }) ?? DEFAULT_BOARD_CONFIG;
@@ -26,23 +26,19 @@ export class SignalRService implements OnDestroy {
   private readonly _connectionState = signal<ConnectionState>('disconnected');
   private readonly _error = signal<string | null>(null);
 
-  readonly connectionState = this._connectionState.asReadonly();
-  readonly error = this._error.asReadonly();
-  readonly isConnected = computed(() => this._connectionState() === 'connected');
+  public readonly connectionState = this._connectionState.asReadonly();
+  public readonly error = this._error.asReadonly();
+  public readonly isConnected = computed(() => this._connectionState() === 'connected');
 
   // Server URL - from configuration
   private get serverUrl(): string {
     return this.config.signalRUrl;
   }
 
-  ngOnDestroy(): void {
-    this.disconnect();
-  }
-
   /**
    * Connect to the SignalR hub
    */
-  async connect(): Promise<boolean> {
+  public async connect(): Promise<boolean> {
     if (this.connection?.state === signalR.HubConnectionState.Connected) {
       return true;
     }
@@ -77,7 +73,6 @@ export class SignalRService implements OnDestroy {
 
       await this.connection.start();
       this._connectionState.set('connected');
-      console.log('SignalR connected');
       return true;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to connect';
@@ -91,7 +86,7 @@ export class SignalRService implements OnDestroy {
   /**
    * Disconnect from the hub
    */
-  async disconnect(): Promise<void> {
+  public async disconnect(): Promise<void> {
     if (this.connection) {
       try {
         await this.connection.stop();
@@ -106,7 +101,7 @@ export class SignalRService implements OnDestroy {
   /**
    * Invoke a hub method and return the result
    */
-  async invoke<T>(methodName: string, ...args: unknown[]): Promise<T> {
+  public async invoke<T>(methodName: string, ...args: unknown[]): Promise<T> {
     if (!this.connection || this.connection.state !== signalR.HubConnectionState.Connected) {
       throw new Error('Not connected to server');
     }
@@ -116,7 +111,7 @@ export class SignalRService implements OnDestroy {
   /**
    * Send a message without expecting a return value
    */
-  async send(methodName: string, ...args: unknown[]): Promise<void> {
+  public async send(methodName: string, ...args: unknown[]): Promise<void> {
     if (!this.connection || this.connection.state !== signalR.HubConnectionState.Connected) {
       throw new Error('Not connected to server');
     }
@@ -126,7 +121,7 @@ export class SignalRService implements OnDestroy {
   /**
    * Register an event handler
    */
-  on<T>(eventName: string, callback: (data: T) => void): void {
+  public on<T>(eventName: string, callback: (data: T) => void): void {
     // Store for later if connection doesn't exist yet
     this.pendingHandlers.push({ eventName, callback: callback as (data: unknown) => void });
 
@@ -137,7 +132,7 @@ export class SignalRService implements OnDestroy {
   /**
    * Remove an event handler
    */
-  off(eventName: string, callback?: (...args: unknown[]) => void): void {
+  public off(eventName: string, callback?: (...args: unknown[]) => void): void {
     // Remove from pending handlers
     this.pendingHandlers = this.pendingHandlers.filter((h) => h.eventName !== eventName);
 

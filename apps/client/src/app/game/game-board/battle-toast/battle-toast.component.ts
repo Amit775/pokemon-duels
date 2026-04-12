@@ -11,10 +11,10 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './battle-toast.component.scss',
 })
 export class BattleToastComponent {
-  battle = input.required<BattleResult>();
-  pokemon = input.required<Pokemon[]>();
+  public battle = input.required<BattleResult>();
+  public pokemon = input.required<Pokemon[]>();
 
-  dismiss = output<void>();
+  public dismiss = output<void>();
 
   protected getSpeciesName(speciesId: string): string {
     return getSpecies(speciesId)?.name ?? 'Unknown';
