@@ -9,24 +9,20 @@ import { Router } from '@angular/router';
 import { MultiplayerService } from '../../multiplayer/multiplayer.service';
 import { MultiplayerStore } from '../../multiplayer/multiplayer.store';
 import { SignalRService } from '../../multiplayer/signalr.service';
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-lobby',
   standalone: true,
   imports: [
-    MatCardModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
-    MatChipsModule,
     MatProgressSpinnerModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

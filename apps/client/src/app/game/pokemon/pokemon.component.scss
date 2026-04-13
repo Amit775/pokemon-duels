@@ -1,4 +1,4 @@
-$pokemon-size: min(48px, 7cqmin);
+$pokemon-size: min(50px, 7.5cqmin);
 $pokemon-border: max(2px, 0.4cqmin);
 
 .pokemon {
@@ -6,8 +6,8 @@ $pokemon-border: max(2px, 0.4cqmin);
   width: $pokemon-size;
   height: $pokemon-size;
   border-radius: 50%;
-  border: $pokemon-border solid var(--mat-sys-outline);
-  background-color: var(--mat-sys-surface-container-highest);
+  border: $pokemon-border solid var(--color-border-strong);
+  background-color: var(--color-surface-elevated);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -19,43 +19,49 @@ $pokemon-border: max(2px, 0.4cqmin);
   z-index: 2;
 
   &:hover {
-    transform: translate(-50%, -50%) scale(1.15);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%) scale(1.18);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
     z-index: 10;
   }
 
   // Type-based backgrounds
   &--normal {
-    background-color: var(--mat-sys-surface-container);
+    background-color: var(--color-surface-elevated);
   }
 
   &--water {
-    background-color: rgba(33, 150, 243, 0.15);
+    background: radial-gradient(circle at 60% 40%, rgba(56, 189, 248, 0.25), var(--color-surface-elevated) 70%);
   }
 
   &--fire {
-    background-color: rgba(244, 67, 54, 0.15);
+    background: radial-gradient(circle at 60% 40%, rgba(251, 146, 60, 0.25), var(--color-surface-elevated) 70%);
   }
 
   &--grass {
-    background-color: rgba(76, 175, 80, 0.15);
+    background: radial-gradient(circle at 60% 40%, rgba(74, 222, 128, 0.25), var(--color-surface-elevated) 70%);
   }
 
-  // Player-based border color
+  // Player-based border
   &--player-1 {
-    border-color: #42a5f5;
+    border-color: var(--color-player-1);
   }
 
   &--player-2 {
-    border-color: #ef5350;
+    border-color: var(--color-player-2);
   }
 
+  // Selected state — dramatic gold glow
   &--selected {
-    box-shadow: 0 0 0 max(3px, 0.5cqmin) rgba(255, 215, 0, 0.9), 0 0 min(12px, 2cqmin) rgba(255, 215, 0, 0.6);
-    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow:
+      0 0 0 max(3px, 0.5cqmin) rgba(247, 215, 22, 0.9),
+      0 0 min(16px, 2.5cqmin) rgba(247, 215, 22, 0.5);
+    transform: translate(-50%, -50%) scale(1.12);
+    z-index: 10;
 
     &:hover {
-      box-shadow: 0 0 0 max(3px, 0.5cqmin) rgba(255, 215, 0, 1), 0 0 min(16px, 2.5cqmin) rgba(255, 215, 0, 0.8);
+      box-shadow:
+        0 0 0 max(3px, 0.5cqmin) rgba(247, 215, 22, 1),
+        0 0 min(22px, 3cqmin) rgba(247, 215, 22, 0.7);
     }
   }
 
@@ -74,21 +80,36 @@ $pokemon-border: max(2px, 0.4cqmin);
 
 .pokemon-movement {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
-  min-width: min(16px, 2.5cqmin);
-  height: min(16px, 2.5cqmin);
-  border-radius: min(8px, 1.25cqmin);
-  background-color: var(--mat-sys-outline);
-  color: var(--mat-sys-on-primary);
+  bottom: -1px;
+  right: -1px;
+  min-width: min(17px, 2.6cqmin);
+  height: min(17px, 2.6cqmin);
+  border-radius: min(9px, 1.4cqmin);
+  background-color: var(--color-surface-highest);
+  color: var(--color-text);
   font-size: min(10px, 1.5cqmin);
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 max(2px, 0.3cqmin);
+  border: 1px solid var(--color-border-strong);
 
-  .pokemon--water & { background-color: #1976d2; }
-  .pokemon--fire & { background-color: #d32f2f; }
-  .pokemon--grass & { background-color: #388e3c; }
+  .pokemon--water & {
+    background-color: #0369A1;
+    color: white;
+    border-color: var(--color-type-water);
+  }
+
+  .pokemon--fire & {
+    background-color: #C2410C;
+    color: white;
+    border-color: var(--color-type-fire);
+  }
+
+  .pokemon--grass & {
+    background-color: #15803D;
+    color: white;
+    border-color: var(--color-type-grass);
+  }
 }

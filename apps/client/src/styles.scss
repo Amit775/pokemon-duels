@@ -4,7 +4,7 @@ html {
   color-scheme: dark;
   @include mat.theme((
     color: (
-      primary: mat.$violet-palette,
+      primary: mat.$red-palette,
       theme-type: dark,
     ),
     typography: Roboto,
@@ -12,10 +12,36 @@ html {
   ));
 }
 
+:root {
+  --color-bg: #0D1117;
+  --color-surface: #161B22;
+  --color-surface-elevated: #21262D;
+  --color-surface-highest: #30363D;
+  --color-primary: #E63946;
+  --color-primary-hover: #c1121f;
+  --color-primary-dim: rgba(230, 57, 70, 0.13);
+  --color-gold: #F7D716;
+  --color-gold-dim: rgba(247, 215, 22, 0.12);
+  --color-player-1: #3B82F6;
+  --color-player-1-dim: rgba(59, 130, 246, 0.12);
+  --color-player-2: #EF4444;
+  --color-player-2-dim: rgba(239, 68, 68, 0.12);
+  --color-type-water: #38BDF8;
+  --color-type-fire: #FB923C;
+  --color-type-grass: #4ADE80;
+  --color-type-normal: #94A3B8;
+  --color-success: #22C55E;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-text: #E6EDF3;
+  --color-text-muted: #8B949E;
+  --font-game: 'Bebas Neue', 'Impact', system-ui, sans-serif;
+}
+
 body {
   margin: 0;
-  background: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

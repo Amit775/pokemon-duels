@@ -5,26 +5,71 @@
   overflow: hidden;
 }
 
-mat-toolbar {
-  gap: 8px;
+.game-nav {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 52px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-pokeball {
+  filter: drop-shadow(0 0 8px rgba(230, 57, 70, 0.5));
+  flex-shrink: 0;
+}
+
+.nav-title {
+  font-family: var(--font-game);
+  font-size: 1.45rem;
+  letter-spacing: 2.5px;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.18s ease;
+  border: 1px solid transparent;
 
   mat-icon {
-    margin-right: 4px;
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
   }
-}
 
-.brand-text {
-  font-weight: 700;
-  margin-left: 8px;
-}
+  &:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+  }
 
-.spacer {
-  flex: 1;
-}
-
-.active-link {
-  background: rgba(255, 255, 255, 0.1);
+  &--active {
+    color: var(--color-primary);
+    background: var(--color-primary-dim);
+    border-color: rgba(230, 57, 70, 0.25);
+  }
 }
 
 .app-content {

@@ -23,4 +23,8 @@ export class BattleToastComponent {
   protected getPokemonById(id: string): Pokemon | undefined {
     return this.pokemon().find((p) => p.id === id);
   }
+
+  protected getSpeciesType(speciesId: string): string {
+    return getSpecies(speciesId)?.type ?? 'normal';
+  }
 }

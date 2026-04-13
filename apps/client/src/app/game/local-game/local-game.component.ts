@@ -10,13 +10,12 @@ import {
 import { GameStore, BoardService, Pokemon, Spot } from '@pokemon-duel/board';
 import { GameBoardComponent } from '../game-board/game-board.component';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-local-game',
   standalone: true,
-  imports: [GameBoardComponent, MatButtonModule, MatChipsModule, MatIconModule],
+  imports: [GameBoardComponent, MatButtonModule, MatIconModule],
   providers: [GameStore],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './local-game.component.html',
@@ -61,7 +60,7 @@ export class LocalGameComponent {
       if (battle) {
         this.showBattle.set(true);
         if (this.battleDismissTimer) clearTimeout(this.battleDismissTimer);
-        this.battleDismissTimer = setTimeout(() => this.dismissBattle(), 5000);
+        this.battleDismissTimer = setTimeout(() => this.dismissBattle(), 3000);
       } else {
         this.showBattle.set(false);
       }

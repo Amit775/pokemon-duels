@@ -7,7 +7,8 @@
 .board-canvas {
   flex: 1;
   position: relative;
-  background: var(--mat-sys-surface-container-low);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
   container-type: size;
@@ -16,6 +17,12 @@
   width: 100%;
   max-height: 100%;
   min-height: 0;
+
+  // Subtle grid texture
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 .bench-overlay {
@@ -30,63 +37,64 @@
 .bench-area {
   fill: none;
   stroke-width: 1.5;
+  stroke-dasharray: 6 4;
 
   &--player-1 {
-    stroke: #42a5f5;
-    fill: rgba(66, 165, 245, 0.06);
+    stroke: var(--color-player-1);
+    fill: rgba(59, 130, 246, 0.05);
   }
 
   &--player-2 {
-    stroke: #ef5350;
-    fill: rgba(239, 83, 80, 0.06);
+    stroke: var(--color-player-2);
+    fill: rgba(239, 68, 68, 0.05);
   }
 }
 
 .bench-connector {
   stroke-width: 1.5;
   stroke-dasharray: 4 3;
-  opacity: 0.7;
+  opacity: 0.5;
 
   &--player-1 {
-    stroke: #42a5f5;
+    stroke: var(--color-player-1);
   }
 
   &--player-2 {
-    stroke: #ef5350;
+    stroke: var(--color-player-2);
   }
 }
 
 .valid-target-indicator {
   position: absolute;
-  width: min(56px, 8cqmin);
-  height: min(56px, 8cqmin);
+  width: min(58px, 8.5cqmin);
+  height: min(58px, 8.5cqmin);
   border-radius: 50%;
-  border: max(2px, 0.3cqmin) dashed #4caf50;
-  background-color: rgba(76, 175, 80, 0.2);
+  border: max(2px, 0.35cqmin) dashed var(--color-success);
+  background-color: rgba(34, 197, 94, 0.15);
   transform: translate(-50%, -50%);
   cursor: pointer;
-  animation: pulse-target 1s infinite;
+  animation: pulse-target 1s ease-in-out infinite;
   z-index: 5;
 
   &:hover {
-    background-color: rgba(76, 175, 80, 0.4);
-    border-color: #2e7d32;
+    background-color: rgba(34, 197, 94, 0.3);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
   }
 
   &--battle {
-    border-color: #f44336;
-    background-color: rgba(244, 67, 54, 0.2);
+    border-color: var(--color-primary);
+    background-color: rgba(230, 57, 70, 0.15);
 
     &:hover {
-      background-color: rgba(244, 67, 54, 0.4);
-      border-color: #d32f2f;
+      background-color: rgba(230, 57, 70, 0.3);
+      box-shadow: 0 0 12px rgba(230, 57, 70, 0.3);
     }
   }
 }
 
 @keyframes pulse-target {
   0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.75; }
 }
 
 .battle-icon {
@@ -97,10 +105,9 @@
   height: 100%;
 
   mat-icon {
-    font-size: min(24px, 4cqmin);
-    width: min(24px, 4cqmin);
-    height: min(24px, 4cqmin);
-    color: #f44336;
+    font-size: min(22px, 3.8cqmin);
+    width: min(22px, 3.8cqmin);
+    height: min(22px, 3.8cqmin);
+    color: var(--color-primary);
   }
 }
-
