@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { BoardCanvasComponent } from './board-canvas.component';
 import { BoardStore, createSpot, createPassage } from '@pokemon-duel/board';
 
@@ -72,7 +73,8 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('select');
       fixture.detectChanges();
 
-      (component as any).onSpotClicked(spot);
+      const spotDe = fixture.debugElement.query(By.css('app-spot'));
+      spotDe.triggerEventHandler('spotClicked', spot);
 
       expect(store.selectedSpotId()).toBe('1');
     });
@@ -83,7 +85,8 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('add-passage');
       fixture.detectChanges();
 
-      (component as any).onSpotClicked(spot);
+      const spotDe = fixture.debugElement.query(By.css('app-spot'));
+      spotDe.triggerEventHandler('spotClicked', spot);
 
       expect(store.passageSourceSpotId()).toBe('1');
     });
@@ -96,8 +99,9 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('add-passage');
       fixture.detectChanges();
 
-      (component as any).onSpotClicked(spot1); // Set source
-      (component as any).onSpotClicked(spot2); // Complete passage
+      const spotDes = fixture.debugElement.queryAll(By.css('app-spot'));
+      spotDes[0].triggerEventHandler('spotClicked', spot1); // Set source
+      spotDes[1].triggerEventHandler('spotClicked', spot2); // Complete passage
 
       expect(store.passageCount()).toBe(1);
       expect(store.passageSourceSpotId()).toBeNull();
@@ -113,14 +117,8 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('add-spot');
       fixture.detectChanges();
 
-      const clickEvent = new MouseEvent('click', {
-        clientX: 150,
-        clientY: 200,
-      });
-      Object.defineProperty(clickEvent, 'offsetX', { value: 150 });
-      Object.defineProperty(clickEvent, 'offsetY', { value: 200 });
-
-      (component as any).onCanvasClick(clickEvent);
+      const canvasDe = fixture.debugElement.query(By.css('.board-canvas'));
+      canvasDe.triggerEventHandler('click', { offsetX: 150, offsetY: 200 });
 
       expect(store.spotCount()).toBe(1);
     });
@@ -129,14 +127,8 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('select');
       fixture.detectChanges();
 
-      const clickEvent = new MouseEvent('click', {
-        clientX: 150,
-        clientY: 200,
-      });
-      Object.defineProperty(clickEvent, 'offsetX', { value: 150 });
-      Object.defineProperty(clickEvent, 'offsetY', { value: 200 });
-
-      (component as any).onCanvasClick(clickEvent);
+      const canvasDe = fixture.debugElement.query(By.css('.board-canvas'));
+      canvasDe.triggerEventHandler('click', { offsetX: 150, offsetY: 200 });
 
       expect(store.spotCount()).toBe(0);
     });
@@ -145,11 +137,8 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('add-spot');
       fixture.detectChanges();
 
-      const clickEvent = new MouseEvent('click');
-      Object.defineProperty(clickEvent, 'offsetX', { value: 73 });
-      Object.defineProperty(clickEvent, 'offsetY', { value: 48 });
-
-      (component as any).onCanvasClick(clickEvent);
+      const canvasDe = fixture.debugElement.query(By.css('.board-canvas'));
+      canvasDe.triggerEventHandler('click', { offsetX: 73, offsetY: 48 });
 
       const spot = store.spotEntities()[0];
       // Default cell size is 50, so 73 → 50, 48 → 50
@@ -173,7 +162,8 @@ describe('BoardCanvasComponent', () => {
       store.addPassage(passage);
       fixture.detectChanges();
 
-      (component as any).onPassageClicked(passage);
+      const passageDe = fixture.debugElement.query(By.css('app-passage'));
+      passageDe.triggerEventHandler('passageClicked', passage);
 
       expect(store.selectedPassageId()).toBe('p1');
     });

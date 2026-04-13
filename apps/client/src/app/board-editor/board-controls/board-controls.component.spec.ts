@@ -55,23 +55,32 @@ describe('BoardControlsComponent', () => {
   // ==========================================================================
 
   describe('mode selection', () => {
+    const clickModeBtn = (label: string) => {
+      const buttons = Array.from(
+        fixture.nativeElement.querySelectorAll('.mode-btn') as NodeListOf<HTMLElement>,
+      );
+      const btn = buttons.find((b) => b.textContent?.trim() === label) as HTMLElement;
+      btn.click();
+      fixture.detectChanges();
+    };
+
     it('should change to select mode', () => {
-      (component as any).setMode('select');
+      clickModeBtn('Select');
       expect(store.editingMode()).toBe('select');
     });
 
     it('should change to add-spot mode', () => {
-      (component as any).setMode('add-spot');
+      clickModeBtn('Add Spot');
       expect(store.editingMode()).toBe('add-spot');
     });
 
     it('should change to add-passage mode', () => {
-      (component as any).setMode('add-passage');
+      clickModeBtn('Add Passage');
       expect(store.editingMode()).toBe('add-passage');
     });
 
     it('should change to delete mode', () => {
-      (component as any).setMode('delete');
+      clickModeBtn('Delete');
       expect(store.editingMode()).toBe('delete');
     });
 
@@ -92,10 +101,13 @@ describe('BoardControlsComponent', () => {
     it('should toggle grid snap', () => {
       expect(store.gridSnapEnabled()).toBe(true);
 
-      (component as any).toggleGridSnap();
+      const gridBtn = fixture.nativeElement.querySelector('[data-testid="grid-toggle"]') as HTMLElement;
+      gridBtn.click();
+      fixture.detectChanges();
       expect(store.gridSnapEnabled()).toBe(false);
 
-      (component as any).toggleGridSnap();
+      gridBtn.click();
+      fixture.detectChanges();
       expect(store.gridSnapEnabled()).toBe(true);
     });
   });
@@ -135,11 +147,20 @@ describe('BoardControlsComponent', () => {
   // ==========================================================================
 
   describe('save/load', () => {
+    const clickActionBtn = (label: string) => {
+      const buttons = Array.from(
+        fixture.nativeElement.querySelectorAll('.control-group.actions button') as NodeListOf<HTMLElement>,
+      );
+      const btn = buttons.find((b) => b.textContent?.trim() === label) as HTMLElement;
+      btn.click();
+      fixture.detectChanges();
+    };
+
     it('should save board to localStorage', () => {
       const spot = createSpot({ id: '1', x: 100, y: 100 });
       store.addSpot(spot);
 
-      (component as any).saveBoard();
+      clickActionBtn('Save');
 
       const saved = localStorage.getItem('pokemon-board');
       expect(saved).toBeTruthy();
@@ -154,7 +175,7 @@ describe('BoardControlsComponent', () => {
       });
       localStorage.setItem('pokemon-board', JSON.stringify(board));
 
-      (component as any).loadBoard();
+      clickActionBtn('Load');
 
       expect(store.spotCount()).toBe(1);
     });
@@ -171,8 +192,11 @@ describe('BoardControlsComponent', () => {
       store.addSpot(spot1);
       store.addSpot(spot2);
       store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', passageType: 'normal' });
+      fixture.detectChanges();
 
-      (component as any).clearBoard();
+      const clearBtn = fixture.nativeElement.querySelector('.control-btn--danger') as HTMLElement;
+      clearBtn.click();
+      fixture.detectChanges();
 
       expect(store.spotCount()).toBe(0);
       expect(store.passageCount()).toBe(0);

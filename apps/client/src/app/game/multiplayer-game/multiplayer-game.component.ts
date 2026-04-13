@@ -103,7 +103,7 @@ export class MultiplayerGameComponent implements OnInit {
     }
   }
 
-  protected async skipTurn(): Promise<void> {
+  private async skipTurn(): Promise<void> {
     await this.multiplayer.selectPokemon(null);
   }
 

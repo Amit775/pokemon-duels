@@ -89,8 +89,8 @@ describe('LobbyComponent', () => {
 
   describe('createRoom', () => {
     it('calls multiplayerService.createRoom when Create Room button is clicked', async () => {
-      const buttons = fixture.nativeElement.querySelectorAll('button[mat-flat-button]');
-      buttons[0].click();
+      const createBtn = fixture.nativeElement.querySelector('[data-testid="create-room-btn"]') as HTMLElement;
+      createBtn.click();
       await fixture.whenStable();
 
       expect(mockMultiplayerService.createRoom).toHaveBeenCalled();
@@ -103,21 +103,27 @@ describe('LobbyComponent', () => {
 
   describe('joinRoom', () => {
     it('Join button is disabled when code is empty', () => {
-      const buttons = fixture.nativeElement.querySelectorAll('button[mat-flat-button]');
-      const joinButton = buttons[1] as HTMLButtonElement;
+      const joinButton = fixture.nativeElement.querySelector('[data-testid="join-room-btn"]') as HTMLButtonElement;
       expect(joinButton.disabled).toBe(true);
     });
 
     it('does not call joinRoom when room code is empty', async () => {
-      (component as any).joinRoom();
+      const joinButton = fixture.nativeElement.querySelector('[data-testid="join-room-btn"]') as HTMLElement;
+      joinButton.click();
       await fixture.whenStable();
 
       expect(mockMultiplayerService.joinRoom).not.toHaveBeenCalled();
     });
 
     it('calls joinRoom with uppercased code', async () => {
-      (component as any).joinCode.set('abcd');
-      await (component as any).joinRoom();
+      const input = fixture.nativeElement.querySelector('[data-testid="room-code-input"]') as HTMLInputElement;
+      input.value = 'abcd';
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+
+      const joinButton = fixture.nativeElement.querySelector('[data-testid="join-room-btn"]') as HTMLElement;
+      joinButton.click();
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.joinRoom).toHaveBeenCalledWith('ABCD');
     });
@@ -148,7 +154,7 @@ describe('LobbyComponent', () => {
     });
 
     it('calls leaveRoom when Leave Room button is clicked', async () => {
-      const leaveBtn = fixture.nativeElement.querySelector('button[mat-button]') as HTMLElement;
+      const leaveBtn = fixture.nativeElement.querySelector('[data-testid="leave-room-btn"]') as HTMLElement;
       leaveBtn.click();
       await fixture.whenStable();
 
@@ -185,11 +191,17 @@ describe('LobbyComponent', () => {
   // ==========================================================================
 
   describe('updateJoinCode', () => {
-    it('uppercases the input value', () => {
-      const event = { target: { value: 'abcd' } } as unknown as Event;
-      (component as any).updateJoinCode(event);
+    it('uppercases the input value and passes it to joinRoom', async () => {
+      const input = fixture.nativeElement.querySelector('[data-testid="room-code-input"]') as HTMLInputElement;
+      input.value = 'abcd';
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
 
-      expect((component as any).joinCode()).toBe('ABCD');
+      const joinButton = fixture.nativeElement.querySelector('[data-testid="join-room-btn"]') as HTMLElement;
+      joinButton.click();
+      await fixture.whenStable();
+
+      expect(mockMultiplayerService.joinRoom).toHaveBeenCalledWith('ABCD');
     });
   });
 });

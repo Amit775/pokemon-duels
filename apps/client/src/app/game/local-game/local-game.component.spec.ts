@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { LocalGameComponent } from './local-game.component';
 import {
@@ -98,7 +99,8 @@ describe('LocalGameComponent', () => {
       const p1Snorlax = gameStore.pokemonOnBoard().find((p) => p.playerId === 1);
       expect(p1Snorlax).toBeDefined();
 
-      (component as any).onSpotClicked(testSpots[0]); // p1-flag has p1 snorlax
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', testSpots[0]); // p1-flag has p1 snorlax
 
       expect(gameStore.selectedPokemonId()).toBe(p1Snorlax!.id);
     });
@@ -112,7 +114,8 @@ describe('LocalGameComponent', () => {
       gameStore.selectPokemon(charizard!.id);
       expect(gameStore.validMoveTargets()).toContain('p1-entry');
 
-      (component as any).onSpotClicked(testSpots[1]); // p1-entry
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', testSpots[1]); // p1-entry
 
       expect(gameStore.pokemonEntityMap()[charizard!.id].spotId).toBe('p1-entry');
     });
@@ -123,7 +126,8 @@ describe('LocalGameComponent', () => {
       )!;
       gameStore.selectPokemon(charizard.id);
 
-      (component as any).onSpotClicked(testSpots[1]); // p1-entry — valid target
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', testSpots[1]); // p1-entry — valid target
 
       // Turn should have ended (player 2's turn now)
       expect(gameStore.currentPlayerId()).toBe(2);
@@ -144,7 +148,8 @@ describe('LocalGameComponent', () => {
     it('selects a pokemon when clicking it directly', () => {
       const p1Snorlax = gameStore.pokemonOnBoard().find((p) => p.playerId === 1)!;
 
-      (component as any).onPokemonClicked(p1Snorlax);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', p1Snorlax);
 
       expect(gameStore.selectedPokemonId()).toBe(p1Snorlax.id);
     });
@@ -152,7 +157,8 @@ describe('LocalGameComponent', () => {
     it('does not select enemy pokemon', () => {
       const p2Snorlax = gameStore.pokemonOnBoard().find((p) => p.playerId === 2)!;
 
-      (component as any).onPokemonClicked(p2Snorlax);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', p2Snorlax);
 
       expect(gameStore.selectedPokemonId()).toBeNull();
     });
@@ -176,8 +182,10 @@ describe('LocalGameComponent', () => {
       gameStore.movePokemon(p.id, 'wf2'); // game ends
 
       expect(gameStore.phase()).toBe('ended');
+      fixture.detectChanges();
 
-      (component as any).onPokemonClicked(p);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', p);
 
       expect(gameStore.selectedPokemonId()).toBeNull();
     });
@@ -197,7 +205,8 @@ describe('LocalGameComponent', () => {
     it('selects a bench pokemon when clicking it', () => {
       const benchPokemon = gameStore.benchPokemon().find((p) => p.playerId === 1)!;
 
-      (component as any).onBenchPokemonSelected(benchPokemon);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('benchPokemonSelected', benchPokemon);
 
       expect(gameStore.selectedPokemonId()).toBe(benchPokemon.id);
     });
@@ -219,7 +228,9 @@ describe('LocalGameComponent', () => {
       gameStore.selectPokemon(p1Snorlax.id);
       expect(gameStore.selectedPokemonId()).toBe(p1Snorlax.id);
 
-      (component as any).skipTurn();
+      const skipBtn = fixture.nativeElement.querySelector('[data-testid="skip-turn-btn"]') as HTMLElement;
+      skipBtn.click();
+      fixture.detectChanges();
 
       expect(gameStore.selectedPokemonId()).toBeNull();
       expect(gameStore.currentPlayerId()).toBe(2);
@@ -245,7 +256,9 @@ describe('LocalGameComponent', () => {
       const resetSpy = vi.spyOn(gameStore, 'resetGame');
       const setupSpy = vi.spyOn(gameStore, 'setupInitialPokemon');
 
-      (component as any).resetGame();
+      const resetBtn = fixture.nativeElement.querySelector('[data-testid="reset-game-btn"]') as HTMLElement;
+      resetBtn.click();
+      fixture.detectChanges();
 
       expect(resetSpy).toHaveBeenCalled();
       expect(setupSpy).toHaveBeenCalled();
@@ -254,7 +267,9 @@ describe('LocalGameComponent', () => {
     it('returns current player to 1 after reset', () => {
       gameStore.endTurn();
 
-      (component as any).resetGame();
+      const resetBtn = fixture.nativeElement.querySelector('[data-testid="reset-game-btn"]') as HTMLElement;
+      resetBtn.click();
+      fixture.detectChanges();
 
       expect(gameStore.currentPlayerId()).toBe(1);
     });
@@ -265,6 +280,23 @@ describe('LocalGameComponent', () => {
   // ==========================================================================
 
   describe('battle toast', () => {
+    const triggerBattle = (store: InstanceType<typeof GameStore>) => {
+      store.resetGame();
+      store.initializeGame(battleSpots, battlePassages, 2);
+      store.addPokemonToBench('snorlax', 1);
+      store.addPokemonToBench('snorlax', 2);
+      const p1 = store.pokemonEntities().find((p) => p.playerId === 1)!;
+      const p2 = store.pokemonEntities().find((p) => p.playerId === 2)!;
+      store.selectPokemon(p1.id);
+      store.movePokemon(p1.id, 'bs1');
+      store.endTurn();
+      store.selectPokemon(p2.id);
+      store.movePokemon(p2.id, 'bs2');
+      store.endTurn();
+      store.selectPokemon(p1.id);
+      store.movePokemon(p1.id, 'bs2'); // triggers battle
+    };
+
     beforeEach(() => {
       gameStore.initializeGame(testSpots, testPassages, 2);
       gameStore.setupInitialPokemon();
@@ -272,46 +304,28 @@ describe('LocalGameComponent', () => {
     });
 
     it('dismissBattle clears the battle toast immediately', () => {
-      // Set showBattle to true directly
-      (component as any).showBattle.set(true);
+      triggerBattle(gameStore);
+      fixture.detectChanges();
+      expect(gameStore.lastBattle()).not.toBeNull();
+
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('dismissBattle', null);
       fixture.detectChanges();
 
-      (component as any).dismissBattle();
-
-      expect((component as any).showBattle()).toBe(false);
       expect(gameStore.lastBattle()).toBeNull();
     });
 
     it('battle toast auto-dismisses after 5 seconds', async () => {
       vi.useFakeTimers();
       try {
-        // Re-initialize with a battle-capable board
-        gameStore.resetGame();
-        gameStore.initializeGame(battleSpots, battlePassages, 2);
-        gameStore.addPokemonToBench('snorlax', 1);
-        gameStore.addPokemonToBench('snorlax', 2);
-        const p1 = gameStore.pokemonEntities().find((p) => p.playerId === 1)!;
-        const p2 = gameStore.pokemonEntities().find((p) => p.playerId === 2)!;
-
-        // Position pokemon adjacent to each other
-        gameStore.selectPokemon(p1.id);
-        gameStore.movePokemon(p1.id, 'bs1');
-        gameStore.endTurn();
-        gameStore.selectPokemon(p2.id);
-        gameStore.movePokemon(p2.id, 'bs2');
-        gameStore.endTurn();
-
-        // Trigger battle (p1 moves into p2's spot)
-        gameStore.selectPokemon(p1.id);
-        gameStore.movePokemon(p1.id, 'bs2');
-
-        // Effect fires, sets showBattle=true and starts 5s timer
+        triggerBattle(gameStore);
         fixture.detectChanges();
-        expect((component as any).showBattle()).toBe(true);
+
+        expect(gameStore.lastBattle()).not.toBeNull();
 
         vi.advanceTimersByTime(5000);
 
-        expect((component as any).showBattle()).toBe(false);
+        expect(gameStore.lastBattle()).toBeNull();
       } finally {
         vi.useRealTimers();
       }
