@@ -1,17 +1,21 @@
 <div class="game-layout">
+
   @if (phase() === 'ended' && winnerId()) {
     <div class="win-overlay" data-testid="win-overlay">
-      <div class="win-modal" [class.victory]="localPlayerWon()" [class.defeat]="!localPlayerWon()">
+      <div class="win-modal" [class.win-modal--victory]="localPlayerWon()" [class.win-modal--defeat]="!localPlayerWon()">
         @if (localPlayerWon()) {
-          <mat-icon class="result-icon victory-icon">emoji_events</mat-icon>
-          <h2>Victory!</h2>
+          <mat-icon class="result-icon trophy-icon">emoji_events</mat-icon>
+          <h2>VICTORY!</h2>
           <p class="win-message">Congratulations! You won the battle!</p>
         } @else {
           <mat-icon class="result-icon defeat-icon">heart_broken</mat-icon>
-          <h2>Defeat</h2>
+          <h2>DEFEAT</h2>
           <p class="win-message">Your opponent captured your flag!</p>
         }
-        <button mat-flat-button data-testid="back-to-lobby-btn" (click)="returnToLobby()">Back to Lobby</button>
+        <button mat-flat-button data-testid="back-to-lobby-btn" (click)="returnToLobby()">
+          <mat-icon>arrow_back</mat-icon>
+          Back to Lobby
+        </button>
       </div>
     </div>
   }
@@ -19,31 +23,35 @@
   <main class="board-area">
     <div class="game-header">
       <div class="header-left">
-        <h2>Pokemon Duel</h2>
-        <span class="room-code">Room: {{ roomCode() }}</span>
+        <span class="header-brand">POKEMON DUEL</span>
+        <span class="room-badge">{{ roomCode() }}</span>
       </div>
-      <div class="turn-indicator">
+
+      <div class="header-center">
         @if (isMyTurn()) {
-          <mat-chip highlighted class="your-turn-chip">Your Turn!</mat-chip>
+          <div
+            class="turn-badge turn-badge--your-turn"
+            [class.turn-badge--p1]="currentPlayerId() === 1"
+            [class.turn-badge--p2]="currentPlayerId() === 2">
+            <span class="turn-badge__player">PLAYER {{ currentPlayerId() }}</span>
+            <span class="turn-badge__sep">·</span>
+            <span class="turn-badge__label">YOUR TURN</span>
+          </div>
         } @else {
-          <mat-chip class="opponent-turn-chip">Opponent's Turn</mat-chip>
+          <div
+            class="turn-badge turn-badge--waiting"
+            [class.turn-badge--p1]="currentPlayerId() === 1"
+            [class.turn-badge--p2]="currentPlayerId() === 2">
+            <span class="turn-badge__player">PLAYER {{ currentPlayerId() }}</span>
+            <span class="turn-badge__sep">·</span>
+            <span class="turn-badge__label">OPPONENT</span>
+          </div>
         }
-        <mat-chip
-          [class.turn-player--1]="currentPlayerId() === 1"
-          [class.turn-player--2]="currentPlayerId() === 2"
-        >
-          Player {{ currentPlayerId() }}
-        </mat-chip>
       </div>
-      <div class="player-info">
-        <span class="you-are">You are:</span>
-        <mat-chip
-          [class.player-badge--1]="localPlayerId() === 1"
-          [class.player-badge--2]="localPlayerId() === 2"
-        >
-          Player {{ localPlayerId() }}
-        </mat-chip>
-        <button mat-button color="warn" data-testid="leave-game-btn" (click)="returnToLobby()">
+
+      <div class="header-right">
+        <span class="you-label">You: P{{ localPlayerId() }}</span>
+        <button mat-button class="btn-leave" data-testid="leave-game-btn" (click)="returnToLobby()">
           <mat-icon>exit_to_app</mat-icon>
           Leave
         </button>
@@ -71,15 +79,16 @@
     @if (isMyTurn() && selectedPokemonId() && phase() !== 'ended') {
       <div class="selection-info">
         <mat-icon>info</mat-icon>
-        <span>Pokemon selected! Click a highlighted spot to move. Red targets = battle!</span>
+        <span>Pokemon selected — click a highlighted spot to move. Red targets = battle!</span>
       </div>
     }
 
     @if (!isMyTurn() && phase() === 'playing') {
       <div class="waiting-info">
         <mat-icon>hourglass_empty</mat-icon>
-        <span>Waiting for opponent to make their move...</span>
+        <span>Waiting for opponent's move...</span>
       </div>
     }
   </main>
+
 </div>

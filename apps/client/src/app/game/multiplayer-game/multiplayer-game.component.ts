@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   linkedSignal,
@@ -13,13 +14,12 @@ import { MultiplayerService } from '../../multiplayer/multiplayer.service';
 import { MultiplayerStore } from '../../multiplayer/multiplayer.store';
 import { GameBoardComponent } from '../game-board/game-board.component';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-multiplayer-game',
   standalone: true,
-  imports: [GameBoardComponent, MatButtonModule, MatChipsModule, MatIconModule],
+  imports: [GameBoardComponent, MatButtonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './multiplayer-game.component.html',
   styleUrl: './multiplayer-game.component.scss',
@@ -29,6 +29,7 @@ export class MultiplayerGameComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly multiplayer = inject(MultiplayerService);
   private readonly store = inject(MultiplayerStore);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly roomCode = this.store.roomCode;
   protected readonly localPlayerId = this.store.localPlayerId;
@@ -66,6 +67,24 @@ export class MultiplayerGameComponent implements OnInit {
       this.router.navigate(['/lobby']);
     }
   });
+
+  private battleDismissTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private readonly battleDismissEffect = effect(() => {
+    const battle = this.store.lastBattle();
+    if (battle) {
+      if (this.battleDismissTimer) clearTimeout(this.battleDismissTimer);
+      this.battleDismissTimer = setTimeout(() => {
+        this.displayBattle.set(null);
+      }, 3000);
+    }
+  });
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      if (this.battleDismissTimer) clearTimeout(this.battleDismissTimer);
+    });
+  }
 
   ngOnInit(): void {
     const roomId = this.route.snapshot.paramMap.get('roomId');

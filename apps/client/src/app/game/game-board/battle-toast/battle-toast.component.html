@@ -1,25 +1,46 @@
-<div class="battle-toast">
-  <button class="battle-close" (click)="dismiss.emit()">
-    <mat-icon>close</mat-icon>
-  </button>
+<div class="battle-toast" (click)="dismiss.emit()">
   <div class="battle-header">
     <mat-icon>swords</mat-icon>
-    Battle!
+    <span>BATTLE</span>
+    <mat-icon>swords</mat-icon>
   </div>
-  <div class="battle-rolls">
-    <div class="battle-roll">
-      <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle().attackerId)?.speciesId ?? '') }}</span>
-      <span class="battle-dice">{{ battle().attackerRoll }}{{ battle().attackerBonus > 0 ? ' +' + battle().attackerBonus : '' }}</span>
-      <span class="battle-total">= {{ battle().attackerRoll + battle().attackerBonus }}</span>
+
+  <div class="battle-body">
+    <div class="battle-side">
+      <span class="battle-pokemon-name">{{ getSpeciesName(getPokemonById(battle().attackerId)?.speciesId ?? '') }}</span>
+      <span class="type-badge" [class]="'type-badge--' + getSpeciesType(getPokemonById(battle().attackerId)?.speciesId ?? '')">
+        {{ getSpeciesType(getPokemonById(battle().attackerId)?.speciesId ?? '') }}
+      </span>
+      <div class="battle-roll-row">
+        <span class="battle-roll">{{ battle().attackerRoll }}</span>
+        @if (battle().attackerBonus > 0) {
+          <span class="battle-bonus">+{{ battle().attackerBonus }}</span>
+        }
+        <span class="battle-total">=&nbsp;{{ battle().attackerRoll + battle().attackerBonus }}</span>
+      </div>
     </div>
+
     <div class="battle-vs">VS</div>
-    <div class="battle-roll">
-      <span class="battle-pokemon">{{ getSpeciesName(getPokemonById(battle().defenderId)?.speciesId ?? '') }}</span>
-      <span class="battle-dice">{{ battle().defenderRoll }}{{ battle().defenderBonus > 0 ? ' +' + battle().defenderBonus : '' }}</span>
-      <span class="battle-total">= {{ battle().defenderRoll + battle().defenderBonus }}</span>
+
+    <div class="battle-side">
+      <span class="battle-pokemon-name">{{ getSpeciesName(getPokemonById(battle().defenderId)?.speciesId ?? '') }}</span>
+      <span class="type-badge" [class]="'type-badge--' + getSpeciesType(getPokemonById(battle().defenderId)?.speciesId ?? '')">
+        {{ getSpeciesType(getPokemonById(battle().defenderId)?.speciesId ?? '') }}
+      </span>
+      <div class="battle-roll-row">
+        <span class="battle-roll">{{ battle().defenderRoll }}</span>
+        @if (battle().defenderBonus > 0) {
+          <span class="battle-bonus">+{{ battle().defenderBonus }}</span>
+        }
+        <span class="battle-total">=&nbsp;{{ battle().defenderRoll + battle().defenderBonus }}</span>
+      </div>
     </div>
   </div>
+
   <div class="battle-result">
+    <mat-icon>emoji_events</mat-icon>
     {{ getSpeciesName(getPokemonById(battle().winnerId)?.speciesId ?? '') }} wins!
   </div>
+
+  <div class="battle-dismiss-hint">tap to dismiss</div>
 </div>

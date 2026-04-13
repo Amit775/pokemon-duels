@@ -1,33 +1,41 @@
 <div class="game-layout">
+
   @if (phase() === 'ended' && winnerId()) {
     <div class="win-overlay" data-testid="win-overlay">
       <div class="win-modal">
         <mat-icon class="trophy-icon">emoji_events</mat-icon>
-        <h2>Victory!</h2>
-        <p class="win-message">Player {{ winnerId() }} wins!</p>
-        <button mat-flat-button data-testid="play-again-btn" (click)="resetGame()">Play Again</button>
+        <h2>VICTORY!</h2>
+        <p class="win-message">Player {{ winnerId() }} wins the battle!</p>
+        <button mat-flat-button data-testid="play-again-btn" (click)="resetGame()">
+          <mat-icon>replay</mat-icon>
+          Play Again
+        </button>
       </div>
     </div>
   }
 
   <main class="board-area">
     <div class="game-header">
-      <h2>Pokemon Duel</h2>
-      <div class="turn-indicator" data-testid="turn-indicator">
-        <span class="turn-label">Current Turn:</span>
-        <mat-chip
-          [class.turn-player--1]="currentPlayerId() === 1"
-          [class.turn-player--2]="currentPlayerId() === 2"
-        >
-          Player {{ currentPlayerId() }}
-        </mat-chip>
+      <span class="header-brand">POKEMON DUEL</span>
+
+      <div class="header-center">
+        <div
+          class="turn-badge"
+          [class.turn-badge--p1]="currentPlayerId() === 1"
+          [class.turn-badge--p2]="currentPlayerId() === 2"
+          data-testid="turn-indicator">
+          <span class="turn-badge__player">PLAYER {{ currentPlayerId() }}</span>
+          <span class="turn-badge__sep">·</span>
+          <span class="turn-badge__label">TURN</span>
+        </div>
       </div>
-      <div class="game-actions">
+
+      <div class="header-actions">
         <button mat-button data-testid="skip-turn-btn" (click)="skipTurn()" [disabled]="phase() === 'ended'">
           <mat-icon>skip_next</mat-icon>
-          Skip Turn
+          Skip
         </button>
-        <button mat-button color="warn" data-testid="reset-game-btn" (click)="resetGame()">
+        <button mat-button class="btn-reset" data-testid="reset-game-btn" (click)="resetGame()">
           <mat-icon>restart_alt</mat-icon>
           Reset
         </button>
@@ -55,8 +63,9 @@
     @if (selectedPokemonId() && phase() !== 'ended') {
       <div class="selection-info">
         <mat-icon>info</mat-icon>
-        <span>Pokemon selected! Click a highlighted spot to move. Red targets = battle!</span>
+        <span>Pokemon selected — click a highlighted spot to move. Red targets = battle!</span>
       </div>
     }
   </main>
+
 </div>
