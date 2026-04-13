@@ -72,7 +72,7 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('select');
       fixture.detectChanges();
 
-      component.onSpotClicked(spot);
+      (component as any).onSpotClicked(spot);
 
       expect(store.selectedSpotId()).toBe('1');
     });
@@ -83,7 +83,7 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('add-passage');
       fixture.detectChanges();
 
-      component.onSpotClicked(spot);
+      (component as any).onSpotClicked(spot);
 
       expect(store.passageSourceSpotId()).toBe('1');
     });
@@ -96,8 +96,8 @@ describe('BoardCanvasComponent', () => {
       store.setEditingMode('add-passage');
       fixture.detectChanges();
 
-      component.onSpotClicked(spot1); // Set source
-      component.onSpotClicked(spot2); // Complete passage
+      (component as any).onSpotClicked(spot1); // Set source
+      (component as any).onSpotClicked(spot2); // Complete passage
 
       expect(store.passageCount()).toBe(1);
       expect(store.passageSourceSpotId()).toBeNull();
@@ -120,7 +120,7 @@ describe('BoardCanvasComponent', () => {
       Object.defineProperty(clickEvent, 'offsetX', { value: 150 });
       Object.defineProperty(clickEvent, 'offsetY', { value: 200 });
 
-      component.onCanvasClick(clickEvent);
+      (component as any).onCanvasClick(clickEvent);
 
       expect(store.spotCount()).toBe(1);
     });
@@ -136,7 +136,7 @@ describe('BoardCanvasComponent', () => {
       Object.defineProperty(clickEvent, 'offsetX', { value: 150 });
       Object.defineProperty(clickEvent, 'offsetY', { value: 200 });
 
-      component.onCanvasClick(clickEvent);
+      (component as any).onCanvasClick(clickEvent);
 
       expect(store.spotCount()).toBe(0);
     });
@@ -149,7 +149,7 @@ describe('BoardCanvasComponent', () => {
       Object.defineProperty(clickEvent, 'offsetX', { value: 73 });
       Object.defineProperty(clickEvent, 'offsetY', { value: 48 });
 
-      component.onCanvasClick(clickEvent);
+      (component as any).onCanvasClick(clickEvent);
 
       const spot = store.spotEntities()[0];
       // Default cell size is 50, so 73 → 50, 48 → 50
@@ -173,7 +173,7 @@ describe('BoardCanvasComponent', () => {
       store.addPassage(passage);
       fixture.detectChanges();
 
-      component.onPassageClicked(passage);
+      (component as any).onPassageClicked(passage);
 
       expect(store.selectedPassageId()).toBe('p1');
     });

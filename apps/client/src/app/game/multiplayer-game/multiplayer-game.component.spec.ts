@@ -277,15 +277,15 @@ describe('MultiplayerGameComponent', () => {
   });
 
   // ==========================================================================
-  // leaveGame
+  // returnToLobby
   // ==========================================================================
 
-  describe('leaveGame', () => {
+  describe('returnToLobby', () => {
     it('calls leaveRoom and navigates to lobby', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       fixture.detectChanges();
 
-      (component as any).leaveGame();
+      (component as any).returnToLobby();
 
       expect(mockMultiplayerService.leaveRoom).toHaveBeenCalled();
       expect(navigateSpy).toHaveBeenCalledWith(['/lobby']);
