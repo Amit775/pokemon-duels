@@ -147,20 +147,12 @@ describe('BoardControlsComponent', () => {
   // ==========================================================================
 
   describe('save/load', () => {
-    const clickActionBtn = (label: string) => {
-      const buttons = Array.from(
-        fixture.nativeElement.querySelectorAll('.control-group.actions button') as NodeListOf<HTMLElement>,
-      );
-      const btn = buttons.find((b) => b.textContent?.trim() === label) as HTMLElement;
-      btn.click();
-      fixture.detectChanges();
-    };
-
     it('should save board to localStorage', () => {
       const spot = createSpot({ id: '1', x: 100, y: 100 });
       store.addSpot(spot);
 
-      clickActionBtn('Save');
+      (fixture.nativeElement.querySelector('[data-testid="save-board-btn"]') as HTMLElement).click();
+      fixture.detectChanges();
 
       const saved = localStorage.getItem('pokemon-board');
       expect(saved).toBeTruthy();
@@ -175,7 +167,8 @@ describe('BoardControlsComponent', () => {
       });
       localStorage.setItem('pokemon-board', JSON.stringify(board));
 
-      clickActionBtn('Load');
+      (fixture.nativeElement.querySelector('[data-testid="load-board-btn"]') as HTMLElement).click();
+      fixture.detectChanges();
 
       expect(store.spotCount()).toBe(1);
     });
@@ -194,8 +187,7 @@ describe('BoardControlsComponent', () => {
       store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', passageType: 'normal' });
       fixture.detectChanges();
 
-      const clearBtn = fixture.nativeElement.querySelector('.control-btn--danger') as HTMLElement;
-      clearBtn.click();
+      (fixture.nativeElement.querySelector('[data-testid="clear-board-btn"]') as HTMLElement).click();
       fixture.detectChanges();
 
       expect(store.spotCount()).toBe(0);

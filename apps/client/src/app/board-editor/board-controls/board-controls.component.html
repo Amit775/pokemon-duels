@@ -220,13 +220,13 @@
 
   <!-- Actions -->
   <div class="control-group actions">
-    <button class="control-btn" (click)="saveBoard()">Save</button>
-    <button class="control-btn" (click)="loadBoard()">Load</button>
-    <button class="control-btn" (click)="exportBoard()">Export JSON</button>
-    <label class="control-btn import-btn">
+    <button class="control-btn" data-testid="save-board-btn" (click)="saveBoard()">Save</button>
+    <button class="control-btn" data-testid="load-board-btn" (click)="loadBoard()">Load</button>
+    <button class="control-btn" data-testid="export-board-btn" (click)="exportBoard()">Export JSON</button>
+    <label class="control-btn import-btn" data-testid="import-board-btn">
       Import JSON
       <input type="file" accept=".json" (change)="onImportFile($event)" hidden />
     </label>
-    <button class="control-btn control-btn--danger" (click)="clearBoard()">Clear</button>
+    <button class="control-btn control-btn--danger" data-testid="clear-board-btn" (click)="clearBoard()">Clear</button>
   </div>
 </div>
