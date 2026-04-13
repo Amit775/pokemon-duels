@@ -56,22 +56,22 @@ describe('BoardControlsComponent', () => {
 
   describe('mode selection', () => {
     it('should change to select mode', () => {
-      component.setMode('select');
+      (component as any).setMode('select');
       expect(store.editingMode()).toBe('select');
     });
 
     it('should change to add-spot mode', () => {
-      component.setMode('add-spot');
+      (component as any).setMode('add-spot');
       expect(store.editingMode()).toBe('add-spot');
     });
 
     it('should change to add-passage mode', () => {
-      component.setMode('add-passage');
+      (component as any).setMode('add-passage');
       expect(store.editingMode()).toBe('add-passage');
     });
 
     it('should change to delete mode', () => {
-      component.setMode('delete');
+      (component as any).setMode('delete');
       expect(store.editingMode()).toBe('delete');
     });
 
@@ -92,10 +92,10 @@ describe('BoardControlsComponent', () => {
     it('should toggle grid snap', () => {
       expect(store.gridSnapEnabled()).toBe(true);
 
-      component.toggleGridSnap();
+      (component as any).toggleGridSnap();
       expect(store.gridSnapEnabled()).toBe(false);
 
-      component.toggleGridSnap();
+      (component as any).toggleGridSnap();
       expect(store.gridSnapEnabled()).toBe(true);
     });
   });
@@ -139,7 +139,7 @@ describe('BoardControlsComponent', () => {
       const spot = createSpot({ id: '1', x: 100, y: 100 });
       store.addSpot(spot);
 
-      component.saveBoard();
+      (component as any).saveBoard();
 
       const saved = localStorage.getItem('pokemon-board');
       expect(saved).toBeTruthy();
@@ -154,7 +154,7 @@ describe('BoardControlsComponent', () => {
       });
       localStorage.setItem('pokemon-board', JSON.stringify(board));
 
-      component.loadBoard();
+      (component as any).loadBoard();
 
       expect(store.spotCount()).toBe(1);
     });
@@ -172,7 +172,7 @@ describe('BoardControlsComponent', () => {
       store.addSpot(spot2);
       store.addPassage({ id: 'p1', fromSpotId: '1', toSpotId: '2', passageType: 'normal' });
 
-      component.clearBoard();
+      (component as any).clearBoard();
 
       expect(store.spotCount()).toBe(0);
       expect(store.passageCount()).toBe(0);

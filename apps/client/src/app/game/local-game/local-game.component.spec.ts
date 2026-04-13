@@ -44,9 +44,13 @@ describe('LocalGameComponent', () => {
       providers: [provideNoopAnimations()],
     }).compileComponents();
 
+    // Inject boardService and spy BEFORE createComponent so the constructor
+    // sees the mock when it calls boardService.loadBoard().
+    boardService = TestBed.inject(BoardService);
+    vi.spyOn(boardService, 'loadBoard').mockReturnValue(null); // default: no board
+
     fixture = TestBed.createComponent(LocalGameComponent);
     component = fixture.componentInstance;
-    boardService = TestBed.inject(BoardService);
     // GameStore is provided at component level — get it from the component injector
     gameStore = fixture.debugElement.injector.get(GameStore);
   });
@@ -56,28 +60,25 @@ describe('LocalGameComponent', () => {
   });
 
   // ==========================================================================
-  // ngOnInit
+  // Constructor initialization (formerly ngOnInit)
   // ==========================================================================
 
-  describe('ngOnInit', () => {
-    it('loads board from localStorage on init', () => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
-      const initSpy = vi.spyOn(gameStore, 'initializeGame');
-      const setupSpy = vi.spyOn(gameStore, 'setupInitialPokemon');
+  describe('constructor initialization', () => {
+    it('loads board and initializes game on construction', () => {
+      // Override the spy then create a fresh component instance to verify
+      // the constructor wires up the board from the service.
+      (boardService.loadBoard as ReturnType<typeof vi.spyOn>).mockReturnValue(testBoard);
+      const freshFixture = TestBed.createComponent(LocalGameComponent);
+      const freshStore = freshFixture.debugElement.injector.get(GameStore);
 
-      fixture.detectChanges(); // triggers ngOnInit
-
-      expect(initSpy).toHaveBeenCalledWith(testSpots, testPassages, 2);
-      expect(setupSpy).toHaveBeenCalled();
+      expect(freshStore.spots()).toHaveLength(testSpots.length);
+      expect(freshStore.passages()).toHaveLength(testPassages.length);
+      expect(freshStore.pokemonEntities().length).toBeGreaterThan(0);
     });
 
-    it('does not call initializeGame when no board is saved', () => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(null);
-      const initSpy = vi.spyOn(gameStore, 'initializeGame');
-
-      fixture.detectChanges();
-
-      expect(initSpy).not.toHaveBeenCalled();
+    it('does not initialize game when no board is saved', () => {
+      // Default spy returns null — component was already created in outer beforeEach
+      expect(gameStore.spots()).toEqual([]);
     });
   });
 
@@ -87,9 +88,10 @@ describe('LocalGameComponent', () => {
 
   describe('onSpotClicked', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      // Initialize store directly — no need to go through boardService
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
-      // After ngOnInit: board initialized, setupInitialPokemon placed pokemon
     });
 
     it('selects a pokemon when clicking a spot occupied by the current player', () => {
@@ -134,7 +136,8 @@ describe('LocalGameComponent', () => {
 
   describe('onPokemonClicked', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
     });
 
@@ -186,7 +189,8 @@ describe('LocalGameComponent', () => {
 
   describe('onBenchPokemonSelected', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
     });
 
@@ -205,7 +209,8 @@ describe('LocalGameComponent', () => {
 
   describe('skipTurn', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
     });
 
@@ -228,7 +233,8 @@ describe('LocalGameComponent', () => {
 
   describe('resetGame', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
     });
 
@@ -260,7 +266,8 @@ describe('LocalGameComponent', () => {
 
   describe('battle toast', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
     });
 
@@ -317,7 +324,8 @@ describe('LocalGameComponent', () => {
 
   describe('win overlay', () => {
     beforeEach(() => {
-      vi.spyOn(boardService, 'loadBoard').mockReturnValue(testBoard);
+      gameStore.initializeGame(testSpots, testPassages, 2);
+      gameStore.setupInitialPokemon();
       fixture.detectChanges();
     });
 
