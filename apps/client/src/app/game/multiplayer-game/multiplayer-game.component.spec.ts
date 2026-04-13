@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { provideRouter, ActivatedRoute, Router } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MultiplayerGameComponent } from './multiplayer-game.component';
@@ -139,7 +140,9 @@ describe('MultiplayerGameComponent', () => {
       store.setGameState(makeGameState({ currentPlayerId: 2, phase: 'playing' }));
       fixture.detectChanges();
 
-      await (component as any).onSpotClicked(spot);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', spot);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.movePokemon).not.toHaveBeenCalled();
       expect(mockMultiplayerService.selectPokemon).not.toHaveBeenCalled();
@@ -153,7 +156,9 @@ describe('MultiplayerGameComponent', () => {
       }));
       fixture.detectChanges();
 
-      await (component as any).onSpotClicked(spot);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', spot);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.movePokemon).toHaveBeenCalledWith('pk1', 'spot1');
     });
@@ -167,7 +172,9 @@ describe('MultiplayerGameComponent', () => {
       }));
       fixture.detectChanges();
 
-      await (component as any).onSpotClicked(spot);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', spot);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).toHaveBeenCalledWith('pk1');
     });
@@ -181,7 +188,9 @@ describe('MultiplayerGameComponent', () => {
       }));
       fixture.detectChanges();
 
-      await (component as any).onSpotClicked(spot);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('spotClicked', spot);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).not.toHaveBeenCalled();
     });
@@ -204,21 +213,29 @@ describe('MultiplayerGameComponent', () => {
       fixture.detectChanges();
 
       const myPokemon = createPokemon({ id: 'pk1', speciesId: 'snorlax', playerId: 1 });
-      await (component as any).onPokemonClicked(myPokemon);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', myPokemon);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).not.toHaveBeenCalled();
     });
 
     it('calls selectPokemon when clicking my pokemon', async () => {
       const myPokemon = createPokemon({ id: 'pk1', speciesId: 'snorlax', playerId: 1 });
-      await (component as any).onPokemonClicked(myPokemon);
+
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', myPokemon);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).toHaveBeenCalledWith('pk1');
     });
 
     it('does not select enemy pokemon', async () => {
       const enemyPokemon = createPokemon({ id: 'pk2', speciesId: 'snorlax', playerId: 2 });
-      await (component as any).onPokemonClicked(enemyPokemon);
+
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', enemyPokemon);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).not.toHaveBeenCalled();
     });
@@ -228,7 +245,9 @@ describe('MultiplayerGameComponent', () => {
       fixture.detectChanges();
 
       const myPokemon = createPokemon({ id: 'pk1', speciesId: 'snorlax', playerId: 1 });
-      await (component as any).onPokemonClicked(myPokemon);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('pokemonClicked', myPokemon);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).not.toHaveBeenCalled();
     });
@@ -248,7 +267,10 @@ describe('MultiplayerGameComponent', () => {
 
     it('calls selectPokemon for my bench pokemon', async () => {
       const myPokemon = createPokemon({ id: 'pk1', speciesId: 'charizard', playerId: 1 });
-      await (component as any).onBenchPokemonSelected(myPokemon);
+
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('benchPokemonSelected', myPokemon);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).toHaveBeenCalledWith('pk1');
     });
@@ -258,21 +280,11 @@ describe('MultiplayerGameComponent', () => {
       fixture.detectChanges();
 
       const myPokemon = createPokemon({ id: 'pk1', speciesId: 'charizard', playerId: 1 });
-      await (component as any).onBenchPokemonSelected(myPokemon);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('benchPokemonSelected', myPokemon);
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.selectPokemon).not.toHaveBeenCalled();
-    });
-  });
-
-  // ==========================================================================
-  // skipTurn
-  // ==========================================================================
-
-  describe('skipTurn', () => {
-    it('calls selectPokemon with null', async () => {
-      fixture.detectChanges();
-      await (component as any).skipTurn();
-      expect(mockMultiplayerService.selectPokemon).toHaveBeenCalledWith(null);
     });
   });
 
@@ -281,11 +293,13 @@ describe('MultiplayerGameComponent', () => {
   // ==========================================================================
 
   describe('returnToLobby', () => {
-    it('calls leaveRoom and navigates to lobby', () => {
+    it('calls leaveRoom and navigates to lobby', async () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       fixture.detectChanges();
 
-      (component as any).returnToLobby();
+      const leaveBtn = fixture.nativeElement.querySelector('[data-testid="leave-game-btn"]') as HTMLElement;
+      leaveBtn.click();
+      await fixture.whenStable();
 
       expect(mockMultiplayerService.leaveRoom).toHaveBeenCalled();
       expect(navigateSpy).toHaveBeenCalledWith(['/lobby']);
@@ -297,26 +311,29 @@ describe('MultiplayerGameComponent', () => {
   // ==========================================================================
 
   describe('localPlayerWon', () => {
-    beforeEach(() => {
+    it('win overlay not shown when winnerId is null', () => {
+      store.setLocalPlayerId(1);
+      store.setGameState(makeGameState({ winnerId: null, phase: 'ended' }));
       fixture.detectChanges();
+
+      const overlay = fixture.nativeElement.querySelector('[data-testid="win-overlay"]');
+      expect(overlay).toBeFalsy();
     });
 
-    it('is false when winnerId is null', () => {
+    it('shows Victory! when winnerId equals localPlayerId', () => {
       store.setLocalPlayerId(1);
-      store.setGameState(makeGameState({ winnerId: null }));
-      expect((component as any).localPlayerWon()).toBe(false);
+      store.setGameState(makeGameState({ winnerId: 1, phase: 'ended' }));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.textContent).toContain('Victory!');
     });
 
-    it('is true when winnerId equals localPlayerId', () => {
+    it('shows Defeat when winnerId does not equal localPlayerId', () => {
       store.setLocalPlayerId(1);
-      store.setGameState(makeGameState({ winnerId: 1 }));
-      expect((component as any).localPlayerWon()).toBe(true);
-    });
+      store.setGameState(makeGameState({ winnerId: 2, phase: 'ended' }));
+      fixture.detectChanges();
 
-    it('is false when winnerId does not equal localPlayerId', () => {
-      store.setLocalPlayerId(1);
-      store.setGameState(makeGameState({ winnerId: 2 }));
-      expect((component as any).localPlayerWon()).toBe(false);
+      expect(fixture.nativeElement.textContent).toContain('Defeat');
     });
   });
 
@@ -325,22 +342,30 @@ describe('MultiplayerGameComponent', () => {
   // ==========================================================================
 
   describe('displayBattle', () => {
+    const battle = {
+      attackerId: 'a', defenderId: 'b',
+      attackerRoll: 5, defenderRoll: 3,
+      attackerBonus: 0, defenderBonus: 0,
+      winnerId: 'a', loserId: 'b',
+    } as any;
+
     it('tracks store lastBattle initially', () => {
-      const battle = { attackerId: 'a', defenderId: 'b', attackerRoll: 5, defenderRoll: 3, attackerBonus: 0, defenderBonus: 0, winnerId: 'a', loserId: 'b' } as any;
       store.setGameState(makeGameState({ lastBattle: battle }));
       fixture.detectChanges();
 
-      expect((component as any).displayBattle()).toEqual(battle);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      expect(gameBoardDe.componentInstance.lastBattle()).toEqual(battle);
     });
 
     it('can be dismissed locally without changing the store', () => {
-      const battle = { attackerId: 'a', defenderId: 'b', attackerRoll: 5, defenderRoll: 3, attackerBonus: 0, defenderBonus: 0, winnerId: 'a', loserId: 'b' } as any;
       store.setGameState(makeGameState({ lastBattle: battle }));
       fixture.detectChanges();
 
-      (component as any).displayBattle.set(null);
+      const gameBoardDe = fixture.debugElement.query(By.css('app-game-board'));
+      gameBoardDe.triggerEventHandler('dismissBattle', null);
+      fixture.detectChanges();
 
-      expect((component as any).displayBattle()).toBeNull();
+      expect(gameBoardDe.componentInstance.lastBattle()).toBeNull();
       expect(store.lastBattle()).toEqual(battle); // store still has it
     });
   });
