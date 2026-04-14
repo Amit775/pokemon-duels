@@ -189,8 +189,8 @@ describe('GameBoardComponent', () => {
       fixture.detectChanges();
 
       const emitSpy = vi.spyOn(component.dismissBattle, 'emit');
-      const closeBtn = fixture.nativeElement.querySelector('.battle-close') as HTMLElement;
-      closeBtn.click();
+      const toast = fixture.nativeElement.querySelector('.battle-toast') as HTMLElement;
+      toast.click();
 
       expect(emitSpy).toHaveBeenCalled();
     });

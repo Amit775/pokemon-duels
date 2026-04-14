@@ -42,7 +42,7 @@ describe('BattleToastComponent', () => {
   describe('rendering', () => {
     it('should render battle header', () => {
       const header = fixture.nativeElement.querySelector('.battle-header');
-      expect(header?.textContent).toContain('Battle');
+      expect(header?.textContent).toContain('BATTLE');
     });
 
     it('should show attacker name (Charizard)', () => {
@@ -56,13 +56,13 @@ describe('BattleToastComponent', () => {
     });
 
     it('should show attacker dice roll', () => {
-      const rolls = fixture.nativeElement.querySelectorAll('.battle-dice');
+      const rolls = fixture.nativeElement.querySelectorAll('.battle-roll');
       const rollTexts = Array.from(rolls as NodeListOf<HTMLElement>).map((el) => el.textContent?.trim());
       expect(rollTexts.some((t) => t?.includes('5'))).toBe(true);
     });
 
     it('should show defender dice roll', () => {
-      const rolls = fixture.nativeElement.querySelectorAll('.battle-dice');
+      const rolls = fixture.nativeElement.querySelectorAll('.battle-roll');
       const rollTexts = Array.from(rolls as NodeListOf<HTMLElement>).map((el) => el.textContent?.trim());
       expect(rollTexts.some((t) => t?.includes('2'))).toBe(true);
     });
@@ -92,9 +92,9 @@ describe('BattleToastComponent', () => {
       fixture.componentRef.setInput('battle', battleWithBonus);
       fixture.detectChanges();
 
-      const rolls = fixture.nativeElement.querySelectorAll('.battle-dice');
-      const attackerRoll = rolls[0] as HTMLElement;
-      expect(attackerRoll.textContent).toContain('+1');
+      const bonuses = fixture.nativeElement.querySelectorAll('.battle-bonus');
+      const bonusTexts = Array.from(bonuses as NodeListOf<HTMLElement>).map((el) => el.textContent?.trim());
+      expect(bonusTexts.some((t) => t?.includes('+1'))).toBe(true);
     });
   });
 
@@ -103,10 +103,10 @@ describe('BattleToastComponent', () => {
   // ==========================================================================
 
   describe('dismiss', () => {
-    it('emits dismiss when close button is clicked', () => {
+    it('emits dismiss when toast is clicked', () => {
       const emitSpy = vi.spyOn(component.dismiss, 'emit');
-      const closeBtn = fixture.nativeElement.querySelector('.battle-close') as HTMLElement;
-      closeBtn.click();
+      const toast = fixture.nativeElement.querySelector('.battle-toast') as HTMLElement;
+      toast.click();
 
       expect(emitSpy).toHaveBeenCalled();
     });

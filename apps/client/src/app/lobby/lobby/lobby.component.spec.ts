@@ -51,7 +51,7 @@ describe('LobbyComponent', () => {
 
   describe('rendering — idle state', () => {
     it('renders Create Room button', () => {
-      expect(fixture.nativeElement.textContent).toContain('Create New Room');
+      expect(fixture.nativeElement.textContent).toContain('Create Room');
     });
 
     it('renders Join Room input', () => {
@@ -61,16 +61,16 @@ describe('LobbyComponent', () => {
 
     it('renders lobby heading', () => {
       const h1 = fixture.nativeElement.querySelector('h1');
-      expect(h1?.textContent).toContain('Pokemon Duel');
+      expect(h1?.textContent).toContain('POKEMON DUEL');
     });
 
     it('renders connection status indicator', () => {
-      const status = fixture.nativeElement.querySelector('.connection-status');
+      const status = fixture.nativeElement.querySelector('.connection-pill');
       expect(status).toBeTruthy();
     });
 
     it('shows Disconnected by default', () => {
-      const statusText = fixture.nativeElement.querySelector('.status-text');
+      const statusText = fixture.nativeElement.querySelector('.connection-label');
       expect(statusText?.textContent?.trim()).toBe('Disconnected');
     });
 
@@ -78,7 +78,7 @@ describe('LobbyComponent', () => {
       mockSignalRService.connectionState.set('connected');
       fixture.detectChanges();
 
-      const statusText = fixture.nativeElement.querySelector('.status-text');
+      const statusText = fixture.nativeElement.querySelector('.connection-label');
       expect(statusText?.textContent?.trim()).toBe('Connected');
     });
   });
