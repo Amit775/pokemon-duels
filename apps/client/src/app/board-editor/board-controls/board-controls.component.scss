@@ -142,6 +142,17 @@
     border-color: var(--mat-sys-error);
     color: var(--mat-sys-on-error-container);
   }
+
+  &--beautify {
+    border-color: #7c4dff;
+    color: #7c4dff;
+    font-weight: 600;
+
+    &:hover {
+      background: color-mix(in srgb, #7c4dff 12%, transparent);
+      border-color: #7c4dff;
+    }
+  }
 }
 
 .import-btn {

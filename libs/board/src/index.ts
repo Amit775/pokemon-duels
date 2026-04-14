@@ -13,5 +13,6 @@ export * from './lib/services/board.service';
 
 // Utils
 export * from './lib/utils/grid.utils';
+export * from './lib/utils/beautify.utils';
 export * from './lib/store/battle.utils';
 export * from './lib/store/movement.utils';

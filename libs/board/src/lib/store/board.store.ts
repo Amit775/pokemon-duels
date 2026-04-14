@@ -9,6 +9,13 @@ import {
   removeAllEntities,
 } from '@ngrx/signals/entities';
 import { Spot, Passage, EditingMode, SpotType, PassageType } from '../models/board.models';
+import {
+  BeautifyOptions,
+  initBeautify,
+  computeStep,
+  applyPositions,
+} from '../utils/beautify.utils';
+import { snapToGrid } from '../utils/grid.utils';
 
 // ============================================================================
 // State Types
@@ -26,6 +33,10 @@ type BoardUIState = {
   newSpotPlayerId: number;
   /** Passage type to use when creating new passages */
   newPassageType: PassageType;
+  /** True while an animated beautify pass is running */
+  isBeautifying: boolean;
+  /** Whether beautify should animate step-by-step (vs instant) */
+  beautifyAnimated: boolean;
 };
 
 const initialUIState: BoardUIState = {
@@ -37,6 +48,8 @@ const initialUIState: BoardUIState = {
   newSpotType: 'normal',
   newSpotPlayerId: 1,
   newPassageType: 'normal',
+  isBeautifying: false,
+  beautifyAnimated: true,
 };
 
 // ============================================================================
@@ -154,131 +167,251 @@ export const BoardStore = signalStore(
   ),
 
   // Methods
-  withMethods((store) => ({
-    // Spot operations
-    addSpot(spot: Spot): void {
-      patchState(store, addEntity(spot, { collection: 'spot' }));
-    },
+  withMethods((store) => {
+    // Animation frame ID lives outside of state so it never triggers re-renders
+    let animFrameId: number | null = null;
 
-    updateSpot(id: string, changes: Partial<Spot>): void {
-      patchState(store, updateEntity({ id, changes }, { collection: 'spot' }));
-    },
+    function stopBeautify(): void {
+      if (animFrameId !== null) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
+      patchState(store, { isBeautifying: false });
+    }
 
-    deleteSpot(id: string): void {
-      // Remove connected passages first
-      const passagesToRemove = store
-        .passageEntities()
-        .filter((p) => p.fromSpotId === id || p.toSpotId === id)
-        .map((p) => p.id);
+    return {
+      // Spot operations
+      addSpot(spot: Spot): void {
+        patchState(store, addEntity(spot, { collection: 'spot' }));
+      },
 
-      patchState(
-        store,
-        removeEntities(passagesToRemove, { collection: 'passage' }),
-        removeEntity(id, { collection: 'spot' }),
-        // Clear selection if this spot was selected
-        store.selectedSpotId() === id ? { selectedSpotId: null } : {},
-      );
-    },
+      updateSpot(id: string, changes: Partial<Spot>): void {
+        patchState(store, updateEntity({ id, changes }, { collection: 'spot' }));
+      },
 
-    selectSpot(id: string | null): void {
-      patchState(store, {
-        selectedSpotId: id,
-        selectedPassageId: null, // Clear passage selection
-      });
-    },
+      deleteSpot(id: string): void {
+        // Remove connected passages first
+        const passagesToRemove = store
+          .passageEntities()
+          .filter((p) => p.fromSpotId === id || p.toSpotId === id)
+          .map((p) => p.id);
 
-    // Passage operations
-    addPassage(passage: Passage): void {
-      const spots = store.spotEntities();
-      const passages = store.passageEntities();
+        patchState(
+          store,
+          removeEntities(passagesToRemove, { collection: 'passage' }),
+          removeEntity(id, { collection: 'spot' }),
+          store.selectedSpotId() === id ? { selectedSpotId: null } : {},
+        );
+      },
 
-      // Validate both spots exist
-      const fromExists = spots.some((s) => s.id === passage.fromSpotId);
-      const toExists = spots.some((s) => s.id === passage.toSpotId);
-      if (!fromExists || !toExists) return;
+      selectSpot(id: string | null): void {
+        patchState(store, {
+          selectedSpotId: id,
+          selectedPassageId: null,
+        });
+      },
 
-      // Check for duplicate (in either direction)
-      if (passageExists(passages, passage.fromSpotId, passage.toSpotId)) return;
+      // Passage operations
+      addPassage(passage: Passage): void {
+        const spots = store.spotEntities();
+        const passages = store.passageEntities();
 
-      patchState(store, addEntity(passage, { collection: 'passage' }));
-    },
+        const fromExists = spots.some((s) => s.id === passage.fromSpotId);
+        const toExists = spots.some((s) => s.id === passage.toSpotId);
+        if (!fromExists || !toExists) return;
 
-    updatePassage(id: string, changes: Partial<Passage>): void {
-      patchState(store, updateEntity({ id, changes }, { collection: 'passage' }));
-    },
+        if (passageExists(passages, passage.fromSpotId, passage.toSpotId)) return;
 
-    deletePassage(id: string): void {
-      patchState(
-        store,
-        removeEntity(id, { collection: 'passage' }),
-        // Clear selection if this passage was selected
-        store.selectedPassageId() === id ? { selectedPassageId: null } : {},
-      );
-    },
+        patchState(store, addEntity(passage, { collection: 'passage' }));
+      },
 
-    selectPassage(id: string | null): void {
-      patchState(store, {
-        selectedPassageId: id,
-        selectedSpotId: null, // Clear spot selection
-      });
-    },
+      updatePassage(id: string, changes: Partial<Passage>): void {
+        patchState(store, updateEntity({ id, changes }, { collection: 'passage' }));
+      },
 
-    // Passage creation helpers
-    setPassageSource(id: string | null): void {
-      patchState(store, { passageSourceSpotId: id });
-    },
+      deletePassage(id: string): void {
+        patchState(
+          store,
+          removeEntity(id, { collection: 'passage' }),
+          store.selectedPassageId() === id ? { selectedPassageId: null } : {},
+        );
+      },
 
-    // Get passages for a specific spot
-    passagesForSpot(spotId: string): Passage[] {
-      return store
-        .passageEntities()
-        .filter((p) => p.fromSpotId === spotId || p.toSpotId === spotId);
-    },
+      selectPassage(id: string | null): void {
+        patchState(store, {
+          selectedPassageId: id,
+          selectedSpotId: null,
+        });
+      },
 
-    // Check if a spot has any connections
-    isSpotConnected(spotId: string): boolean {
-      const spots = store.spotEntities();
-      const passages = store.passageEntities();
+      // Passage creation helpers
+      setPassageSource(id: string | null): void {
+        patchState(store, { passageSourceSpotId: id });
+      },
 
-      // Single spot is always "connected"
-      if (spots.length === 1) return true;
+      // Get passages for a specific spot
+      passagesForSpot(spotId: string): Passage[] {
+        return store
+          .passageEntities()
+          .filter((p) => p.fromSpotId === spotId || p.toSpotId === spotId);
+      },
 
-      // Check if spot has any passages
-      return passages.some((p) => p.fromSpotId === spotId || p.toSpotId === spotId);
-    },
+      // Check if a spot has any connections
+      isSpotConnected(spotId: string): boolean {
+        const spots = store.spotEntities();
+        const passages = store.passageEntities();
 
-    // UI state
-    setEditingMode(mode: EditingMode): void {
-      patchState(store, {
-        editingMode: mode,
-        passageSourceSpotId: null, // Clear passage source when changing modes
-      });
-    },
+        if (spots.length === 1) return true;
 
-    toggleGridSnap(): void {
-      patchState(store, { gridSnapEnabled: !store.gridSnapEnabled() });
-    },
+        return passages.some((p) => p.fromSpotId === spotId || p.toSpotId === spotId);
+      },
 
-    setNewSpotType(type: SpotType): void {
-      patchState(store, { newSpotType: type });
-    },
+      // UI state
+      setEditingMode(mode: EditingMode): void {
+        patchState(store, {
+          editingMode: mode,
+          passageSourceSpotId: null,
+        });
+      },
 
-    setNewSpotPlayerId(playerId: number): void {
-      patchState(store, { newSpotPlayerId: playerId });
-    },
+      toggleGridSnap(): void {
+        patchState(store, { gridSnapEnabled: !store.gridSnapEnabled() });
+      },
 
-    setNewPassageType(type: PassageType): void {
-      patchState(store, { newPassageType: type });
-    },
+      setNewSpotType(type: SpotType): void {
+        patchState(store, { newSpotType: type });
+      },
 
-    // Reset
-    reset(): void {
-      patchState(
-        store,
-        removeAllEntities({ collection: 'spot' }),
-        removeAllEntities({ collection: 'passage' }),
-        initialUIState,
-      );
-    },
-  })),
+      setNewSpotPlayerId(playerId: number): void {
+        patchState(store, { newSpotPlayerId: playerId });
+      },
+
+      setNewPassageType(type: PassageType): void {
+        patchState(store, { newPassageType: type });
+      },
+
+      // Reset
+      reset(): void {
+        stopBeautify();
+        patchState(
+          store,
+          removeAllEntities({ collection: 'spot' }),
+          removeAllEntities({ collection: 'passage' }),
+          initialUIState,
+        );
+      },
+
+      // ======================================================================
+      // Beautify
+      // ======================================================================
+
+      stopBeautify,
+
+      toggleBeautifyAnimation(): void {
+        patchState(store, { beautifyAnimated: !store.beautifyAnimated() });
+      },
+
+      /**
+       * Beautify the current board.
+       *
+       * Layout is computed synchronously (BFS y-layers + x-only F-R), then
+       * either applied instantly or animated as a smooth eased lerp from each
+       * spot's current position to its computed target.
+       *
+       * Entry spots → repositioned to their bench edge, evenly spread in x.
+       * Flag spots  → repositioned to center of bench, same y as their entries.
+       * Normal spots → BFS y-layer + x-optimised F-R.
+       */
+      beautify(options?: BeautifyOptions): void {
+        stopBeautify();
+
+        const spots = store.spotEntities();
+        const passages = store.passageEntities();
+        if (spots.length === 0) return;
+
+        const board = { id: '', name: '', spots, passages };
+        const state = initBeautify(board, {
+          gridSnap: store.gridSnapEnabled(),
+          gridCellSize: 50,
+          ...options,
+        });
+
+        // Apply anchor spots (entry + flag) immediately in both paths so they
+        // snap to their bench positions before the animation begins.
+        for (const id of state.fixed) {
+          const p = state.targetPositions.get(id)!;
+          patchState(
+            store,
+            updateEntity(
+              { id, changes: { x: Math.round(p.x), y: Math.round(p.y) } },
+              { collection: 'spot' },
+            ),
+          );
+        }
+
+        if (!store.beautifyAnimated()) {
+          // --- Instant path: apply target positions directly ---
+          const result = applyPositions(board, state);
+          for (const spot of result.spots) {
+            if (state.fixed.has(spot.id)) continue;
+            patchState(
+              store,
+              updateEntity(
+                { id: spot.id, changes: { x: spot.x, y: spot.y } },
+                { collection: 'spot' },
+              ),
+            );
+          }
+          return;
+        }
+
+        // --- Animated path: lerp from start → target over animationFrames ---
+        patchState(store, { isBeautifying: true });
+
+        function frame(): void {
+          const done = computeStep(state);
+
+          // Push interpolated positions to the store each frame
+          for (const spot of spots) {
+            if (state.fixed.has(spot.id)) continue;
+            const p = state.currentPositions.get(spot.id)!;
+            patchState(
+              store,
+              updateEntity(
+                { id: spot.id, changes: { x: Math.round(p.x), y: Math.round(p.y) } },
+                { collection: 'spot' },
+              ),
+            );
+          }
+
+          if (!done) {
+            animFrameId = requestAnimationFrame(frame);
+            return;
+          }
+
+          // Final frame: write exact target positions (removes rounding drift)
+          // and apply grid snap if enabled.
+          for (const spot of spots) {
+            if (state.fixed.has(spot.id)) continue;
+            const p = state.targetPositions.get(spot.id)!;
+            const x = state.opts.gridSnap
+              ? snapToGrid(Math.round(p.x), state.opts.gridCellSize)
+              : Math.round(p.x);
+            const y = state.opts.gridSnap
+              ? snapToGrid(Math.round(p.y), state.opts.gridCellSize)
+              : Math.round(p.y);
+            patchState(
+              store,
+              updateEntity({ id: spot.id, changes: { x, y } }, { collection: 'spot' }),
+            );
+          }
+
+          animFrameId = null;
+          patchState(store, { isBeautifying: false });
+        }
+
+        animFrameId = requestAnimationFrame(frame);
+      },
+    };
+  }),
 );
