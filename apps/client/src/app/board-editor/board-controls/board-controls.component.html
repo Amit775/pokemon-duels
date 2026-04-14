@@ -197,6 +197,35 @@
     </button>
   </div>
 
+  <!-- Beautify -->
+  <div class="control-group">
+    @if (store.isBeautifying()) {
+      <button
+        class="control-btn control-btn--danger"
+        data-testid="beautify-stop-btn"
+        (click)="stopBeautify()"
+      >
+        ■ Stop
+      </button>
+    } @else {
+      <button
+        class="control-btn control-btn--beautify"
+        data-testid="beautify-btn"
+        (click)="beautify()"
+      >
+        ✦ Beautify
+      </button>
+    }
+    <button
+      class="control-btn"
+      data-testid="beautify-animate-toggle"
+      [class.control-btn--active]="store.beautifyAnimated()"
+      (click)="toggleBeautifyAnimation()"
+    >
+      Animate: {{ store.beautifyAnimated() ? 'ON' : 'OFF' }}
+    </button>
+  </div>
+
   <!-- Validation Status -->
   <div class="control-group">
     <div

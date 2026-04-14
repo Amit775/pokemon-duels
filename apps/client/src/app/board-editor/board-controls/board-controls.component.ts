@@ -97,6 +97,22 @@ export class BoardControlsComponent {
   }
 
   // ==========================================================================
+  // Beautify
+  // ==========================================================================
+
+  protected beautify(): void {
+    this.store.beautify();
+  }
+
+  protected stopBeautify(): void {
+    this.store.stopBeautify();
+  }
+
+  protected toggleBeautifyAnimation(): void {
+    this.store.toggleBeautifyAnimation();
+  }
+
+  // ==========================================================================
   // Persistence
   // ==========================================================================
 
