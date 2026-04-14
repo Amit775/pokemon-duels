@@ -325,7 +325,7 @@ describe('MultiplayerGameComponent', () => {
       store.setGameState(makeGameState({ winnerId: 1, phase: 'ended' }));
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.textContent).toContain('Victory!');
+      expect(fixture.nativeElement.textContent).toContain('VICTORY!');
     });
 
     it('shows Defeat when winnerId does not equal localPlayerId', () => {
@@ -333,7 +333,7 @@ describe('MultiplayerGameComponent', () => {
       store.setGameState(makeGameState({ winnerId: 2, phase: 'ended' }));
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.textContent).toContain('Defeat');
+      expect(fixture.nativeElement.textContent).toContain('DEFEAT');
     });
   });
 

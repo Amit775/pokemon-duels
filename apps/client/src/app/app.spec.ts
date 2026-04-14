@@ -20,7 +20,7 @@ describe('App', () => {
   it('should render the toolbar', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
-    const toolbar = fixture.nativeElement.querySelector('mat-toolbar');
+    const toolbar = fixture.nativeElement.querySelector('nav.game-nav');
     expect(toolbar).toBeTruthy();
   });
 
@@ -28,6 +28,6 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
-    expect(text).toContain('Pokemon Duel');
+    expect(text).toContain('POKEMON DUEL');
   });
 });

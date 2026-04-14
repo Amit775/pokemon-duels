@@ -315,7 +315,7 @@ describe('LocalGameComponent', () => {
       expect(gameStore.lastBattle()).toBeNull();
     });
 
-    it('battle toast auto-dismisses after 5 seconds', async () => {
+    it('battle toast auto-dismisses after 3 seconds', async () => {
       vi.useFakeTimers();
       try {
         triggerBattle(gameStore);
@@ -323,7 +323,7 @@ describe('LocalGameComponent', () => {
 
         expect(gameStore.lastBattle()).not.toBeNull();
 
-        vi.advanceTimersByTime(5000);
+        vi.advanceTimersByTime(3000);
 
         expect(gameStore.lastBattle()).toBeNull();
       } finally {
