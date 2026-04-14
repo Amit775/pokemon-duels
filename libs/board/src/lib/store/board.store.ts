@@ -12,8 +12,7 @@ import { Spot, Passage, EditingMode, SpotType, PassageType } from '../models/boa
 import {
   BeautifyOptions,
   initBeautify,
-  runFRStep,
-  coolTemperature,
+  computeStep,
   applyPositions,
 } from '../utils/beautify.utils';
 import { snapToGrid } from '../utils/grid.utils';
@@ -315,35 +314,32 @@ export const BoardStore = signalStore(
       /**
        * Beautify the current board.
        *
-       * When `beautifyAnimated` is true, runs the algorithm step-by-step using
-       * requestAnimationFrame so the board visually morphs into the new layout.
-       * When false, applies all iterations instantly in a single synchronous pass.
+       * Layout is computed synchronously (BFS y-layers + x-only F-R), then
+       * either applied instantly or animated as a smooth eased lerp from each
+       * spot's current position to its computed target.
        *
-       * Entry spots are pre-positioned near their bench edges before the
-       * force-directed algorithm begins. Flag spots are pinned in place.
+       * Entry spots → repositioned to their bench edge, evenly spread in x.
+       * Flag spots  → repositioned to center of bench, same y as their entries.
+       * Normal spots → BFS y-layer + x-optimised F-R.
        */
       beautify(options?: BeautifyOptions): void {
-        stopBeautify(); // Cancel any in-progress animation
+        stopBeautify();
 
         const spots = store.spotEntities();
         const passages = store.passageEntities();
         if (spots.length === 0) return;
 
         const board = { id: '', name: '', spots, passages };
-        const gridCellSize = 50;
-        const opts: BeautifyOptions = {
+        const state = initBeautify(board, {
           gridSnap: store.gridSnapEnabled(),
-          gridCellSize,
+          gridCellSize: 50,
           ...options,
-        };
+        });
 
-        const state = initBeautify(board, opts);
-        const { iterations, stepsPerFrame } = state.opts;
-
-        // Apply pre-positioned entry spots immediately so they "snap" to the
-        // bench edge before the animation begins.
+        // Apply anchor spots (entry + flag) immediately in both paths so they
+        // snap to their bench positions before the animation begins.
         for (const id of state.fixed) {
-          const p = state.positions.get(id)!;
+          const p = state.targetPositions.get(id)!;
           patchState(
             store,
             updateEntity(
@@ -354,14 +350,10 @@ export const BoardStore = signalStore(
         }
 
         if (!store.beautifyAnimated()) {
-          // --- Instant path ---
-          for (let iter = 0; iter < iterations; iter++) {
-            runFRStep(spots, passages, state);
-            coolTemperature(state, iter);
-          }
+          // --- Instant path: apply target positions directly ---
           const result = applyPositions(board, state);
           for (const spot of result.spots) {
-            if (state.fixed.has(spot.id)) continue; // already applied above
+            if (state.fixed.has(spot.id)) continue;
             patchState(
               store,
               updateEntity(
@@ -373,22 +365,16 @@ export const BoardStore = signalStore(
           return;
         }
 
-        // --- Animated path ---
+        // --- Animated path: lerp from start → target over animationFrames ---
         patchState(store, { isBeautifying: true });
-        let iter = 0;
 
         function frame(): void {
-          const batchEnd = Math.min(iter + stepsPerFrame, iterations);
-          while (iter < batchEnd) {
-            runFRStep(spots, passages, state);
-            coolTemperature(state, iter);
-            iter++;
-          }
+          const done = computeStep(state);
 
-          // Push current positions for all free spots into the store
+          // Push interpolated positions to the store each frame
           for (const spot of spots) {
             if (state.fixed.has(spot.id)) continue;
-            const p = state.positions.get(spot.id)!;
+            const p = state.currentPositions.get(spot.id)!;
             patchState(
               store,
               updateEntity(
@@ -398,30 +384,26 @@ export const BoardStore = signalStore(
             );
           }
 
-          if (iter < iterations) {
+          if (!done) {
             animFrameId = requestAnimationFrame(frame);
             return;
           }
 
-          // Final frame: apply grid snap if enabled
-          if (state.opts.gridSnap) {
-            for (const spot of spots) {
-              if (state.fixed.has(spot.id)) continue;
-              const p = state.positions.get(spot.id)!;
-              patchState(
-                store,
-                updateEntity(
-                  {
-                    id: spot.id,
-                    changes: {
-                      x: snapToGrid(Math.round(p.x), state.opts.gridCellSize),
-                      y: snapToGrid(Math.round(p.y), state.opts.gridCellSize),
-                    },
-                  },
-                  { collection: 'spot' },
-                ),
-              );
-            }
+          // Final frame: write exact target positions (removes rounding drift)
+          // and apply grid snap if enabled.
+          for (const spot of spots) {
+            if (state.fixed.has(spot.id)) continue;
+            const p = state.targetPositions.get(spot.id)!;
+            const x = state.opts.gridSnap
+              ? snapToGrid(Math.round(p.x), state.opts.gridCellSize)
+              : Math.round(p.x);
+            const y = state.opts.gridSnap
+              ? snapToGrid(Math.round(p.y), state.opts.gridCellSize)
+              : Math.round(p.y);
+            patchState(
+              store,
+              updateEntity({ id: spot.id, changes: { x, y } }, { collection: 'spot' }),
+            );
           }
 
           animFrameId = null;
