@@ -172,6 +172,14 @@
 .code-field {
   width: 100%;
   max-width: 210px;
+
+  input {
+    text-transform: uppercase;
+    letter-spacing: 0.5rem;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
 }
 
 // Buttons
@@ -242,8 +250,7 @@
 
 @keyframes pulse-battle {
   0%, 100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
-  50% { box-shadow: 0 0 0 8px rgba(230, 57, 70, 0); }
-  25% { box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(230, 57, 70, 0.4); }
 }
 
 // Waiting area
